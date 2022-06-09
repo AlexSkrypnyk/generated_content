@@ -1,0 +1,4 @@
+generate content:
+  title: 'Generate content'
+  description: 'Generate and delete generated content'
+  restrict access: TRUE

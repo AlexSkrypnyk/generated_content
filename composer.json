@@ -1,0 +1,25 @@
+{
+    "name": "drevops/generated_content",
+    "description": "Drupal module to programmatically generate content.",
+    "license": "GPL-2.0-or-later",
+    "type": "drupal-module",
+    "keywords": [
+        "drupal",
+        "generate",
+        "random"
+    ],
+    "homepage": "https://github.com/drevops/generated_content",
+    "authors": [
+        {
+            "name": "Alex Skrypnyk",
+            "email": "alex@integratedexperts.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/drevops/generated_content/issues",
+        "source": "https://github.com/drevops/generated_content"
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}

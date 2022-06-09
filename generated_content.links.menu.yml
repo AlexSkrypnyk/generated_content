@@ -1,0 +1,5 @@
+generated_content.generated_content_form:
+  title: 'Generated content'
+  description: 'Generate content'
+  route_name: generated_content.generated_content_form
+  parent: system.admin_config_development

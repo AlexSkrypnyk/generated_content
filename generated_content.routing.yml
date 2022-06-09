@@ -1,0 +1,9 @@
+generated_content.generated_content_form:
+  path: '/admin/config/development/generated-content'
+  defaults:
+    _form: '\Drupal\generated_content\Form\GeneratedContentForm'
+    _title: 'Generate content'
+  requirements:
+    _permission: 'generate content'
+  options:
+    _admin_route: TRUE

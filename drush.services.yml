@@ -1,0 +1,6 @@
+services:
+  generated_content.commands:
+    class: Drupal\generated_content\Commands\GeneratedContentCommands
+    tags:
+      - { name: drush.command }
+    arguments: [ '@entity_type.manager', '@logger.factory' ]
