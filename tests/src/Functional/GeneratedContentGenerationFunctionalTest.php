@@ -22,18 +22,6 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
   ];
 
   /**
-   * Test information form.
-   */
-  public function testInfoTable() {
-    $admin = $this->createUser([], NULL, TRUE);
-    $this->drupalLogin($admin);
-
-    $this->drupalGet('/admin/config/development/generated-content');
-
-    $this->assertTableItems(0, 0, 0, 0);
-  }
-
-  /**
    * Test generation and deletion of content.
    */
   public function testGenerateDelete() {
@@ -42,16 +30,17 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
 
     $this->drupalGet('/admin/config/development/generated-content');
 
-    $this->assertTableItems(0, 0, 0, 0);
+    $this->assertTableItems(0, 0, 0, 0, 0);
 
     $edit = [
       'table[user__user]' => TRUE,
       'table[media__image]' => TRUE,
       'table[taxonomy_term__tags]' => TRUE,
       'table[node__page]' => TRUE,
+      'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Generate');
-    $this->assertTableItems(0, 10, 10, 10);
+    $this->assertTableItems(0, 10, 10, 10, 10);
 
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_1@example.com');
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_2@example.com');
@@ -87,50 +76,59 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
       'table[media__image]' => TRUE,
       'table[taxonomy_term__tags]' => TRUE,
       'table[node__page]' => TRUE,
+      'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Delete');
-    $this->assertTableItems(0, 0, 0, 0);
+    $this->assertTableItems(0, 0, 0, 0, 0);
 
     $this->assertSession()->pageTextContains('Removed all generated content entities "user" in bundle "user"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "media" in bundle "image"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "taxonomy_term" in bundle "tags"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "page"');
-    $this->assertSession()->pageTextContains('4 items processed.');
+    $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "article"');
+    $this->assertSession()->pageTextContains('5 items processed.');
   }
 
   /**
    * Assert table items are present with values.
    */
-  protected function assertTableItems($c1, $c2, $c3, $c4) {
+  protected function assertTableItems($c1, $c2, $c3, $c4, $c5) {
     $this->assertSession()->responseContains('Generate content');
 
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[2]', 'user');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[3]', 'user');
-    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[4]', '-100');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[4]', -100);
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[5]', 'Disabled');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[6]', 'generated_content_example1');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[7]', $c1);
 
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[2]', 'media');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[3]', 'image');
-    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[4]', '0');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[4]', 0);
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[5]', 'Enabled');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[6]', 'generated_content_example1');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[2]/td[7]', $c2);
 
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[2]', 'taxonomy_term');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[3]', 'tags');
-    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[4]', '12');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[4]', 12);
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[5]', 'Enabled');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[6]', 'generated_content_example2');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[3]/td[7]', $c3);
 
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[2]', 'node');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[3]', 'page');
-    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[4]', '35');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[4]', 35);
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[5]', 'Enabled');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[6]', 'generated_content_example2');
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[4]/td[7]', $c4);
+
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[5]/td[2]', 'node');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[5]/td[3]', 'article');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[5]/td[4]', 36);
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[5]/td[5]', 'Enabled');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[5]/td[6]', 'generated_content_example2');
+    $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[5]/td[7]', $c5);
   }
 
 }

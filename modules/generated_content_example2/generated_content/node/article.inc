@@ -2,35 +2,35 @@
 
 /**
  * @file
- * Create generated Page nodes.
+ * Create generated Article nodes.
  */
 
 use Drupal\Core\Link;
-use Drupal\generated_content\Helpers\GeneratedContentHelper;
+use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
-function generated_content_example2_generated_content_create_node_page_weight() {
-  return 35;
+function generated_content_example2_generated_content_create_node_article_weight() {
+  return 36;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
  */
-function generated_content_example2_generated_content_create_node_page_tracking() {
+function generated_content_example2_generated_content_create_node_article_tracking() {
   return TRUE;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
  */
-function generated_content_example2_generated_content_create_node_page() {
+function generated_content_example2_generated_content_create_node_article() {
   $total_nodes_count = 10;
 
-  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
-  $helper = GeneratedContentHelper::getInstance();
+  /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
+  $helper = GeneratedContentExample2Helper::getInstance();
 
   $nodes = [];
 
@@ -38,12 +38,13 @@ function generated_content_example2_generated_content_create_node_page() {
     $variation = $helper::variationRandom([
       'status' => NULL,
       'content' => NULL,
+      'tags' => [1, 3],
     ]);
     $variation_info = $helper::variationFormatInfo($variation);
 
     $node = Node::create([
-      'type' => 'page',
-      'title' => sprintf('Generated page %s', $variation_info),
+      'type' => 'article',
+      'title' => sprintf('Generated article %s', $variation_info),
       'status' => $variation['status'],
     ]);
 
@@ -52,6 +53,10 @@ function generated_content_example2_generated_content_create_node_page() {
         'value' => $helper::randomRichText(),
         'format' => 'full_html',
       ];
+    }
+
+    if ($variation['tags']) {
+      $node->field_tags = $helper::randomTags($variation['tags']);
     }
 
     $node->revision_log = $variation_info;

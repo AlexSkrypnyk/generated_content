@@ -6,7 +6,7 @@ use Drupal\Component\Utility\Random;
 use Drupal\Component\Utility\Unicode;
 
 /**
- * Class GeneratedContentRandom.
+ * Class GeneratedContentRandomTrait.
  *
  * Random content generators.
  *
@@ -37,7 +37,7 @@ trait GeneratedContentRandomTrait {
    * Generate a random HTML paragraph.
    */
   public static function randomHtmlParagraph() {
-    return '<p>' . self::randomPlainParagraph() . '</p>';
+    return '<p>' . static::randomPlainParagraph() . '</p>';
   }
 
   /**
@@ -48,7 +48,7 @@ trait GeneratedContentRandomTrait {
       $heading_level = mt_rand(2, 5);
     }
 
-    return '<h' . $heading_level . '>' . $prefix . self::randomSentence($min_word_count, $max_word_count) . '</h' . $heading_level . '>';
+    return '<h' . $heading_level . '>' . $prefix . static::randomSentence($min_word_count, $max_word_count) . '</h' . $heading_level . '>';
   }
 
   /**
@@ -69,9 +69,9 @@ trait GeneratedContentRandomTrait {
     $paragraph_count = mt_rand($min_paragraph_count, $max_paragraph_count);
     for ($i = 1; $i <= $paragraph_count; $i++) {
       if ($i % 2) {
-        $paragraphs[] = self::randomHtmlHeading(5, 10, $i == 1 ? 2 : rand(2, 4), $prefix);
+        $paragraphs[] = static::randomHtmlHeading(5, 10, $i == 1 ? 2 : rand(2, 4), $prefix);
       }
-      $paragraphs[] = self::randomHtmlParagraph();
+      $paragraphs[] = static::randomHtmlParagraph();
     }
 
     return implode(PHP_EOL, $paragraphs);
@@ -221,7 +221,7 @@ trait GeneratedContentRandomTrait {
       return FALSE;
     }
 
-    $items = self::randomArrayItems($haystack, 1);
+    $items = static::randomArrayItems($haystack, 1);
 
     return count($items) > 0 ? reset($items) : FALSE;
   }

@@ -10,7 +10,7 @@ use Drupal\generated_content\GeneratedContentRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class GeneratedContentHelper.
+ * Class GeneratedContentAbstractHelper.
  *
  * Helper to interact with generated content items.
  *
@@ -23,11 +23,11 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
   use GeneratedContentStaticTrait;
 
   /**
-   * The helper singleton.
+   * Instances of descendant classes.
    *
-   * @var \Drupal\generated_content\Helpers\GeneratedContentHelper
+   * @var \Drupal\generated_content\Helpers\GeneratedContentAbstractHelper[]
    */
-  protected static $instance = NULL;
+  protected static $instances = [];
 
   /**
    * The repository singleton.
@@ -87,32 +87,32 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
   }
 
   /**
-   * Get this helper instance.
+   * Get singleton instance of one of the descendant classes.
    *
-   * @return \Drupal\generated_content\Helpers\GeneratedContentHelper
-   *   The repository.
+   * @return \Drupal\generated_content\Helpers\GeneratedContentAbstractHelper
+   *   Helper class instance.
    */
   public static function getInstance() {
-    if (!self::$instance) {
-      static::$instance = \Drupal::service('class_resolver')
+    if (empty(self::$instances[static::class])) {
+      self::$instances[static::class] = \Drupal::service('class_resolver')
         ->getInstanceFromDefinition(static::class);
     }
 
-    return self::$instance;
+    return self::$instances[static::class];
   }
 
   /**
    * Log verbose progress.
    */
   public static function log() {
-    if (self::$verbose) {
+    if (static::$verbose) {
       if (function_exists('drush_print')) {
         // Strip all tags, but still decode some HTML entities.
         drush_print(html_entity_decode(strip_tags(call_user_func_array('sprintf', func_get_args()))));
       }
       else {
         // Support HTML, but still use plain strings for simplicity.
-        self::$messenger->addMessage(new FormattableMarkup(call_user_func_array('sprintf', func_get_args()), []));
+        static::$messenger->addMessage(new FormattableMarkup(call_user_func_array('sprintf', func_get_args()), []));
       }
     }
   }
@@ -130,7 +130,7 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
    */
   public static function addToRepository($entities) {
     $entities = is_array($entities) ? $entities : [$entities];
-    self::$repository->addEntitiesNoTracking($entities);
+    static::$repository->addEntitiesNoTracking($entities);
   }
 
   /**
@@ -193,12 +193,12 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
 
     $carry = array_shift($arrays);
     foreach ($arrays as $k => $array) {
-      $carry_column = self::arrayColumn($carry, $column);
-      $array_column = self::arrayColumn($array, $column);
+      $carry_column = static::arrayColumn($carry, $column);
+      $array_column = static::arrayColumn($array, $column);
       $column_values = array_intersect($carry_column, $array_column);
 
       $carry = array_filter($array, function ($item) use ($column, $column_values) {
-        $value = self::extractProperty($item, $column);
+        $value = static::extractProperty($item, $column);
 
         return $value && in_array($value, $column_values);
       });
@@ -216,7 +216,7 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
     }
 
     return array_map(function ($item) use ($key) {
-      return self::extractProperty($item, $key);
+      return static::extractProperty($item, $key);
     }, $array);
   }
 

@@ -5,7 +5,7 @@ namespace Drupal\generated_content\Helpers;
 use Drupal\Component\Utility\Unicode;
 
 /**
- * Class GeneratedContentStatic.
+ * Class GeneratedContentStaticTrait.
  *
  * Generic static content generators.
  *
@@ -25,7 +25,7 @@ trait GeneratedContentStaticTrait {
    *   Static content string.
    */
   public static function staticSentence($words = 10, $content_idx = 0) {
-    $content = self::staticParagraphs(1, $content_idx);
+    $content = static::staticParagraphs(1, $content_idx);
 
     return Unicode::truncate($content, $words * 7, TRUE, FALSE, 3);
   }
@@ -40,7 +40,7 @@ trait GeneratedContentStaticTrait {
    *   Static content string.
    */
   public static function staticPlainParagraph($content_idx = 0) {
-    $content = self::staticParagraphs(1, $content_idx);
+    $content = static::staticParagraphs(1, $content_idx);
 
     return trim($content);
   }
@@ -55,7 +55,7 @@ trait GeneratedContentStaticTrait {
    *   Static content string.
    */
   public static function staticHtmlParagraph($content_idx = 0) {
-    return '<p>' . self::staticPlainParagraph($content_idx) . '</p>';
+    return '<p>' . static::staticPlainParagraph($content_idx) . '</p>';
   }
 
   /**
@@ -77,7 +77,7 @@ trait GeneratedContentStaticTrait {
     $level = min($level, 6);
     $level = max($level, 1);
 
-    return '<h' . $level . '>' . $prefix . self::staticSentence($words, $content_idx) . '</h' . $level . '>';
+    return '<h' . $level . '>' . $prefix . static::staticSentence($words, $content_idx) . '</h' . $level . '>';
   }
 
   /**
@@ -97,9 +97,9 @@ trait GeneratedContentStaticTrait {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
       if ($i % 2) {
-        $content[] = self::staticHtmlHeading(8, $i == 1 ? 2 : 3, $prefix, $content_idx);
+        $content[] = static::staticHtmlHeading(8, $i == 1 ? 2 : 3, $prefix, $content_idx);
       }
-      $content[] = self::staticHtmlParagraph($content_idx);
+      $content[] = static::staticHtmlParagraph($content_idx);
     }
 
     return implode(PHP_EOL, $content);
