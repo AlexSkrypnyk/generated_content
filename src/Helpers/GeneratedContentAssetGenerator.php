@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\generated_content\Generator;
+namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\File\FileSystemInterface;
 
 /**
- * Class GeneratedContentGenerator.
+ * Class GeneratedContentAssetGenerator.
  *
  * The utility class for generating data.
  *
@@ -294,7 +294,7 @@ class GeneratedContentAssetGenerator {
 
     $module_path = drupal_get_path('module', 'generated_content');
     foreach ($extensions as $extension) {
-      $dummy_file = $module_path . DIRECTORY_SEPARATOR . rtrim(self::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'dummy.' . $extension;
+      $dummy_file = $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'dummy.' . $extension;
       if (file_exists($dummy_file)) {
         $assets[$extension] = $dummy_file;
       }

@@ -1,4 +1,4 @@
 services:
   generated_content.asset_generator:
-    class: Drupal\generated_content\Generator\GeneratedContentAssetGenerator
+    class: Drupal\generated_content\Helpers\GeneratedContentAssetGenerator
     arguments: [ '@file_system', '@entity_type.manager' ]

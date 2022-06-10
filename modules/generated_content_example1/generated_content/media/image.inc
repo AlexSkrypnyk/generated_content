@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Link;
-use Drupal\generated_content\Generator\GeneratedContentRandom;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\media\Entity\Media;
 
@@ -28,21 +27,20 @@ function generated_content_example1_generated_content_create_media_image_trackin
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
  */
 function generated_content_example1_generated_content_create_media_image() {
+  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
   $helper = GeneratedContentHelper::getInstance();
-  /** @var \Drupal\generated_content\Generator\GeneratedContentAssetGenerator $asset_generator */
-  $asset_generator = \Drupal::getContainer()->get('generated_content.asset_generator');
 
   $total_files_count = 10;
 
   $entities = [];
   for ($i = 0; $i < $total_files_count; $i++) {
-    $filename = sprintf('Demo Image media %s %s', $i + 1, GeneratedContentRandom::sentence());
+    $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomSentence());
     /** @var \Drupal\file\Entity\File $file */
-    $file = $asset_generator->createImage([
+    $file = $helper->createImage([
       'filename' => $filename,
       'width' => 2000,
       'height' => 1000,
-      'format' => GeneratedContentRandom::arrayItem(['png', 'jpg']),
+      'format' => $helper::randomArrayItem(['png', 'jpg']),
     ]);
 
     $media = Media::create([
@@ -58,7 +56,7 @@ function generated_content_example1_generated_content_create_media_image() {
       'Created media image for file "%s" [ID: %s] %s',
       Link::createFromRoute($file->getFilename(), 'entity.media.canonical', ['media' => $media->id()])->toString(),
       $media->id(),
-      Link::createFromRoute('Edit', 'entity.media.edit_form', ['media' => $media->id()])->toString(),
+      Link::createFromRoute('Edit', 'entity.media.edit_form', ['media' => $media->id()])->toString()
     );
 
     $entities[$media->id()] = $media;

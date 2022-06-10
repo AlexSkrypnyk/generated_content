@@ -30,7 +30,6 @@ function generated_content_example2_generated_content_create_taxonomy_term_tags(
   // Total number of terms to create.
   $total_terms_count = 10;
 
-  // Generated content helper to get access to logging.
   /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
   $helper = GeneratedContentHelper::getInstance();
 
@@ -55,7 +54,7 @@ function generated_content_example2_generated_content_create_taxonomy_term_tags(
       $term->bundle(),
       $term->toLink()->toString(),
       $term->id(),
-      Link::createFromRoute('Edit', 'entity.taxonomy_term.edit_form', ['taxonomy_term' => $term->id()])->toString(),
+      Link::createFromRoute('Edit', 'entity.taxonomy_term.edit_form', ['taxonomy_term' => $term->id()])->toString()
     );
   }
 
