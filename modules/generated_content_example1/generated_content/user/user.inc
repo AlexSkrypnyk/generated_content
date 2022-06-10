@@ -62,7 +62,7 @@ function generated_content_example1_generated_content_create_user_user() {
             'Created an account %s [ID: %s] %s',
             Link::createFromRoute($user->getDisplayName(), 'entity.user.canonical', ['user' => $user->id()])->toString(),
             $user->id(),
-            Link::createFromRoute('Edit', 'entity.user.edit_form', ['user' => $user->id()])->toString(),
+            Link::createFromRoute('Edit', 'entity.user.edit_form', ['user' => $user->id()])->toString()
           );
         }
         catch (\Exception $exception) {

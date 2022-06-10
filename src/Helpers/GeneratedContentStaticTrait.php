@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\generated_content\Generator;
+namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Unicode;
 
@@ -11,7 +11,7 @@ use Drupal\Component\Utility\Unicode;
  *
  * @package Drupal\generated_content
  */
-class GeneratedContentStatic {
+trait GeneratedContentStaticTrait {
 
   /**
    * Generate a pre-defined static sentence.
@@ -24,8 +24,8 @@ class GeneratedContentStatic {
    * @return string
    *   Static content string.
    */
-  public static function sentence($words = 10, $content_idx = 0) {
-    $content = self::paragraphs(1, $content_idx);
+  public static function staticSentence($words = 10, $content_idx = 0) {
+    $content = self::staticParagraphs(1, $content_idx);
 
     return Unicode::truncate($content, $words * 7, TRUE, FALSE, 3);
   }
@@ -39,8 +39,8 @@ class GeneratedContentStatic {
    * @return string
    *   Static content string.
    */
-  public static function plainParagraph($content_idx = 0) {
-    $content = self::paragraphs(1, $content_idx);
+  public static function staticPlainParagraph($content_idx = 0) {
+    $content = self::staticParagraphs(1, $content_idx);
 
     return trim($content);
   }
@@ -54,8 +54,8 @@ class GeneratedContentStatic {
    * @return string
    *   Static content string.
    */
-  public static function htmlParagraph($content_idx = 0) {
-    return '<p>' . self::plainParagraph($content_idx) . '</p>';
+  public static function staticHtmlParagraph($content_idx = 0) {
+    return '<p>' . self::staticPlainParagraph($content_idx) . '</p>';
   }
 
   /**
@@ -73,11 +73,11 @@ class GeneratedContentStatic {
    * @return string
    *   Static content string.
    */
-  public static function htmlHeading($words = 10, $level = 1, $prefix = '', $content_idx = 0) {
+  public static function staticHtmlHeading($words = 10, $level = 1, $prefix = '', $content_idx = 0) {
     $level = min($level, 6);
     $level = max($level, 1);
 
-    return '<h' . $level . '>' . $prefix . self::sentence($words, $content_idx) . '</h' . $level . '>';
+    return '<h' . $level . '>' . $prefix . self::staticSentence($words, $content_idx) . '</h' . $level . '>';
   }
 
   /**
@@ -93,13 +93,13 @@ class GeneratedContentStatic {
    * @return string
    *   Static content string.
    */
-  public static function richText($paragraphs = 10, $prefix = '', $content_idx = 0) {
+  public static function staticRichText($paragraphs = 10, $prefix = '', $content_idx = 0) {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
       if ($i % 2) {
-        $content[] = self::htmlHeading(8, $i == 1 ? 2 : 3, $prefix, $content_idx);
+        $content[] = self::staticHtmlHeading(8, $i == 1 ? 2 : 3, $prefix, $content_idx);
       }
-      $content[] = self::htmlParagraph($content_idx);
+      $content[] = self::staticHtmlParagraph($content_idx);
     }
 
     return implode(PHP_EOL, $content);
@@ -118,7 +118,7 @@ class GeneratedContentStatic {
    * @return string
    *   Paragraphs as a static content string.
    */
-  protected static function paragraphs($paragraphs = 1, $content_idx = 0, $delimiter = "\n\n") {
+  protected static function staticParagraphs($paragraphs = 1, $content_idx = 0, $delimiter = "\n\n") {
     $content = static::staticContent();
 
     if ($paragraphs && $paragraphs > count($content)) {

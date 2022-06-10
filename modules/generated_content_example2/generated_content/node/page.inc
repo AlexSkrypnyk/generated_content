@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Link;
-use Drupal\generated_content\Generator\GeneratedContentRandom;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\node\Entity\Node;
 
@@ -30,14 +29,17 @@ function generated_content_example2_generated_content_create_node_page_tracking(
 function generated_content_example2_generated_content_create_node_page() {
   $total_nodes_count = 10;
 
+  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+  $helper = GeneratedContentHelper::getInstance();
+
   $nodes = [];
 
   for ($i = 0; $i < $total_nodes_count; $i++) {
-    $variation = GeneratedContentHelper::variationRandom([
+    $variation = $helper::variationRandom([
       'status' => NULL,
       'content' => NULL,
     ]);
-    $variation_info = GeneratedContentHelper::variationFormatInfo($variation);
+    $variation_info = $helper::variationFormatInfo($variation);
 
     $node = Node::create([
       'type' => 'page',
@@ -47,7 +49,7 @@ function generated_content_example2_generated_content_create_node_page() {
 
     if ($variation['content']) {
       $node->body = [
-        'value' => GeneratedContentRandom::richText(),
+        'value' => $helper::randomRichText(),
         'format' => 'full_html',
       ];
     }
@@ -56,7 +58,7 @@ function generated_content_example2_generated_content_create_node_page() {
 
     $node->save();
 
-    GeneratedContentHelper::getInstance()::log(
+    $helper::log(
       'Created "%s" node "%s" [ID: %s] %s',
       $node->bundle(),
       $node->toLink()->toString(),

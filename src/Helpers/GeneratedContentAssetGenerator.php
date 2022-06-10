@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\generated_content\Generator;
+namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Entity\EntityTypeManager;

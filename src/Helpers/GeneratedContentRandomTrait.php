@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\generated_content\Generator;
+namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
 use Drupal\Component\Utility\Unicode;
@@ -12,12 +12,12 @@ use Drupal\Component\Utility\Unicode;
  *
  * @package Drupal\generated_content
  */
-class GeneratedContentRandom {
+trait GeneratedContentRandomTrait {
 
   /**
    * Generate a random sentence.
    */
-  public static function sentence($min_word_count = 5, $max_word_count = 10) {
+  public static function randomSentence($min_word_count = 5, $max_word_count = 10) {
     $randomiser = new Random();
     $title = $randomiser->sentences($min_word_count);
 
@@ -27,7 +27,7 @@ class GeneratedContentRandom {
   /**
    * Generate a random plain text paragraph.
    */
-  public static function plainParagraph() {
+  public static function randomPlainParagraph() {
     $randomiser = new Random();
 
     return str_replace(["\r", "\n"], '', $randomiser->paragraphs(1));
@@ -36,19 +36,19 @@ class GeneratedContentRandom {
   /**
    * Generate a random HTML paragraph.
    */
-  public static function htmlParagraph() {
-    return '<p>' . self::plainParagraph() . '</p>';
+  public static function randomHtmlParagraph() {
+    return '<p>' . self::randomPlainParagraph() . '</p>';
   }
 
   /**
    * Generate a random HTML heading.
    */
-  public static function htmlHeading($min_word_count = 5, $max_word_count = 10, $heading_level = 0, $prefix = '') {
+  public static function randomHtmlHeading($min_word_count = 5, $max_word_count = 10, $heading_level = 0, $prefix = '') {
     if (!$heading_level) {
       $heading_level = mt_rand(2, 5);
     }
 
-    return '<h' . $heading_level . '>' . $prefix . self::sentence($min_word_count, $max_word_count) . '</h' . $heading_level . '>';
+    return '<h' . $heading_level . '>' . $prefix . self::randomSentence($min_word_count, $max_word_count) . '</h' . $heading_level . '>';
   }
 
   /**
@@ -64,14 +64,14 @@ class GeneratedContentRandom {
    * @return string
    *   Paragraphs.
    */
-  public static function richText($min_paragraph_count = 3, $max_paragraph_count = 12, $prefix = '') {
+  public static function randomRichText($min_paragraph_count = 3, $max_paragraph_count = 12, $prefix = '') {
     $paragraphs = [];
     $paragraph_count = mt_rand($min_paragraph_count, $max_paragraph_count);
     for ($i = 1; $i <= $paragraph_count; $i++) {
       if ($i % 2) {
-        $paragraphs[] = self::htmlHeading(5, 10, $i == 1 ? 2 : rand(2, 4), $prefix);
+        $paragraphs[] = self::randomHtmlHeading(5, 10, $i == 1 ? 2 : rand(2, 4), $prefix);
       }
-      $paragraphs[] = self::htmlParagraph();
+      $paragraphs[] = self::randomHtmlParagraph();
     }
 
     return implode(PHP_EOL, $paragraphs);
@@ -89,14 +89,14 @@ class GeneratedContentRandom {
    * @return bool
    *   Random value.
    */
-  public static function bool($skew = 50) {
+  public static function randomBool($skew = 50) {
     return mt_rand(0, 100) > $skew;
   }
 
   /**
    * Return a random timestamp.
    */
-  public static function timestamp($from = '-1year', $to = "+1year") {
+  public static function randomTimestamp($from = '-1year', $to = "+1year") {
     $from = strtotime($from);
     $to = strtotime($to);
 
@@ -112,7 +112,7 @@ class GeneratedContentRandom {
    * @return string
    *   Random email address.
    */
-  public static function email($domain = NULL) {
+  public static function randomEmail($domain = NULL) {
     $randomiser = new Random();
     $domain = $domain ?? $randomiser->name() . '.com';
 
@@ -134,7 +134,7 @@ class GeneratedContentRandom {
    * @return string
    *   Random date string with or without time.
    */
-  public static function date($start = 'now', $finish = 'now', $with_time = FALSE) {
+  public static function randomDate($start = 'now', $finish = 'now', $with_time = FALSE) {
     $start = strtotime($start);
     $finish = strtotime($finish);
 
@@ -166,7 +166,7 @@ class GeneratedContentRandom {
    *   - value: (string) Range start value.
    *   - end_value: (string) Range end value.
    */
-  public static function dateRange($start, $finish, $format = 'Y-m-d') {
+  public static function randomDateRange($start, $finish, $format = 'Y-m-d') {
     $start = strtotime($start);
     $finish = strtotime($finish);
 
@@ -185,7 +185,7 @@ class GeneratedContentRandom {
   /**
    * Generate a random 36-character UUID.
    */
-  public static function uuid() {
+  public static function randomUuid() {
     $data = random_bytes(16);
     assert(strlen($data) == 16);
 
@@ -201,7 +201,7 @@ class GeneratedContentRandom {
   /**
    * Helper to get random array items.
    */
-  public static function arrayItems($haystack, $count) {
+  public static function randomArrayItems($haystack, $count) {
     if ($count == 0) {
       return [];
     }
@@ -216,12 +216,12 @@ class GeneratedContentRandom {
   /**
    * Helper to get a single random array item.
    */
-  public static function arrayItem($haystack) {
+  public static function randomArrayItem($haystack) {
     if (empty($haystack)) {
       return FALSE;
     }
 
-    $items = self::arrayItems($haystack, 1);
+    $items = self::randomArrayItems($haystack, 1);
 
     return count($items) > 0 ? reset($items) : FALSE;
   }
@@ -235,12 +235,12 @@ class GeneratedContentRandom {
    * @return string
    *   URL with a path.
    */
-  public static function url($domain = FALSE) {
+  public static function randomUrl($domain = FALSE) {
     $parts = [];
     $parts[] = 'https://';
     $parts[] = $domain ? rtrim($domain, '/') : 'www.example.com';
     $parts[] = '/';
-    $parts[] = str_replace(' ', '-', static::sentence());
+    $parts[] = str_replace(' ', '-', static::randomSentence());
 
     return implode('', $parts);
   }
@@ -248,7 +248,7 @@ class GeneratedContentRandom {
   /**
    * Disperse $fillers within $scope.
    */
-  public static function disperse(array $scope, array $fillers) {
+  public static function randomDisperse(array $scope, array $fillers) {
     foreach ($fillers as $filler) {
       array_splice($scope, rand(0, count($scope)), 1, $filler);
     }
@@ -259,7 +259,7 @@ class GeneratedContentRandom {
   /**
    * Generates a random string.
    */
-  public static function string($length = 32) {
+  public static function randomString($length = 32) {
     $randomiser = new Random();
 
     return $randomiser->string($length);
@@ -268,7 +268,7 @@ class GeneratedContentRandom {
   /**
    * Generates a name.
    */
-  public static function name($max = 16) {
+  public static function randomName($max = 16) {
     $randomiser = new Random();
 
     return $randomiser->name(rand(2, $max), TRUE);
@@ -285,7 +285,7 @@ class GeneratedContentRandom {
    * @return string|string[]
    *   Abbreviation or set of abbreviations.
    */
-  public static function abbreviation($length = 2, $count = 1) {
+  public static function randomAbbreviation($length = 2, $count = 1) {
     $randomiser = new Random();
 
     $abbreviations = [];
