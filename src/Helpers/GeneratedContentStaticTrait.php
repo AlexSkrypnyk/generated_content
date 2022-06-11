@@ -14,18 +14,25 @@ use Drupal\Component\Utility\Unicode;
 trait GeneratedContentStaticTrait {
 
   /**
+   * Static paragraph counter.
+   *
+   * Used to track calls to static content generator functions.
+   *
+   * @var int
+   */
+  protected static $staticParagraphIdx = 0;
+
+  /**
    * Generate a pre-defined static sentence.
    *
    * @param int $words
    *   Number of words.
-   * @param int $content_idx
-   *   Optional content index. Defaults to 0.
    *
    * @return string
    *   Static content string.
    */
-  public static function staticSentence($words = 10, $content_idx = 0) {
-    $content = static::staticParagraphs(1, $content_idx);
+  public static function staticSentence($words = 10) {
+    $content = static::staticParagraphs(1);
 
     return Unicode::truncate($content, $words * 7, TRUE, FALSE, 3);
   }
@@ -33,14 +40,11 @@ trait GeneratedContentStaticTrait {
   /**
    * Generate a pre-defined static plain-text paragraph.
    *
-   * @param int $content_idx
-   *   Optional content index. Defaults to 0.
-   *
    * @return string
    *   Static content string.
    */
-  public static function staticPlainParagraph($content_idx = 0) {
-    $content = static::staticParagraphs(1, $content_idx);
+  public static function staticPlainParagraph() {
+    $content = static::staticParagraphs(1);
 
     return trim($content);
   }
@@ -48,14 +52,11 @@ trait GeneratedContentStaticTrait {
   /**
    * Generate a pre-defined static HTML paragraph.
    *
-   * @param int $content_idx
-   *   Optional content index. Defaults to 0.
-   *
    * @return string
    *   Static content string.
    */
-  public static function staticHtmlParagraph($content_idx = 0) {
-    return '<p>' . static::staticPlainParagraph($content_idx) . '</p>';
+  public static function staticHtmlParagraph() {
+    return '<p>' . static::staticPlainParagraph() . '</p>';
   }
 
   /**
@@ -67,17 +68,15 @@ trait GeneratedContentStaticTrait {
    *   Optional heading level. Defaults to 1.
    * @param string $prefix
    *   Optional string prefix.
-   * @param int $content_idx
-   *   Optional content index. Defaults to 0.
    *
    * @return string
    *   Static content string.
    */
-  public static function staticHtmlHeading($words = 10, $level = 1, $prefix = '', $content_idx = 0) {
+  public static function staticHtmlHeading($words = 10, $level = 1, $prefix = '') {
     $level = min($level, 6);
     $level = max($level, 1);
 
-    return '<h' . $level . '>' . $prefix . static::staticSentence($words, $content_idx) . '</h' . $level . '>';
+    return '<h' . $level . '>' . $prefix . static::staticSentence($words) . '</h' . $level . '>';
   }
 
   /**
@@ -87,19 +86,17 @@ trait GeneratedContentStaticTrait {
    *   Number of paragraphs to generate.
    * @param string $prefix
    *   Optional prefix to add to the very first heading.
-   * @param int $content_idx
-   *   Optional content index. Defaults to 0.
    *
    * @return string
    *   Static content string.
    */
-  public static function staticRichText($paragraphs = 10, $prefix = '', $content_idx = 0) {
+  public static function staticRichText($paragraphs = 10, $prefix = '') {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
       if ($i % 2) {
-        $content[] = static::staticHtmlHeading(8, $i == 1 ? 2 : 3, $prefix, $content_idx);
+        $content[] = static::staticHtmlHeading(8, $i == 1 ? 2 : 3, $prefix);
       }
-      $content[] = static::staticHtmlParagraph($content_idx);
+      $content[] = static::staticHtmlParagraph();
     }
 
     return implode(PHP_EOL, $content);
@@ -110,24 +107,26 @@ trait GeneratedContentStaticTrait {
    *
    * @param int $paragraphs
    *   The number of paragraphs to create. Defaults to 10.
-   * @param int $content_idx
-   *   Optional content index. Defaults to 0.
    * @param string $delimiter
    *   Optional delimiter index. Defaults to "\n\n".
    *
    * @return string
    *   Paragraphs as a static content string.
    */
-  protected static function staticParagraphs($paragraphs = 1, $content_idx = 0, $delimiter = "\n\n") {
+  protected static function staticParagraphs($paragraphs = 1, $delimiter = "\n\n") {
     $content = static::staticContent();
+
+    // Reset pointer once the end of the list is reached to allow
+    // "endless" static content.
+    if (self::$staticParagraphIdx > count($content) - 1) {
+      self::$staticParagraphIdx = 0;
+    }
 
     if ($paragraphs && $paragraphs > count($content)) {
       $paragraphs = count($content);
     }
 
-    $content_idx = min(count($content) - 1, $content_idx);
-
-    $content = array_slice($content, $content_idx, $paragraphs);
+    $content = array_slice($content, self::$staticParagraphIdx++, $paragraphs);
 
     return implode($delimiter, $content);
   }

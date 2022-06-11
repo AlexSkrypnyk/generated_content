@@ -49,7 +49,7 @@ function generated_content_example2_generated_content_create_node_page() {
 
     if ($variation['content']) {
       $node->body = [
-        'value' => $helper::randomRichText(),
+        'value' => $helper::staticRichText(),
         'format' => 'full_html',
       ];
     }
