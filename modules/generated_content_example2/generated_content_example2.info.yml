@@ -4,4 +4,4 @@ description: Example 2 to programmatically generate content.
 core_version_requirement: ^8 || ^9
 package: Other
 dependencies:
-  generated_content:generated_content
+  - generated_content:generated_content

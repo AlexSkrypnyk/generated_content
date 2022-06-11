@@ -15,8 +15,6 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
    * {@inheritdoc}
    */
   protected static $modules = [
-    'media',
-    'generated_content',
     'generated_content_example1',
     'generated_content_example2',
   ];
