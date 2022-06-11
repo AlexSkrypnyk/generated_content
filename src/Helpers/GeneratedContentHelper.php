@@ -148,6 +148,26 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
+   * Get static demo terms from the specified vocabulary.
+   *
+   * @param string $vid
+   *   Vocabulary machine name.
+   * @param int $count
+   *   Optional term count to return.
+   * @param int $offset
+   *   Optional offset of the number of terms from the beginning.
+   *
+   * @return \Drupal\taxonomy\Entity\Term[]
+   *   Array of terms.
+   */
+  public static function staticTerms($vid, $count = NULL, $offset = 0) {
+    $terms = self::$repository->getEntities('taxonomy_term', $vid);
+    $offset = min(count($terms), $offset);
+
+    return !is_null($count) ? array_slice($terms, $offset, $count) : $terms;
+  }
+
+  /**
    * Get random allowed values from the field.
    *
    * @param string $entity_type
@@ -243,18 +263,6 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
     $allowed_values = static::randomFieldAllowedBundles($entity_type, $bundle, $field_name, 1);
 
     return !empty($allowed_values) ? reset($allowed_values) : NULL;
-  }
-
-  /**
-   * Filter only generated entities.
-   */
-  protected static function filterGeneratedContentEntities($entities, $entity_type, $bundle) {
-    $generated_entities = static::$repository->getEntities($entity_type, $bundle);
-    $generated_entities = array_map(function ($value) {
-      return is_scalar($value) ? ['id' => $value] : $value;
-    }, $generated_entities);
-
-    return static::arrayIntersectColumn('id', $entities, $generated_entities);
   }
 
   /**
@@ -418,6 +426,33 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   public static function createImage($options = []) {
     return static::$assetGenerator->createImage($options);
+  }
+
+  /**
+   * Generate static file from existing file assets.
+   */
+  public static function staticFile($options) {
+    return self::$assetGenerator->createFromDummyFile($options);
+  }
+
+  /**
+   * Get static demo media of the specified bundle.
+   *
+   * @param string $bundle
+   *   Bundle machine name.
+   * @param int $count
+   *   Optional media count to return.
+   * @param int $offset
+   *   Optional offset of the number of media from the beginning.
+   *
+   * @return \Drupal\taxonomy\Entity\Term[]
+   *   Array of media.
+   */
+  public static function staticMedia($bundle, $count = NULL, $offset = 0) {
+    $items = self::$repository->getEntities('media', $bundle);
+    $offset = min(count($items), $offset);
+
+    return !is_null($count) ? array_slice($items, $offset, $count) : $items;
   }
 
 }
