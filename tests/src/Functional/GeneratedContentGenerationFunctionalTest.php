@@ -15,6 +15,8 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
    * {@inheritdoc}
    */
   protected static $modules = [
+    'media',
+    'generated_content',
     'generated_content_example1',
     'generated_content_example2',
   ];
@@ -28,7 +30,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
 
     $this->drupalGet('/admin/config/development/generated-content');
 
-    $this->assertTableItems(0, 0, 0, 0, 0);
+    $this->assertInfoTableItems(0, 0, 0, 0, 0);
 
     $edit = [
       'table[user__user]' => TRUE,
@@ -38,7 +40,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
       'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Generate');
-    $this->assertTableItems(0, 10, 10, 10, 10);
+    $this->assertInfoTableItems(0, 10, 10, 10, 10);
 
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_1@example.com');
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_2@example.com');
@@ -77,7 +79,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
       'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Delete');
-    $this->assertTableItems(0, 0, 0, 0, 0);
+    $this->assertInfoTableItems(0, 0, 0, 0, 0);
 
     $this->assertSession()->pageTextContains('Removed all generated content entities "user" in bundle "user"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "media" in bundle "image"');
@@ -90,7 +92,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
   /**
    * Assert table items are present with values.
    */
-  protected function assertTableItems($c1, $c2, $c3, $c4, $c5) {
+  protected function assertInfoTableItems($c1, $c2, $c3, $c4, $c5) {
     $this->assertSession()->responseContains('Generate content');
 
     $this->assertSession()->elementTextContains('xpath', '//table/tbody/tr[1]/td[2]', 'user');

@@ -45,54 +45,9 @@ function generated_content_schema() {
 }
 
 /**
- * Implements hook_install().
- */
-function generated_content_install() {
-  if (getenv('GENERATED_CONTENT_CREATE')) {
-    $repository = GeneratedContentRepository::getInstance();
-    // Create generated content only if the repository is empty. This allows to
-    // avoid duplication of generated content on every run of the persistent
-    // operations.
-    if ($repository->isEmpty()) {
-      print 'Started creation of generated content' . PHP_EOL;
-      $items = [];
-      if (getenv('GENERATED_CONTENT_ITEMS')) {
-        $items = _generated_content_parse_cli_items(getenv('GENERATED_CONTENT_ITEMS'));
-      }
-      $repository->create($items);
-      print 'Finished creation of generated content' . PHP_EOL;
-    }
-  }
-}
-
-/**
  * Implements hook_uninstall().
  */
 function generated_content_uninstall() {
   $repository = GeneratedContentRepository::getInstance();
   $repository->removeBatch();
-}
-
-/**
- * Parse items provided through CLI.
- *
- * @param string $items_string
- *   Items as a string to parse.
- *
- * @return array
- *   Multidimensional array of items to process. The first level key is an
- *   entity type and the second is a bundle. Value is a boolean TRUE.
- */
-function _generated_content_parse_cli_items($items_string) {
-  $items = [];
-
-  $parsed = explode(',', $items_string);
-  foreach ($parsed as $item) {
-    $parts = array_values(array_filter(explode('-', trim($item))));
-    if (count($parts) == 2) {
-      $items[$parts[0]][$parts[1]] = TRUE;
-    }
-  }
-
-  return $items;
 }
