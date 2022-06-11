@@ -7,6 +7,7 @@
 
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\generated_content\GeneratedContentRepository;
 
 /**
  * Implements hook_entity_delete().
@@ -30,4 +31,63 @@ function generated_content_entity_delete(EntityInterface $entity) {
 function generated_content_config_ignore_settings_alter(array &$settings) {
   // Exclude module from being enabled or disabled.
   $settings[] = 'core.extension:module.generated_content';
+}
+
+/**
+ * Implements hook_modules_installed().
+ */
+function generated_content_modules_installed($modules, $is_syncing) {
+  // Generate content when modules with hook implementations are enabled.
+  if (getenv('GENERATED_CONTENT_CREATE') && !$is_syncing) {
+    $repository = GeneratedContentRepository::getInstance();
+    $info = $repository->getInfo();
+
+    $generated_content_modules = array_map(function ($v) {
+      return $v['#module'];
+    }, $info);
+
+    if (array_intersect($modules, $generated_content_modules)) {
+      // Create generated content only if the repository is empty. This allows
+      // to avoid duplication of generated content on every run of the
+      // persistent operations.
+      if ($repository->isEmpty()) {
+        \Drupal::messenger()->addMessage(t('Started creation of generated content from modules: @modules.', [
+          '@modules' => implode(', ', $generated_content_modules),
+        ]));
+
+        $items = [];
+        if (getenv('GENERATED_CONTENT_ITEMS')) {
+          $items = _generated_content_parse_cli_items(getenv('GENERATED_CONTENT_ITEMS'));
+        }
+
+        $repository->create($items);
+
+        \Drupal::messenger()->addMessage(t('Finished creation of generated content'));
+      }
+    }
+  }
+}
+
+/**
+ * Parse items provided through CLI.
+ *
+ * @param string $items_string
+ *   Items as a string to parse.
+ *
+ * @return array
+ *   Multidimensional array of items to process. The first level key is an
+ *   entity type and the second is a bundle. Value is a boolean TRUE.
+ */
+function _generated_content_parse_cli_items($items_string) {
+  $items = [];
+
+  $parsed = explode(',', $items_string);
+  foreach ($parsed as $item) {
+    $parts = array_values(array_filter(explode('-', trim($item))));
+    if (count($parts) == 2) {
+      $items[$parts[0]][$parts[1]] = TRUE;
+    }
+  }
+
+  return $items;
 }
