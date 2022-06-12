@@ -9,7 +9,7 @@ namespace Drupal\Tests\generated_content\Traits;
  *
  * @package Drupal\generated_content\Tests
  */
-trait GeneratedContentTestHelperTrait {
+trait GeneratedContentTestMockTrait {
 
   /**
    * Call protected methods on the class.
@@ -90,13 +90,15 @@ trait GeneratedContentTestHelperTrait {
 
     $reflectionClass = new \ReflectionClass($class);
 
+    $class_name = is_object($class) ? get_class($class) : $class;
+
     if ($reflectionClass->isAbstract()) {
       $mock = $this->getMockForAbstractClass(
         $class, $args, '', !empty($args), TRUE, TRUE, $methods
       );
     }
     else {
-      $mock = $this->getMockBuilder($class);
+      $mock = $this->getMockBuilder($class_name);
       if (!empty($args)) {
         $mock = $mock->enableOriginalConstructor()
           ->setConstructorArgs($args);
@@ -104,7 +106,7 @@ trait GeneratedContentTestHelperTrait {
       else {
         $mock = $mock->disableOriginalConstructor();
       }
-      $mock = $mock->setMethods($methods)
+      $mock = $mock->onlyMethods($methods)
         ->getMock();
     }
 

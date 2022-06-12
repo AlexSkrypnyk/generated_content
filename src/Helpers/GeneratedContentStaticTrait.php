@@ -14,6 +14,13 @@ use Drupal\Component\Utility\Unicode;
 trait GeneratedContentStaticTrait {
 
   /**
+   * Array of static content.
+   *
+   * @var string[]
+   */
+  protected static $staticContent;
+
+  /**
    * Static paragraph counter.
    *
    * Used to track calls to static content generator functions.
@@ -32,9 +39,41 @@ trait GeneratedContentStaticTrait {
    *   Static content string.
    */
   public static function staticSentence($words = 10) {
-    $content = static::staticParagraphs(1);
+    $content = static::staticParagraphs();
 
     return Unicode::truncate($content, $words * 7, TRUE, FALSE, 3);
+  }
+
+  /**
+   * Generates a static string.
+   */
+  public static function staticString($length = 32) {
+    $content = '';
+    do {
+      $content .= preg_replace('/[^a-zA-Z0-9]/', '', static::staticParagraphs());
+    } while (strlen($content) < $length);
+
+    return strtolower(substr($content, 0, $length));
+  }
+
+  /**
+   * Generates a static name.
+   */
+  public static function staticName($length = 16) {
+    return static::staticString($length);
+  }
+
+  /**
+   * Generates a letter abbreviation.
+   *
+   * @param int $length
+   *   Length of abbreviation.
+   *
+   * @return string
+   *   Abbreviation string.
+   */
+  public static function staticAbbreviation($length = 2) {
+    return static::staticName($length);
   }
 
   /**
@@ -44,7 +83,7 @@ trait GeneratedContentStaticTrait {
    *   Static content string.
    */
   public static function staticPlainParagraph() {
-    $content = static::staticParagraphs(1);
+    $content = static::staticParagraphs();
 
     return trim($content);
   }
@@ -90,7 +129,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticRichText($paragraphs = 10, $prefix = '') {
+  public static function staticRichText($paragraphs = 4, $prefix = '') {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
       if ($i % 2) {
@@ -114,7 +153,7 @@ trait GeneratedContentStaticTrait {
    *   Paragraphs as a static content string.
    */
   protected static function staticParagraphs($paragraphs = 1, $delimiter = "\n\n") {
-    $content = static::staticContent();
+    $content = static::$staticContent ?? static::staticContent();
 
     // Reset pointer once the end of the list is reached to allow
     // "endless" static content.

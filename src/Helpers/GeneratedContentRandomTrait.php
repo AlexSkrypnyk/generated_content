@@ -25,6 +25,39 @@ trait GeneratedContentRandomTrait {
   }
 
   /**
+   * Generates a random string.
+   */
+  public static function randomString($length = 32) {
+    $randomiser = new Random();
+
+    return $randomiser->string($length);
+  }
+
+  /**
+   * Generates a name.
+   */
+  public static function randomName($length = 16) {
+    $randomiser = new Random();
+
+    return $randomiser->name(rand(2, $length), TRUE);
+  }
+
+  /**
+   * Generates a letter abbreviation.
+   *
+   * @param int $length
+   *   Length of abbreviation.
+   *
+   * @return string
+   *   Abbreviation string.
+   */
+  public static function randomAbbreviation($length = 2) {
+    $randomiser = new Random();
+
+    return $randomiser->name($length, TRUE);
+  }
+
+  /**
    * Generate a random plain text paragraph.
    */
   public static function randomPlainParagraph() {
@@ -199,34 +232,6 @@ trait GeneratedContentRandomTrait {
   }
 
   /**
-   * Helper to get random array items.
-   */
-  public static function randomArrayItems($haystack, $count) {
-    if ($count == 0) {
-      return [];
-    }
-
-    $haystack_keys = array_keys($haystack);
-    shuffle($haystack_keys);
-    $haystack_keys = array_slice($haystack_keys, 0, $count);
-
-    return array_intersect_key($haystack, array_flip($haystack_keys));
-  }
-
-  /**
-   * Helper to get a single random array item.
-   */
-  public static function randomArrayItem($haystack) {
-    if (empty($haystack)) {
-      return FALSE;
-    }
-
-    $items = static::randomArrayItems($haystack, 1);
-
-    return count($items) > 0 ? reset($items) : FALSE;
-  }
-
-  /**
    * Generate random external URL.
    *
    * @param string $domain
@@ -257,43 +262,31 @@ trait GeneratedContentRandomTrait {
   }
 
   /**
-   * Generates a random string.
+   * Helper to get random array items.
    */
-  public static function randomString($length = 32) {
-    $randomiser = new Random();
-
-    return $randomiser->string($length);
-  }
-
-  /**
-   * Generates a name.
-   */
-  public static function randomName($max = 16) {
-    $randomiser = new Random();
-
-    return $randomiser->name(rand(2, $max), TRUE);
-  }
-
-  /**
-   * Generates a letter abbreviation or a set of letter abbreviations.
-   *
-   * @param int $length
-   *   Length of abbreviation.
-   * @param int $count
-   *   Count of abbreviations (ensures uniqueness).
-   *
-   * @return string|string[]
-   *   Abbreviation or set of abbreviations.
-   */
-  public static function randomAbbreviation($length = 2, $count = 1) {
-    $randomiser = new Random();
-
-    $abbreviations = [];
-    for ($i = 1; $i <= $count; $i++) {
-      $abbreviations[] = $randomiser->name($length, TRUE);
+  public static function randomArrayItems($haystack, $count) {
+    if ($count == 0) {
+      return [];
     }
 
-    return count($abbreviations) === 1 ? $abbreviations[0] : $abbreviations;
+    $haystack_keys = array_keys($haystack);
+    shuffle($haystack_keys);
+    $haystack_keys = array_slice($haystack_keys, 0, $count);
+
+    return array_intersect_key($haystack, array_flip($haystack_keys));
+  }
+
+  /**
+   * Helper to get a single random array item.
+   */
+  public static function randomArrayItem($haystack) {
+    if (empty($haystack)) {
+      return FALSE;
+    }
+
+    $items = static::randomArrayItems($haystack, 1);
+
+    return count($items) > 0 ? reset($items) : FALSE;
   }
 
 }
