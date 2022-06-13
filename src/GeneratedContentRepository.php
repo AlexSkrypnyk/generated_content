@@ -68,6 +68,18 @@ class GeneratedContentRepository {
   }
 
   /**
+   * Reset singleton instance.
+   *
+   * @return \Drupal\generated_content\GeneratedContentRepository
+   *   A new singleton instance.
+   */
+  public function reset() {
+    static::$instance = NULL;
+
+    return static::getInstance();
+  }
+
+  /**
    * Get information about entities.
    *
    * @param bool $reset
@@ -397,7 +409,7 @@ class GeneratedContentRepository {
    * @param bool $tracking
    *   Whether to track the entities.
    */
-  protected function addEntities(array $entities, $tracking = TRUE) {
+  public function addEntities(array $entities, $tracking = TRUE) {
     /** @var \Drupal\Core\Entity\EntityInterface $entity */
     foreach ($entities as $entity) {
       $this->addEntity($entity, NULL, NULL, $tracking);
@@ -426,12 +438,14 @@ class GeneratedContentRepository {
    *   Entity type ID, eg. node or taxonomy_term.
    * @param string $bundle
    *   Bundle, eg. Page, lading_page.
+   * @param bool $reset
+   *   Flag to reset internal cache.
    *
    * @return array
    *   The list of entities.
    */
-  public function getEntities($entity_type = NULL, $bundle = NULL) {
-    if (empty($this->entities)) {
+  public function getEntities($entity_type = NULL, $bundle = NULL, $reset = FALSE) {
+    if (empty($this->entities) || $reset) {
       $this->entities = $this->loadEntities();
     }
 

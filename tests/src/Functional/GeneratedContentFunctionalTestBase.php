@@ -3,7 +3,7 @@
 namespace Drupal\Tests\generated_content\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestHelperTrait;
+use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 
 /**
  * Class GeneratedContentFunctionalTestBase.
@@ -12,7 +12,7 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestHelperTrait;
  */
 abstract class GeneratedContentFunctionalTestBase extends BrowserTestBase {
 
-  use GeneratedContentTestHelperTrait;
+  use GeneratedContentTestMockTrait;
 
   /**
    * {@inheritdoc}

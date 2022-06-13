@@ -102,6 +102,19 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
   }
 
   /**
+   * Reset singleton instance.
+   *
+   * @return \Drupal\generated_content\Helpers\GeneratedContentAbstractHelper
+   *   A new singleton instance.
+   */
+  public function reset() {
+    static::$instances = [];
+    static::$staticParagraphIdx = 0;
+
+    return static::getInstance();
+  }
+
+  /**
    * Log verbose progress.
    */
   public static function log() {
@@ -192,7 +205,7 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
     }
 
     $carry = array_shift($arrays);
-    foreach ($arrays as $k => $array) {
+    foreach ($arrays as $array) {
       $carry_column = static::arrayColumn($carry, $column);
       $array_column = static::arrayColumn($array, $column);
       $column_values = array_intersect($carry_column, $array_column);

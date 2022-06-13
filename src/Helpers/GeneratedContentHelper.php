@@ -148,26 +148,6 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Get static demo terms from the specified vocabulary.
-   *
-   * @param string $vid
-   *   Vocabulary machine name.
-   * @param int $count
-   *   Optional term count to return.
-   * @param int $offset
-   *   Optional offset of the number of terms from the beginning.
-   *
-   * @return \Drupal\taxonomy\Entity\Term[]
-   *   Array of terms.
-   */
-  public static function staticTerms($vid, $count = NULL, $offset = 0) {
-    $terms = self::$repository->getEntities('taxonomy_term', $vid);
-    $offset = min(count($terms), $offset);
-
-    return !is_null($count) ? array_slice($terms, $offset, $count) : $terms;
-  }
-
-  /**
    * Get random allowed values from the field.
    *
    * @param string $entity_type
@@ -426,6 +406,28 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   public static function createImage($options = []) {
     return static::$assetGenerator->createImage($options);
+  }
+
+  /**
+   * Get static demo terms from the specified vocabulary.
+   *
+   * @param string $vid
+   *   Vocabulary machine name.
+   * @param int $count
+   *   Optional term count to return.
+   * @param int $offset
+   *   Optional offset of the number of terms from the beginning.
+   *
+   * @return \Drupal\taxonomy\Entity\Term[]
+   *   Array of terms.
+   */
+  public static function staticTerms($vid, $count = NULL, $offset = 0) {
+    $terms = self::$repository->getEntities('taxonomy_term', $vid);
+    $offset = min(count($terms), $offset);
+
+    self::getStaticCounter();
+
+    return !is_null($count) ? array_slice($terms, $offset, $count) : $terms;
   }
 
   /**

@@ -3,7 +3,6 @@
 namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
-use Drupal\Component\Utility\Unicode;
 
 /**
  * Class GeneratedContentRandomTrait.
@@ -19,9 +18,44 @@ trait GeneratedContentRandomTrait {
    */
   public static function randomSentence($min_word_count = 5, $max_word_count = 10) {
     $randomiser = new Random();
-    $title = $randomiser->sentences($min_word_count);
 
-    return Unicode::truncate($title, mt_rand($min_word_count, $max_word_count) * 7, TRUE, FALSE, 3);
+    $content = $randomiser->sentences(mt_rand($min_word_count, $max_word_count), TRUE);
+    $content = rtrim($content, '.') . '.';
+
+    return $content;
+  }
+
+  /**
+   * Generates a random string.
+   */
+  public static function randomString($length = 32) {
+    $randomiser = new Random();
+
+    return $randomiser->string($length);
+  }
+
+  /**
+   * Generates a name.
+   */
+  public static function randomName($length = 16) {
+    $randomiser = new Random();
+
+    return $randomiser->name($length, TRUE);
+  }
+
+  /**
+   * Generates a letter abbreviation.
+   *
+   * @param int $length
+   *   Length of abbreviation.
+   *
+   * @return string
+   *   Abbreviation string.
+   */
+  public static function randomAbbreviation($length = 2) {
+    $randomiser = new Random();
+
+    return $randomiser->name($length, TRUE);
   }
 
   /**
@@ -43,12 +77,12 @@ trait GeneratedContentRandomTrait {
   /**
    * Generate a random HTML heading.
    */
-  public static function randomHtmlHeading($min_word_count = 5, $max_word_count = 10, $heading_level = 0, $prefix = '') {
-    if (!$heading_level) {
-      $heading_level = mt_rand(2, 5);
+  public static function randomHtmlHeading($min_word_count = 5, $max_word_count = 10, $level = 1, $prefix = '') {
+    if (!$level) {
+      $level = mt_rand(2, 5);
     }
 
-    return '<h' . $heading_level . '>' . $prefix . static::randomSentence($min_word_count, $max_word_count) . '</h' . $heading_level . '>';
+    return '<h' . $level . '>' . $prefix . static::randomSentence($min_word_count, $max_word_count) . '</h' . $level . '>';
   }
 
   /**
@@ -64,7 +98,7 @@ trait GeneratedContentRandomTrait {
    * @return string
    *   Paragraphs.
    */
-  public static function randomRichText($min_paragraph_count = 3, $max_paragraph_count = 12, $prefix = '') {
+  public static function randomRichText($min_paragraph_count = 4, $max_paragraph_count = 12, $prefix = '') {
     $paragraphs = [];
     $paragraph_count = mt_rand($min_paragraph_count, $max_paragraph_count);
     for ($i = 1; $i <= $paragraph_count; $i++) {
@@ -74,33 +108,7 @@ trait GeneratedContentRandomTrait {
       $paragraphs[] = static::randomHtmlParagraph();
     }
 
-    return implode(PHP_EOL, $paragraphs);
-  }
-
-  /**
-   * Generate a random boolean value.
-   *
-   * @param int $skew
-   *   Amount to skew towards one of the values. FALSE is on the left of the
-   *   skew line, and TRUE is on the right.
-   *   For example, ::bool(33), will have a probability 1/3 for FALSE and
-   *   2/3 for TRUE.
-   *
-   * @return bool
-   *   Random value.
-   */
-  public static function randomBool($skew = 50) {
-    return mt_rand(0, 100) > $skew;
-  }
-
-  /**
-   * Return a random timestamp.
-   */
-  public static function randomTimestamp($from = '-1year', $to = "+1year") {
-    $from = strtotime($from);
-    $to = strtotime($to);
-
-    return mt_rand($from, $to);
+    return implode('', $paragraphs);
   }
 
   /**
@@ -117,6 +125,67 @@ trait GeneratedContentRandomTrait {
     $domain = $domain ?? $randomiser->name() . '.com';
 
     return $randomiser->name() . '@' . $domain;
+  }
+
+  /**
+   * Generate random external URL.
+   *
+   * @param string $domain
+   *   (optional) Domain name. Defaults to 'www.example.com'.
+   *
+   * @return string
+   *   URL with a path.
+   */
+  public static function randomUrl($domain = FALSE) {
+    $parts = [];
+    $parts[] = 'https://';
+    $parts[] = $domain ? rtrim($domain, '/') : 'www.example.com';
+    $parts[] = '/';
+    $parts[] = str_replace(' ', '-', static::randomSentence());
+
+    return implode('', $parts);
+  }
+
+  /**
+   * Generate a random 36-character UUID.
+   */
+  public static function randomUuid() {
+    $data = random_bytes(16);
+    assert(strlen($data) == 16);
+
+    // Set version to 0100.
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    // Set bits 6-7 to 10.
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    // Output the 36 character UUID.
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+  }
+
+  /**
+   * Generate a random boolean value.
+   *
+   * @param int $skew
+   *   Amount to skew towards one of the values. FALSE is on the left of the
+   *   skew line, and TRUE is on the right.
+   *   For example, ::bool(33), will have a probability 1/3 for FALSE and
+   *   2/3 for TRUE.
+   *
+   * @return bool
+   *   Random value.
+   */
+  public static function randomBool($skew = 50) {
+    return mt_rand(0, 100) > max(min($skew, 100), 0);
+  }
+
+  /**
+   * Return a random timestamp.
+   */
+  public static function randomTimestamp($from = '-1year', $to = "+1year") {
+    $from = strtotime($from);
+    $to = strtotime($to);
+
+    return mt_rand($from, $to);
   }
 
   /**
@@ -183,19 +252,14 @@ trait GeneratedContentRandomTrait {
   }
 
   /**
-   * Generate a random 36-character UUID.
+   * Disperse $fillers within $scope.
    */
-  public static function randomUuid() {
-    $data = random_bytes(16);
-    assert(strlen($data) == 16);
+  public static function randomDisperse(array $scope, array $fillers) {
+    foreach ($fillers as $filler) {
+      array_splice($scope, rand(0, count($scope)), 1, $filler);
+    }
 
-    // Set version to 0100.
-    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-    // Set bits 6-7 to 10.
-    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-
-    // Output the 36 character UUID.
-    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    return $scope;
   }
 
   /**
@@ -224,76 +288,6 @@ trait GeneratedContentRandomTrait {
     $items = static::randomArrayItems($haystack, 1);
 
     return count($items) > 0 ? reset($items) : FALSE;
-  }
-
-  /**
-   * Generate random external URL.
-   *
-   * @param string $domain
-   *   (optional) Domain name. Defaults to 'www.example.com'.
-   *
-   * @return string
-   *   URL with a path.
-   */
-  public static function randomUrl($domain = FALSE) {
-    $parts = [];
-    $parts[] = 'https://';
-    $parts[] = $domain ? rtrim($domain, '/') : 'www.example.com';
-    $parts[] = '/';
-    $parts[] = str_replace(' ', '-', static::randomSentence());
-
-    return implode('', $parts);
-  }
-
-  /**
-   * Disperse $fillers within $scope.
-   */
-  public static function randomDisperse(array $scope, array $fillers) {
-    foreach ($fillers as $filler) {
-      array_splice($scope, rand(0, count($scope)), 1, $filler);
-    }
-
-    return $scope;
-  }
-
-  /**
-   * Generates a random string.
-   */
-  public static function randomString($length = 32) {
-    $randomiser = new Random();
-
-    return $randomiser->string($length);
-  }
-
-  /**
-   * Generates a name.
-   */
-  public static function randomName($max = 16) {
-    $randomiser = new Random();
-
-    return $randomiser->name(rand(2, $max), TRUE);
-  }
-
-  /**
-   * Generates a letter abbreviation or a set of letter abbreviations.
-   *
-   * @param int $length
-   *   Length of abbreviation.
-   * @param int $count
-   *   Count of abbreviations (ensures uniqueness).
-   *
-   * @return string|string[]
-   *   Abbreviation or set of abbreviations.
-   */
-  public static function randomAbbreviation($length = 2, $count = 1) {
-    $randomiser = new Random();
-
-    $abbreviations = [];
-    for ($i = 1; $i <= $count; $i++) {
-      $abbreviations[] = $randomiser->name($length, TRUE);
-    }
-
-    return count($abbreviations) === 1 ? $abbreviations[0] : $abbreviations;
   }
 
 }
