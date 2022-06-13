@@ -2,8 +2,6 @@
 
 namespace Drupal\generated_content\Helpers;
 
-use Drupal\Component\Utility\Unicode;
-
 /**
  * Class GeneratedContentStaticTrait.
  *
@@ -32,16 +30,25 @@ trait GeneratedContentStaticTrait {
   /**
    * Generate a pre-defined static sentence.
    *
-   * @param int $words
+   * @param int $count
    *   Number of words.
    *
    * @return string
    *   Static content string.
    */
-  public static function staticSentence($words = 10) {
-    $content = static::staticParagraphs();
+  public static function staticSentence($count = 5) {
+    $content = '';
+    do {
+      $content .= ' ' . static::staticParagraphs();
+    } while (count(explode(' ', trim($content))) < $count);
 
-    return Unicode::truncate($content, $words * 7, TRUE, FALSE, 3);
+    $words = explode(' ', trim($content));
+    $words = array_slice($words, 0, $count);
+    $content = implode(' ', $words);
+
+    $content = rtrim($content, '.') . '.';
+
+    return $content;
   }
 
   /**
@@ -111,11 +118,11 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticHtmlHeading($words = 10, $level = 1, $prefix = '') {
+  public static function staticHtmlHeading($words = 5, $level = 1, $prefix = '') {
     $level = min($level, 6);
     $level = max($level, 1);
 
-    return '<h' . $level . '>' . $prefix . static::staticSentence($words) . '</h' . $level . '>';
+    return '<h' . $level . '>' . $prefix . rtrim(static::staticSentence($words), '.') . '</h' . $level . '>';
   }
 
   /**
@@ -133,7 +140,7 @@ trait GeneratedContentStaticTrait {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
       if ($i % 2) {
-        $content[] = static::staticHtmlHeading(8, $i == 1 ? 2 : 3, $prefix);
+        $content[] = static::staticHtmlHeading(5, $i == 1 ? 2 : 3, $prefix);
       }
       $content[] = static::staticHtmlParagraph();
     }

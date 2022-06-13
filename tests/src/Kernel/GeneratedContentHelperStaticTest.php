@@ -33,17 +33,24 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
       'word31 word32 word33 word34 word35',
     ]);
 
-    $this->assertSame('word11 word12 word13 word14 word15', $helper::staticSentence());
-    $this->assertSame('word21 word22 word23 word24 word25', $helper::staticSentence());
-    $this->assertSame('word31 word32 word33 word34 word35', $helper::staticSentence());
-    $this->assertSame('word11 word12 word13 word14 word15', $helper::staticSentence());
+    $this->assertSame('word11 word12 word13 word14 word15.', $helper::staticSentence());
+    $this->assertSame('word21 word22 word23 word24 word25.', $helper::staticSentence());
+    $this->assertSame('word31 word32 word33 word34 word35.', $helper::staticSentence());
+    $this->assertSame('word11 word12 word13 word14 word15.', $helper::staticSentence());
 
     $helper->reset();
 
-    $this->assertSame('word11 word12', $helper::staticSentence(2));
-    $this->assertSame('word21 word22', $helper::staticSentence(2));
-    $this->assertSame('word31 word32', $helper::staticSentence(2));
-    $this->assertSame('word11 word12', $helper::staticSentence(2));
+    $this->assertSame('word11 word12.', $helper::staticSentence(2));
+    $this->assertSame('word21 word22.', $helper::staticSentence(2));
+    $this->assertSame('word31 word32.', $helper::staticSentence(2));
+    $this->assertSame('word11 word12.', $helper::staticSentence(2));
+
+    $helper->reset();
+
+    $this->assertSame('word11 word12 word13 word14 word15 word21 word22 word23 word24 word25.', $helper::staticSentence(10));
+    $this->assertSame('word31 word32 word33 word34 word35 word11 word12 word13 word14 word15.', $helper::staticSentence(10));
+    $this->assertSame('word21 word22 word23 word24 word25 word31 word32 word33 word34 word35.', $helper::staticSentence(10));
+    $this->assertSame('word11 word12 word13 word14 word15 word21 word22 word23 word24 word25.', $helper::staticSentence(10));
   }
 
   /**
@@ -205,26 +212,26 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
     $helper->reset();
 
     $helper = GeneratedContentHelper::getInstance();
-    $this->assertSame('<h3>word11 word12 word13 word14 word15</h3>', $helper::staticHtmlHeading(10, 3));
-    $this->assertSame('<h3>word21 word22 word23 word24 word25</h3>', $helper::staticHtmlHeading(10, 3));
-    $this->assertSame('<h3>word31 word32 word33 word34 word35</h3>', $helper::staticHtmlHeading(10, 3));
-    $this->assertSame('<h3>word11 word12 word13 word14 word15</h3>', $helper::staticHtmlHeading(10, 3));
+    $this->assertSame('<h3>word11 word12 word13 word14 word15 word21 word22 word23 word24 word25</h3>', $helper::staticHtmlHeading(10, 3));
+    $this->assertSame('<h3>word31 word32 word33 word34 word35 word11 word12 word13 word14 word15</h3>', $helper::staticHtmlHeading(10, 3));
+    $this->assertSame('<h3>word21 word22 word23 word24 word25 word31 word32 word33 word34 word35</h3>', $helper::staticHtmlHeading(10, 3));
+    $this->assertSame('<h3>word11 word12 word13 word14 word15 word21 word22 word23 word24 word25</h3>', $helper::staticHtmlHeading(10, 3));
 
     $helper->reset();
 
     $helper = GeneratedContentHelper::getInstance();
-    $this->assertSame('<h6>word11 word12 word13 word14 word15</h6>', $helper::staticHtmlHeading(10, 13));
-    $this->assertSame('<h6>word21 word22 word23 word24 word25</h6>', $helper::staticHtmlHeading(10, 13));
-    $this->assertSame('<h6>word31 word32 word33 word34 word35</h6>', $helper::staticHtmlHeading(10, 13));
-    $this->assertSame('<h6>word11 word12 word13 word14 word15</h6>', $helper::staticHtmlHeading(10, 13));
+    $this->assertSame('<h6>word11 word12 word13 word14 word15 word21 word22 word23 word24 word25</h6>', $helper::staticHtmlHeading(10, 13));
+    $this->assertSame('<h6>word31 word32 word33 word34 word35 word11 word12 word13 word14 word15</h6>', $helper::staticHtmlHeading(10, 13));
+    $this->assertSame('<h6>word21 word22 word23 word24 word25 word31 word32 word33 word34 word35</h6>', $helper::staticHtmlHeading(10, 13));
+    $this->assertSame('<h6>word11 word12 word13 word14 word15 word21 word22 word23 word24 word25</h6>', $helper::staticHtmlHeading(10, 13));
 
     $helper->reset();
 
     $helper = GeneratedContentHelper::getInstance();
-    $this->assertSame('<h1>word11 word12 word13 word14 word15</h1>', $helper::staticHtmlHeading(10, 0));
-    $this->assertSame('<h1>word21 word22 word23 word24 word25</h1>', $helper::staticHtmlHeading(10, 0));
-    $this->assertSame('<h1>word31 word32 word33 word34 word35</h1>', $helper::staticHtmlHeading(10, 0));
-    $this->assertSame('<h1>word11 word12 word13 word14 word15</h1>', $helper::staticHtmlHeading(10, 0));
+    $this->assertSame('<h1>word11 word12 word13 word14 word15 word21 word22 word23 word24 word25</h1>', $helper::staticHtmlHeading(10, 0));
+    $this->assertSame('<h1>word31 word32 word33 word34 word35 word11 word12 word13 word14 word15</h1>', $helper::staticHtmlHeading(10, 0));
+    $this->assertSame('<h1>word21 word22 word23 word24 word25 word31 word32 word33 word34 word35</h1>', $helper::staticHtmlHeading(10, 0));
+    $this->assertSame('<h1>word11 word12 word13 word14 word15 word21 word22 word23 word24 word25</h1>', $helper::staticHtmlHeading(10, 0));
   }
 
   /**
