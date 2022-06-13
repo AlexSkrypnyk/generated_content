@@ -3,7 +3,6 @@
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\node\Entity\NodeType;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
 
@@ -30,16 +29,8 @@ abstract class GeneratedContentKernelTestBase extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->installEntitySchema('node');
     $this->installEntitySchema('user');
     $this->installSchema('generated_content', ['generated_content']);
-
-    $this->nodeType = $this->randomMachineName();
-    $node_type = NodeType::create([
-      'type' => $this->nodeType,
-      'name' => $this->randomString(),
-    ]);
-    $node_type->save();
   }
 
   /**
@@ -66,12 +57,7 @@ abstract class GeneratedContentKernelTestBase extends KernelTestBase {
     $users = [];
 
     for ($i = 0; $i < $count; $i++) {
-      \Drupal::currentUser()->setAccount($this->createUser(['access content']));
-
-      $user = $this->container->get('entity_type.manager')->getStorage('user')->create([
-        'name' => $this->randomString(),
-      ]);
-      $user->save();
+      $user = $this->createUser(['access content']);
       $users[$user->id()] = $user;
     }
 
