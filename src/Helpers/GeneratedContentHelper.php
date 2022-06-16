@@ -87,7 +87,7 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    * Select a static user.
    *
    * @return \Drupal\user\Entity\User|null
-   *   The user object or NULL if no entities were found
+   *   The user object or NULL if no entities were found.
    */
   public static function staticUser() {
     $entities = static::staticEntities('user', 'user', 1);
@@ -111,52 +111,97 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   /**
    * Select a random node.
    *
-   * @param string $type
+   * @param string $bundle
    *   The type of the node to return. If not provided - random type will be
    *   returned.
    *
-   * @return \Drupal\node\Entity\Node
-   *   Node entity.
+   * @return \Drupal\node\Entity\Node|null
+   *   Node entity object or NULL if no entities were found.
    */
-  public static function randomNode($type = NULL) {
-    $nodes = static::$repository->getEntities('node', $type);
+  public static function randomNode($bundle = NULL) {
+    $entities = static::randomEntities('node', $bundle, 1);
 
-    if (!$type) {
-      shuffle($nodes);
-      $nodes = array_shift($nodes);
-    }
-
-    return static::randomArrayItem($nodes);
+    return count($entities) > 0 ? reset($entities) : NULL;
   }
 
   /**
    * Select random nodes.
    *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
    * @param bool|int $count
    *   Optional count of Nodes. If FALSE, 20 Nodes will be returned.
-   * @param array $types
-   *   (optional) Array of types to filter. Defaults to FALSE, meaning that
-   *   returned nodes will not be filtered.
    *
    * @return \Drupal\node\Entity\Node[]
-   *   Array of media entities.
+   *   Array of node entities.
    */
-  public static function randomNodes($count = 20, array $types = []) {
-    $nodes = static::$repository->getEntities('node');
+  public static function randomNodes($bundle = NULL, $count = 5) {
+    return static::randomEntities('node', $bundle, $count);
+  }
 
-    if (!empty($types)) {
-      $filtered_nodes = [];
-      foreach ($nodes as $k => $node) {
-        if (!in_array($k, $types)) {
-          unset($nodes[$k]);
-          continue;
-        }
-        $filtered_nodes = array_merge($filtered_nodes, $nodes[$k]);
-      }
-      $nodes = $filtered_nodes;
-    }
+  /**
+   * Select a random real node.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\node\Entity\Node|null
+   *   Node entity object or NULL if no entities were found.
+   */
+  public static function randomRealNode($bundle = NULL) {
+    $entities = static::randomRealEntities('node', $bundle, 1);
 
-    return $count ? static::randomArrayItems($nodes, $count) : $nodes;
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random nodes.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   * @param bool|int $count
+   *   Optional count of Nodes. If FALSE, 5 Nodes will be returned.
+   *
+   * @return \Drupal\node\Entity\Node[]
+   *   Array of node entities.
+   */
+  public static function randomRealNodes($bundle = NULL, $count = 5) {
+    return static::randomRealEntities('node', $bundle, $count);
+  }
+
+  /**
+   * Select a static node.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\node\Entity\Node|null
+   *   The node object or NULL if no entities were found.
+   */
+  public static function staticNode($bundle = NULL) {
+    $entities = static::staticEntities('node', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select a random real node.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   * @param null|int $count
+   *   Number of nodes to return. If none provided - all nodes will be returned.
+   *
+   * @return \Drupal\node\Entity\Node[]
+   *   Array of node objects.
+   */
+  public static function staticNodes($bundle = NULL, $count = NULL) {
+    return static::staticEntities('node', $bundle, $count);
   }
 
   /**
@@ -544,7 +589,7 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    *   Entity type.
    * @param null|string $bundle
    *   Entity bundle. If none provided - all entities of this type will be
-   *   returned.
+   *   returned (further limited by $count).
    * @param null|int $count
    *   Number of entities to return. If none provided - all entities will be
    *   returned.
@@ -554,6 +599,15 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   protected static function randomEntities($entity_type, $bundle = NULL, $count = NULL) {
     $entities = static::$repository->getEntities($entity_type, $bundle);
+
+    if (!empty($entities) && !$bundle) {
+      $entities_all = [];
+      foreach ($entities as $bundled_entities) {
+        $entities_all = array_merge($entities_all, $bundled_entities);
+      }
+      $entities = $entities_all;
+      shuffle($entities);
+    }
 
     return is_null($count) ? $entities : static::randomArrayItems($entities, $count);
   }
@@ -598,6 +652,15 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   protected static function filterOutGeneratedContentEntities($entities, $entity_type, $bundle) {
     $generated_entities = static::$repository->getEntities($entity_type, $bundle);
+
+    if (!empty($generated_entities) && !$bundle) {
+      $entities_all = [];
+      foreach ($generated_entities as $bundled_entities) {
+        $entities_all = array_merge($entities_all, $bundled_entities);
+      }
+      $generated_entities = $entities_all;
+    }
+
     $generated_entities_ids = array_filter(array_map(function ($value) {
       return is_object($value) ? $value->id() : NULL;
     }, $generated_entities));
@@ -632,6 +695,14 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   protected static function staticEntities($entity_type, $bundle = NULL, $count = NULL) {
     $entities = static::$repository->getEntities($entity_type, $bundle);
+
+    if (!empty($entities) && !$bundle) {
+      $entities_all = [];
+      foreach ($entities as $bundled_entities) {
+        $entities_all = array_merge($entities_all, $bundled_entities);
+      }
+      $entities = $entities_all;
+    }
 
     $idx = static::getStaticEntityOffset($entity_type, $bundle);
 
