@@ -3,6 +3,8 @@
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
+use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
+use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
 
 /**
  * Tests repository singleton.
@@ -10,6 +12,9 @@ use Drupal\generated_content\GeneratedContentRepository;
  * @group generated_content
  */
 class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
+
+  use GeneratedContentTestNodeTrait;
+  use GeneratedContentTestUserTrait;
 
   /**
    * {@inheritdoc}
@@ -20,6 +25,16 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     'node',
     'generated_content',
   ];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+
+    $this->userSetUp();
+    $this->nodeSetUp();
+  }
 
   /**
    * Test singleton instance.
@@ -45,14 +60,14 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
   public function testAddEntitiesGetEntitiesTracked() {
     $repository = GeneratedContentRepository::getInstance();
 
-    $nodes = $this->prepareNodes(5);
+    $nodes = $this->prepareNodes(5, NULL, TRUE);
     $users = $this->prepareUsers(5);
     $repository->addEntities($nodes);
     $repository->addEntities($users);
 
     $expected = [
       'node' => [
-        $this->nodeType => $this->replaceEntitiesWithIds($nodes),
+        $this->nodeTypes[0] => $this->replaceEntitiesWithIds($nodes),
       ],
       'user' => [
         'user' => $this->replaceEntitiesWithIds($users),
@@ -67,8 +82,8 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities('user'));
     $this->assertSame($expected['user'], $actual_entities);
 
-    $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities('node', $this->nodeType));
-    $this->assertSame($expected['node'][$this->nodeType], $actual_entities);
+    $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities('node', $this->nodeTypes[0]));
+    $this->assertSame($expected['node'][$this->nodeTypes[0]], $actual_entities);
 
     // Negative tests.
     $actual_entities = $repository->getEntities($this->randomString());
@@ -88,7 +103,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
   public function testAddEntitiesGetEntitiesNotTracked() {
     $repository = GeneratedContentRepository::getInstance();
 
-    $nodes = $this->prepareNodes(5);
+    $nodes = $this->prepareNodes(5, NULL, TRUE);
     $users = $this->prepareUsers(5);
     $nodes_tracked = array_slice($nodes, 0, 2, TRUE);
     $nodes_not_tracked = array_slice($nodes, 2, 3, TRUE);
@@ -99,7 +114,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
 
     $expected_all = [
       'node' => [
-        $this->nodeType => $this->replaceEntitiesWithIds($nodes),
+        $this->nodeTypes[0] => $this->replaceEntitiesWithIds($nodes),
       ],
       'user' => [
         'user' => $this->replaceEntitiesWithIds($users),
@@ -108,7 +123,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
 
     $expected_tracked = [
       'node' => [
-        $this->nodeType => $this->replaceEntitiesWithIds($nodes_tracked),
+        $this->nodeTypes[0] => $this->replaceEntitiesWithIds($nodes_tracked),
       ],
       'user' => [
         'user' => $this->replaceEntitiesWithIds($users),
@@ -133,9 +148,9 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     $actual_entities = $this->replaceEntitiesWithIds($actual_entities);
     $this->assertSame($expected_tracked['user'], $actual_entities);
 
-    $actual_entities = $repository->getEntities('node', $this->nodeType);
+    $actual_entities = $repository->getEntities('node', $this->nodeTypes[0]);
     $actual_entities = $this->replaceEntitiesWithIds($actual_entities);
-    $this->assertSame($expected_tracked['node'][$this->nodeType], $actual_entities);
+    $this->assertSame($expected_tracked['node'][$this->nodeTypes[0]], $actual_entities);
 
     // Negative tests.
     $actual_entities = $repository->getEntities($this->randomString());

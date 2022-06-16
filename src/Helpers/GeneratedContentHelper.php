@@ -16,67 +16,192 @@ use Drupal\taxonomy\Entity\Term;
 class GeneratedContentHelper extends GeneratedContentAbstractHelper {
 
   /**
-   * Select a random user.
+   * Array of static entity offsets to track calls to retrieve static entities.
    *
-   * @return \Drupal\user\Entity\User
-   *   The user object.
+   * @var array
+   */
+  protected static $staticEntityOffsets;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function reset() {
+    static::$staticEntityOffsets = [];
+
+    return parent::reset();
+  }
+
+  /**
+   * Select a random generated user.
+   *
+   * @return \Drupal\user\Entity\User|null
+   *   The user objector NULL if no entities were found.
    */
   public static function randomUser() {
-    $users = [1 => 1];
-    $users += static::$repository->getEntities('user', 'user');
+    $entities = static::randomEntities('user', 'user', 1);
 
-    return static::randomArrayItem($users);
+    return count($entities) > 0 ? reset($entities) : NULL;
+
+  }
+
+  /**
+   * Select random generated users.
+   *
+   * @param null|int $count
+   *   Number of users to return. If none provided - all users will be returned.
+   *
+   * @return \Drupal\user\Entity\User[]
+   *   Array of user objects.
+   */
+  public static function randomUsers($count = NULL) {
+    return static::randomEntities('user', 'user', $count);
+  }
+
+  /**
+   * Select a random real user.
+   *
+   * @return \Drupal\user\Entity\User|null
+   *   The user object or NULL if no entities were found.
+   */
+  public static function randomRealUser() {
+    $entities = static::randomRealEntities('user', 'user', 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+
+  }
+
+  /**
+   * Select random real users.
+   *
+   * @param null|int $count
+   *   Number of users to return. If none provided - all users will be returned.
+   *
+   * @return \Drupal\user\Entity\User[]
+   *   Array of user objects.
+   */
+  public static function randomRealUsers($count = NULL) {
+    return static::randomRealEntities('user', 'user', $count);
+  }
+
+  /**
+   * Select a static user.
+   *
+   * @return \Drupal\user\Entity\User|null
+   *   The user object or NULL if no entities were found.
+   */
+  public static function staticUser() {
+    $entities = static::staticEntities('user', 'user', 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select a random real user.
+   *
+   * @param null|int $count
+   *   Number of users to return. If none provided - all users will be returned.
+   *
+   * @return \Drupal\user\Entity\User[]
+   *   Array of user objects.
+   */
+  public static function staticUsers($count = NULL) {
+    return static::staticEntities('user', 'user', $count);
   }
 
   /**
    * Select a random node.
    *
-   * @param string $type
+   * @param string $bundle
    *   The type of the node to return. If not provided - random type will be
    *   returned.
    *
-   * @return \Drupal\node\Entity\Node
-   *   Node entity.
+   * @return \Drupal\node\Entity\Node|null
+   *   Node entity object or NULL if no entities were found.
    */
-  public static function randomNode($type = NULL) {
-    $nodes = static::$repository->getEntities('node', $type);
+  public static function randomNode($bundle = NULL) {
+    $entities = static::randomEntities('node', $bundle, 1);
 
-    if (!$type) {
-      shuffle($nodes);
-      $nodes = array_shift($nodes);
-    }
-
-    return static::randomArrayItem($nodes);
+    return count($entities) > 0 ? reset($entities) : NULL;
   }
 
   /**
    * Select random nodes.
    *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
    * @param bool|int $count
    *   Optional count of Nodes. If FALSE, 20 Nodes will be returned.
-   * @param array $types
-   *   (optional) Array of types to filter. Defaults to FALSE, meaning that
-   *   returned nodes will not be filtered.
    *
    * @return \Drupal\node\Entity\Node[]
-   *   Array of media entities.
+   *   Array of node entities.
    */
-  public static function randomNodes($count = 20, array $types = []) {
-    $nodes = static::$repository->getEntities('node');
+  public static function randomNodes($bundle = NULL, $count = 5) {
+    return static::randomEntities('node', $bundle, $count);
+  }
 
-    if (!empty($types)) {
-      $filtered_nodes = [];
-      foreach ($nodes as $k => $node) {
-        if (!in_array($k, $types)) {
-          unset($nodes[$k]);
-          continue;
-        }
-        $filtered_nodes = array_merge($filtered_nodes, $nodes[$k]);
-      }
-      $nodes = $filtered_nodes;
-    }
+  /**
+   * Select a random real node.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\node\Entity\Node|null
+   *   Node entity object or NULL if no entities were found.
+   */
+  public static function randomRealNode($bundle = NULL) {
+    $entities = static::randomRealEntities('node', $bundle, 1);
 
-    return $count ? static::randomArrayItems($nodes, $count) : $nodes;
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random nodes.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   * @param bool|int $count
+   *   Optional count of Nodes. If FALSE, 5 Nodes will be returned.
+   *
+   * @return \Drupal\node\Entity\Node[]
+   *   Array of node entities.
+   */
+  public static function randomRealNodes($bundle = NULL, $count = 5) {
+    return static::randomRealEntities('node', $bundle, $count);
+  }
+
+  /**
+   * Select a static node.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\node\Entity\Node|null
+   *   The node object or NULL if no entities were found.
+   */
+  public static function staticNode($bundle = NULL) {
+    $entities = static::staticEntities('node', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select a random real node.
+   *
+   * @param string $bundle
+   *   The type of the node to return. If not provided - random type will be
+   *   returned.
+   * @param null|int $count
+   *   Number of nodes to return. If none provided - all nodes will be returned.
+   *
+   * @return \Drupal\node\Entity\Node[]
+   *   Array of node objects.
+   */
+  public static function staticNodes($bundle = NULL, $count = NULL) {
+    return static::staticEntities('node', $bundle, $count);
   }
 
   /**
@@ -455,6 +580,211 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
     $offset = min(count($items), $offset);
 
     return !is_null($count) ? array_slice($items, $offset, $count) : $items;
+  }
+
+  /**
+   * Get random generated entities.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param null|string $bundle
+   *   Entity bundle. If none provided - all entities of this type will be
+   *   returned (further limited by $count).
+   * @param null|int $count
+   *   Number of entities to return. If none provided - all entities will be
+   *   returned.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   Array of entities.
+   */
+  protected static function randomEntities($entity_type, $bundle = NULL, $count = NULL) {
+    $entities = static::$repository->getEntities($entity_type, $bundle);
+
+    if (!empty($entities) && !$bundle) {
+      $entities_all = [];
+      foreach ($entities as $bundled_entities) {
+        $entities_all = array_merge($entities_all, $bundled_entities);
+      }
+      $entities = $entities_all;
+      shuffle($entities);
+    }
+
+    return is_null($count) ? $entities : static::randomArrayItems($entities, $count);
+  }
+
+  /**
+   * Get random real entities.
+   *
+   * Real entities are entities without generated entities.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param null|string $bundle
+   *   Entity bundle. If none provided - all entities of this type will be
+   *   returned.
+   * @param null|int $count
+   *   Number of entities to return. If none provided - all entities will be
+   *   returned.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   Array of entities.
+   */
+  protected static function randomRealEntities($entity_type, $bundle = NULL, $count = NULL) {
+    if ($bundle) {
+      $keys = static::$entityTypeManager->getStorage($entity_type)->getEntityType()->getKeys();
+      $entity_type_key = $keys['bundle'];
+    }
+
+    if (!empty($entity_type_key)) {
+      $entities = static::$entityTypeManager->getStorage($entity_type)->loadByProperties([$entity_type_key => $bundle]);
+    }
+    else {
+      $entities = static::$entityTypeManager->getStorage($entity_type)->loadMultiple();
+    }
+
+    $entities = static::filterOutGeneratedContentEntities($entities, $entity_type, $bundle);
+
+    return is_null($count) ? $entities : static::randomArrayItems($entities, $count);
+  }
+
+  /**
+   * Filter-out generated entities.
+   */
+  protected static function filterOutGeneratedContentEntities($entities, $entity_type, $bundle) {
+    $generated_entities = static::$repository->getEntities($entity_type, $bundle);
+
+    if (!empty($generated_entities) && !$bundle) {
+      $entities_all = [];
+      foreach ($generated_entities as $bundled_entities) {
+        $entities_all = array_merge($entities_all, $bundled_entities);
+      }
+      $generated_entities = $entities_all;
+    }
+
+    $generated_entities_ids = array_filter(array_map(function ($value) {
+      return is_object($value) ? $value->id() : NULL;
+    }, $generated_entities));
+
+    $entities_ids = array_filter(array_map(function ($value) {
+      return is_object($value) ? $value->id() : NULL;
+    }, $entities));
+
+    $non_generated_ids = array_diff($entities_ids, $generated_entities_ids);
+
+    return array_intersect_key($entities, array_flip($non_generated_ids));
+  }
+
+  /**
+   * Get random static entities.
+   *
+   * Static entities are entities within a repository, returned in a predictable
+   * order based on the called argument list. So, calls with and without $bundle
+   * value are tracked separately.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param null|string $bundle
+   *   Entity bundle. If none provided - all entities of this type will be
+   *   returned.
+   * @param null|int $count
+   *   Number of entities to return. If none provided - all entities will be
+   *   returned with previously used offsets.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   Array of entities.
+   */
+  protected static function staticEntities($entity_type, $bundle = NULL, $count = NULL) {
+    $entities = static::$repository->getEntities($entity_type, $bundle);
+
+    if (!empty($entities) && !$bundle) {
+      $entities_all = [];
+      foreach ($entities as $bundled_entities) {
+        $entities_all = array_merge($entities_all, $bundled_entities);
+      }
+      $entities = $entities_all;
+    }
+
+    $idx = static::getStaticEntityOffset($entity_type, $bundle);
+
+    if (is_null($count)) {
+      $return = self::arraySliceCircular($entities, count($entities), $idx);
+    }
+    else {
+      $return = self::arraySliceCircular($entities, $count, $idx);
+    }
+
+    static::setStaticEntityOffset($entity_type, $bundle, count($return));
+
+    return $return;
+  }
+
+  /**
+   * Set static entity offset.
+   *
+   * Note that entity offsets with and without $bundle value are tracked
+   * separately.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Optional entity bundle.
+   *
+   * @return int
+   *   Offset value.
+   */
+  protected static function getStaticEntityOffset($entity_type, $bundle = NULL) {
+    $key = $entity_type . '__' . $bundle;
+    self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
+
+    return self::$staticEntityOffsets[$key];
+  }
+
+  /**
+   * Set static entity offset to a value.
+   *
+   * Note that this will further offset any existing entity offsets by an
+   * $offset value.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Entity bundle.
+   * @param int $offset
+   *   Offset value to further offset any existing entity offsets.
+   */
+  protected static function setStaticEntityOffset($entity_type, $bundle, $offset) {
+    $key = $entity_type . '__' . $bundle;
+    self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
+    self::$staticEntityOffsets[$key] += $offset;
+  }
+
+  /**
+   * Slice array as a circular array.
+   *
+   * @param array $array
+   *   Array to slice.
+   * @param int $count
+   *   Number of items to return.
+   * @param int $offset
+   *   Optional offset to start slicing.
+   *
+   * @return array
+   *   Sliced array with reset keys starting from 0.
+   */
+  protected static function arraySliceCircular(array $array, $count, $offset = 0) {
+    $out = [];
+    $len = count($array);
+    $keys = array_keys($array);
+
+    while ($count && $len > 0) {
+      if ($offset >= $len) {
+        $offset = $offset % $len;
+      }
+      $out[] = $array[$keys[$offset++]];
+      $count--;
+    }
+
+    return $out;
   }
 
 }
