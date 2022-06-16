@@ -96,7 +96,7 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Select a random real user.
+   * Select a static user.
    *
    * @param null|int $count
    *   Number of users to return. If none provided - all users will be returned.
@@ -189,7 +189,7 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Select a random real node.
+   * Select a static node.
    *
    * @param string $bundle
    *   The type of the node to return. If not provided - random type will be
@@ -205,71 +205,196 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Get random real terms from the specified vocabulary.
+   * Select a random term.
    *
    * @param string $vid
-   *   Vocabulary machine name.
-   * @param int|null $count
-   *   Optional term count to return. If NULL - all terms will be returned.
-   *   If specified - this count of already randomised terms will be returned.
+   *   The vocabulary of the term to return. If not provided - term from random
+   *   vocabulary will be returned.
    *
-   * @return \Drupal\Core\Entity\EntityInterface[]
-   *   Array of terms.
+   * @return \Drupal\taxonomy\Entity\Term|null
+   *   Term entity object or NULL if no entities were found.
    */
-  public static function randomRealTerms($vid, $count = NULL) {
-    $terms = static::$entityTypeManager
-      ->getStorage('taxonomy_term')
-      ->loadByProperties(['vid' => $vid]);
+  public static function randomTerm($vid = NULL) {
+    $entities = static::randomEntities('taxonomy_term', $vid, 1);
 
-    return $count ? static::randomArrayItems($terms, $count) : $terms;
+    return count($entities) > 0 ? reset($entities) : NULL;
   }
 
   /**
-   * Get random real term from the specified vocabulary.
+   * Select random terms.
    *
    * @param string $vid
-   *   Vocabulary machine name.
+   *   The vocabulary of the term to return. If not provided - term from random
+   *   vocabulary will be returned.
+   * @param bool|int $count
+   *   Optional count of Terms. If FALSE, 20 Terms will be returned.
    *
-   * @return \Drupal\Core\Entity\EntityInterface[]|false
-   *   The term.
+   * @return \Drupal\taxonomy\Entity\Term[]
+   *   Array of term entities.
    */
-  public static function randomRealTerm($vid) {
-    $terms = static::randomRealTerms($vid, 1);
-
-    return !empty($terms) ? reset($terms) : NULL;
+  public static function randomTerms($vid = NULL, $count = 5) {
+    return static::randomEntities('taxonomy_term', $vid, $count);
   }
 
   /**
-   * Get random generated terms from the specified vocabulary.
+   * Select a random real term.
    *
    * @param string $vid
-   *   Vocabulary machine name.
-   * @param int|null $count
-   *   Optional term count to return. If NULL - all terms will be returned.
-   *   If specified - this count of already randomised terms will be returned.
+   *   The vocabulary of the term to return. If not provided - term from random
+   *   vocabulary will be returned.
    *
-   * @return \Drupal\Core\Entity\EntityInterface[]
-   *   Array of terms.
+   * @return \Drupal\taxonomy\Entity\Term|null
+   *   Term entity object or NULL if no entities were found.
    */
-  public static function randomTerms($vid, $count = NULL) {
-    $terms = static::$repository->getEntities('taxonomy_term', $vid);
+  public static function randomRealTerm($vid = NULL) {
+    $entities = static::randomRealEntities('taxonomy_term', $vid, 1);
 
-    return $count ? static::randomArrayItems($terms, $count) : $terms;
+    return count($entities) > 0 ? reset($entities) : NULL;
   }
 
   /**
-   * Get random generated term from the specified vocabulary.
+   * Select random terms.
    *
    * @param string $vid
-   *   Vocabulary machine name.
+   *   The vocabulary of the term to return. If not provided - term from random
+   *   vocabulary will be returned.
+   * @param bool|int $count
+   *   Optional count of Terms. If FALSE, 5 Terms will be returned.
    *
-   * @return \Drupal\Core\Entity\EntityInterface[]|false
-   *   The term.
+   * @return \Drupal\taxonomy\Entity\Term[]
+   *   Array of term entities.
    */
-  public static function randomTerm($vid) {
-    $terms = static::randomTerms($vid, 1);
+  public static function randomRealTerms($vid = NULL, $count = 5) {
+    return static::randomRealEntities('taxonomy_term', $vid, $count);
+  }
 
-    return !empty($terms) ? reset($terms) : NULL;
+  /**
+   * Select a static term.
+   *
+   * @param string $vid
+   *   The vocabulary of the term to return. If not provided - term from random
+   *   vocabulary will be returned.
+   *
+   * @return \Drupal\taxonomy\Entity\Term|null
+   *   The term object or NULL if no entities were found.
+   */
+  public static function staticTerm($vid = NULL) {
+    $entities = static::staticEntities('taxonomy_term', $vid, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select a random real term.
+   *
+   * @param string $vid
+   *   The vocabulary of the term to return. If not provided - term from random
+   *   vocabulary will be returned.
+   * @param null|int $count
+   *   Number of terms to return. If none provided - all terms will be returned.
+   *
+   * @return \Drupal\taxonomy\Entity\Term[]
+   *   Array of term objects.
+   */
+  public static function staticTerms($vid = NULL, $count = NULL) {
+    return static::staticEntities('taxonomy_term', $vid, $count);
+  }
+
+  /**
+   * Select a random media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media|null
+   *   Media entity object or NULL if no entities were found.
+   */
+  public static function randomMediaItem($bundle = NULL) {
+    $entities = static::randomEntities('media', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random medias.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   * @param bool|int $count
+   *   Optional count of Medias. If FALSE, 20 Medias will be returned.
+   *
+   * @return \Drupal\media\Entity\Media[]
+   *   Array of media entities.
+   */
+  public static function randomMediaItems($bundle = NULL, $count = 5) {
+    return static::randomEntities('media', $bundle, $count);
+  }
+
+  /**
+   * Select a random real media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media|null
+   *   Media entity object or NULL if no entities were found.
+   */
+  public static function randomRealMediaItem($bundle = NULL) {
+    $entities = static::randomRealEntities('media', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random medias.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   * @param bool|int $count
+   *   Optional count of Medias. If FALSE, 5 Medias will be returned.
+   *
+   * @return \Drupal\media\Entity\Media[]
+   *   Array of media entities.
+   */
+  public static function randomRealMediaItems($bundle = NULL, $count = 5) {
+    return static::randomRealEntities('media', $bundle, $count);
+  }
+
+  /**
+   * Select a static media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media|null
+   *   The media object or NULL if no entities were found.
+   */
+  public static function staticMediaItem($bundle = NULL) {
+    $entities = static::staticEntities('media', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select a static media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   * @param null|int $count
+   *   Number of medias to return. If none provided - all medias will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media[]
+   *   Array of media objects.
+   */
+  public static function staticMediaItems($bundle = NULL, $count = NULL) {
+    return static::staticEntities('media', $bundle, $count);
   }
 
   /**
@@ -534,52 +659,10 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Get static demo terms from the specified vocabulary.
-   *
-   * @param string $vid
-   *   Vocabulary machine name.
-   * @param int $count
-   *   Optional term count to return.
-   * @param int $offset
-   *   Optional offset of the number of terms from the beginning.
-   *
-   * @return \Drupal\taxonomy\Entity\Term[]
-   *   Array of terms.
-   */
-  public static function staticTerms($vid, $count = NULL, $offset = 0) {
-    $terms = self::$repository->getEntities('taxonomy_term', $vid);
-    $offset = min(count($terms), $offset);
-
-    self::getStaticCounter();
-
-    return !is_null($count) ? array_slice($terms, $offset, $count) : $terms;
-  }
-
-  /**
    * Generate static file from existing file assets.
    */
   public static function staticFile($options) {
     return self::$assetGenerator->createFromDummyFile($options);
-  }
-
-  /**
-   * Get static demo media of the specified bundle.
-   *
-   * @param string $bundle
-   *   Bundle machine name.
-   * @param int $count
-   *   Optional media count to return.
-   * @param int $offset
-   *   Optional offset of the number of media from the beginning.
-   *
-   * @return \Drupal\taxonomy\Entity\Term[]
-   *   Array of media.
-   */
-  public static function staticMedia($bundle, $count = NULL, $offset = 0) {
-    $items = self::$repository->getEntities('media', $bundle);
-    $offset = min(count($items), $offset);
-
-    return !is_null($count) ? array_slice($items, $offset, $count) : $items;
   }
 
   /**
