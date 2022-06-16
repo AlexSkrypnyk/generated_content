@@ -301,6 +301,103 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
+   * Select a random media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media|null
+   *   Media entity object or NULL if no entities were found.
+   */
+  public static function randomMediaItem($bundle = NULL) {
+    $entities = static::randomEntities('media', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random medias.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   * @param bool|int $count
+   *   Optional count of Medias. If FALSE, 20 Medias will be returned.
+   *
+   * @return \Drupal\media\Entity\Media[]
+   *   Array of media entities.
+   */
+  public static function randomMediaItems($bundle = NULL, $count = 5) {
+    return static::randomEntities('media', $bundle, $count);
+  }
+
+  /**
+   * Select a random real media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media|null
+   *   Media entity object or NULL if no entities were found.
+   */
+  public static function randomRealMediaItem($bundle = NULL) {
+    $entities = static::randomRealEntities('media', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random medias.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   * @param bool|int $count
+   *   Optional count of Medias. If FALSE, 5 Medias will be returned.
+   *
+   * @return \Drupal\media\Entity\Media[]
+   *   Array of media entities.
+   */
+  public static function randomRealMediaItems($bundle = NULL, $count = 5) {
+    return static::randomRealEntities('media', $bundle, $count);
+  }
+
+  /**
+   * Select a static media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media|null
+   *   The media object or NULL if no entities were found.
+   */
+  public static function staticMediaItem($bundle = NULL) {
+    $entities = static::staticEntities('media', $bundle, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select a static media.
+   *
+   * @param string $bundle
+   *   The type of the media to return. If not provided - random type will be
+   *   returned.
+   * @param null|int $count
+   *   Number of medias to return. If none provided - all medias will be
+   *   returned.
+   *
+   * @return \Drupal\media\Entity\Media[]
+   *   Array of media objects.
+   */
+  public static function staticMediaItems($bundle = NULL, $count = NULL) {
+    return static::staticEntities('media', $bundle, $count);
+  }
+
+  /**
    * Get random allowed values from the field.
    *
    * @param string $entity_type
@@ -566,26 +663,6 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   public static function staticFile($options) {
     return self::$assetGenerator->createFromDummyFile($options);
-  }
-
-  /**
-   * Get static demo media of the specified bundle.
-   *
-   * @param string $bundle
-   *   Bundle machine name.
-   * @param int $count
-   *   Optional media count to return.
-   * @param int $offset
-   *   Optional offset of the number of media from the beginning.
-   *
-   * @return \Drupal\taxonomy\Entity\Term[]
-   *   Array of media.
-   */
-  public static function staticMedia($bundle, $count = NULL, $offset = 0) {
-    $items = self::$repository->getEntities('media', $bundle);
-    $offset = min(count($items), $offset);
-
-    return !is_null($count) ? array_slice($items, $offset, $count) : $items;
   }
 
   /**
