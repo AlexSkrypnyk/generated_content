@@ -386,30 +386,6 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Create a managed file and store it as a managed file.
-   *
-   * @param string $type
-   *   File type: one of FILE_TYPE_IMAGE, FILE_TYPE_BINARY, FILE_TYPE_OTHER.
-   * @param array $options
-   *   Array of options to pass to the asset generator.
-   *
-   * @return \Drupal\file\FileInterface
-   *   Created managed file.
-   */
-  public static function createFile($type, array $options = []) {
-    switch ($type) {
-      case static::FILE_TYPE_IMAGE:
-        return static::$assetGenerator->createImage($options);
-
-      case static::FILE_TYPE_BINARY:
-        return static::$assetGenerator->createBinaryFile($options);
-
-      default:
-        return static::$assetGenerator->createFlatFile($options);
-    }
-  }
-
-  /**
    * Get random allowed values from the field.
    *
    * @param string $entity_type

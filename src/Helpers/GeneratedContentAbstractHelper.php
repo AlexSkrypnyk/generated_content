@@ -155,6 +155,63 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
   }
 
   /**
+   * Create a managed file and store it as a managed file.
+   *
+   * @param string $type
+   *   File type: one of FILE_TYPE_IMAGE, FILE_TYPE_BINARY, FILE_TYPE_OTHER.
+   * @param array $options
+   *   Array of options to pass to the asset generator.
+   *
+   * @return \Drupal\file\FileInterface
+   *   Created managed file.
+   */
+  public static function createFile($type, array $options = []) {
+    switch ($type) {
+      case static::FILE_TYPE_IMAGE:
+        return static::$assetGenerator->createImage($options);
+
+      case static::FILE_TYPE_BINARY:
+        return static::$assetGenerator->createBinaryFile($options);
+
+      default:
+        return static::$assetGenerator->createFlatFile($options);
+    }
+  }
+
+  /**
+   * Replace string tokens.
+   *
+   * @param string $string
+   *   String to process.
+   * @param array $replacements
+   *   Array of replacements with keys as tokens and values as replacements.
+   * @param callable $cb
+   *   Optional callback to process values before replacement. The callback
+   *   receives a value as it was passed in $replacements and must return
+   *   a value. If not provided, a value from $replacements will be used as-is.
+   * @param string $beginToken
+   *   Optional string to define token beginning boundary. Defaults to '{'.
+   * @param string $endToken
+   *   Optional string to define token ending boundary. Defaults to '}'.
+   *
+   * @return string
+   *   String with replaced tokens.
+   */
+  public static function replaceTokens($string, array $replacements, callable $cb = NULL, $beginToken = '{', $endToken = '}') {
+    foreach ($replacements as $k => $v) {
+      $token_name = $beginToken . $k . $endToken;
+      if ($cb && is_callable($cb)) {
+        $v = call_user_func($cb, $v);
+      }
+      if (is_scalar($v)) {
+        $string = strtr($string, [$token_name => $v]);
+      }
+    }
+
+    return $string;
+  }
+
+  /**
    * Get random generated entities.
    *
    * @param string $entity_type
@@ -328,39 +385,6 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
     $key = $entity_type . '__' . $bundle;
     self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
     self::$staticEntityOffsets[$key] += $offset;
-  }
-
-  /**
-   * Replace string tokens.
-   *
-   * @param string $string
-   *   String to process.
-   * @param array $replacements
-   *   Array of replacements with keys as tokens and values as replacements.
-   * @param callable $cb
-   *   Optional callback to process values before replacement. The callback
-   *   receives a value as it was passed in $replacements and must return
-   *   a value. If not provided, a value from $replacements will be used as-is.
-   * @param string $beginToken
-   *   Optional string to define token beginning boundary. Defaults to '{'.
-   * @param string $endToken
-   *   Optional string to define token ending boundary. Defaults to '}'.
-   *
-   * @return string
-   *   String with replaced tokens.
-   */
-  public static function replaceTokens($string, array $replacements, callable $cb = NULL, $beginToken = '{', $endToken = '}') {
-    foreach ($replacements as $k => $v) {
-      $token_name = $beginToken . $k . $endToken;
-      if ($cb && is_callable($cb)) {
-        $v = call_user_func($cb, $v);
-      }
-      if (is_scalar($v)) {
-        $string = strtr($string, [$token_name => $v]);
-      }
-    }
-
-    return $string;
   }
 
   /**
