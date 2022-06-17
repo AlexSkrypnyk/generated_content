@@ -386,6 +386,25 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
+   * Get random allowed value from the field.
+   *
+   * @param string $entity_type
+   *   The entity type.
+   * @param string $bundle
+   *   The bundle.
+   * @param string $field_name
+   *   The field name.
+   *
+   * @return array
+   *   A single allowed value.
+   */
+  public static function randomFieldAllowedValue($entity_type, $bundle, $field_name) {
+    $allowed_values = static::randomFieldAllowedValues($entity_type, $bundle, $field_name, 1);
+
+    return !empty($allowed_values) ? reset($allowed_values) : NULL;
+  }
+
+  /**
    * Get random allowed values from the field.
    *
    * @param string $entity_type
@@ -412,25 +431,6 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
     $allowed_values = array_keys($allowed_values);
 
     return $count ? static::randomArrayItems($allowed_values, $count) : $allowed_values;
-  }
-
-  /**
-   * Get random allowed value from the field.
-   *
-   * @param string $entity_type
-   *   The entity type.
-   * @param string $bundle
-   *   The bundle.
-   * @param string $field_name
-   *   The field name.
-   *
-   * @return array
-   *   A single allowed value.
-   */
-  public static function randomFieldAllowedValue($entity_type, $bundle, $field_name) {
-    $allowed_values = static::randomFieldAllowedValues($entity_type, $bundle, $field_name, 1);
-
-    return !empty($allowed_values) ? reset($allowed_values) : NULL;
   }
 
   /**
