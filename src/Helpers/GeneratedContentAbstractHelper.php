@@ -116,7 +116,7 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
    */
   public function reset() {
     static::$instances = [];
-    static::$staticParagraphIdx = 0;
+    static::$staticOffset = 0;
     static::$staticEntityOffsets = [];
 
     return static::getInstance();
@@ -153,7 +153,6 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
     $entities = is_array($entities) ? $entities : [$entities];
     static::$repository->addEntitiesNoTracking($entities);
   }
-
 
   /**
    * Get random generated entities.

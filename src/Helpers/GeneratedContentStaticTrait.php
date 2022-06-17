@@ -19,13 +19,13 @@ trait GeneratedContentStaticTrait {
   protected static $staticContent;
 
   /**
-   * Static paragraph counter.
+   * Static content offset counter.
    *
    * Used to track calls to static content generator functions.
    *
    * @var int
    */
-  protected static $staticParagraphIdx = 0;
+  protected static $staticOffset = 0;
 
   /**
    * Generate a pre-defined static sentence.
@@ -164,15 +164,15 @@ trait GeneratedContentStaticTrait {
 
     // Reset pointer once the end of the list is reached to allow
     // "endless" static content.
-    if (self::$staticParagraphIdx > count($content) - 1) {
-      self::$staticParagraphIdx = 0;
+    if (self::$staticOffset > count($content) - 1) {
+      self::$staticOffset = 0;
     }
 
     if ($paragraphs && $paragraphs > count($content)) {
       $paragraphs = count($content);
     }
 
-    $content = array_slice($content, self::$staticParagraphIdx++, $paragraphs);
+    $content = array_slice($content, self::$staticOffset++, $paragraphs);
 
     return implode($delimiter, $content);
   }
