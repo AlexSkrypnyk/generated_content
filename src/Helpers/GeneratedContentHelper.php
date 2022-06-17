@@ -434,6 +434,65 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
+   * Get random allowed value from the field.
+   *
+   * @param string $entity_type
+   *   The entity type.
+   * @param string $bundle
+   *   The bundle.
+   * @param string $field_name
+   *   The field name.
+   *
+   * @return array
+   *   A single allowed value.
+   */
+  public static function staticFieldAllowedValue($entity_type, $bundle, $field_name) {
+    $allowed_values = static::staticFieldAllowedValues($entity_type, $bundle, $field_name, 1);
+
+    return !empty($allowed_values) ? reset($allowed_values) : NULL;
+  }
+
+  /**
+   * Get random allowed values from the field.
+   *
+   * @param string $entity_type
+   *   The entity type.
+   * @param string $bundle
+   *   The bundle.
+   * @param string $field_name
+   *   The field name.
+   * @param int|null $count
+   *   Optional values count to return. If NULL - all values will be returned.
+   *   If specified - this count of already randomised values will be returned.
+   *
+   * @return array
+   *   Array of allowed values.
+   */
+  public static function staticFieldAllowedValues($entity_type, $bundle, $field_name, $count = NULL) {
+    $allowed_values = [];
+
+    $field_info = static::$entityTypeManager->getStorage('field_config')->load($entity_type . '.' . $bundle . '.' . $field_name);
+    if ($field_info) {
+      $allowed_values = $field_info->getFieldStorageDefinition()->getSetting('allowed_values');
+    }
+
+    $allowed_values = array_keys($allowed_values);
+
+    $idx = static::getStaticEntityOffset($entity_type, $bundle, $field_name);
+
+    if (is_null($count)) {
+      $return = self::arraySliceCircular($allowed_values, count($allowed_values), $idx);
+    }
+    else {
+      $return = self::arraySliceCircular($allowed_values, $count, $idx);
+    }
+
+    static::setStaticEntityOffset(count($return), $entity_type, $bundle, $field_name);
+
+    return $return;
+  }
+
+  /**
    * Get random allowed target bundles from the field.
    *
    * @param string $entity_type

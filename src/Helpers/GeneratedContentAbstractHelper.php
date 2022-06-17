@@ -342,7 +342,7 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
       $return = self::arraySliceCircular($entities, $count, $idx);
     }
 
-    static::setStaticEntityOffset($entity_type, $bundle, count($return));
+    static::setStaticEntityOffset(count($return), $entity_type, $bundle);
 
     return $return;
   }
@@ -353,16 +353,14 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
    * Note that entity offsets with and without $bundle value are tracked
    * separately.
    *
-   * @param string $entity_type
-   *   Entity type.
-   * @param string $bundle
-   *   Optional entity bundle.
+   * @param ...
+   *   A list of properties to track.
    *
    * @return int
    *   Offset value.
    */
-  protected static function getStaticEntityOffset($entity_type, $bundle = NULL) {
-    $key = $entity_type . '__' . $bundle;
+  protected static function getStaticEntityOffset() {
+    $key = implode('__', func_get_args());
     self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
 
     return self::$staticEntityOffsets[$key];
@@ -374,15 +372,13 @@ abstract class GeneratedContentAbstractHelper implements ContainerInjectionInter
    * Note that this will further offset any existing entity offsets by an
    * $offset value.
    *
-   * @param string $entity_type
-   *   Entity type.
-   * @param string $bundle
-   *   Entity bundle.
-   * @param int $offset
-   *   Offset value to further offset any existing entity offsets.
+   * @param ...
+   *   A list of properties to track. First argument being the offset.
    */
-  protected static function setStaticEntityOffset($entity_type, $bundle, $offset) {
-    $key = $entity_type . '__' . $bundle;
+  protected static function setStaticEntityOffset() {
+    $args = func_get_args();
+    $offset = array_shift($args);
+    $key = implode('__', $args);
     self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
     self::$staticEntityOffsets[$key] += $offset;
   }
