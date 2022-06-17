@@ -44,7 +44,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
           'generated_content_example2',
         ],
         [],
-        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
       ],
 
       // All from all installed modules.
@@ -56,7 +56,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
         [
           'GENERATED_CONTENT_CREATE=1',
         ],
-        [0, 10, 10, 10, 10],
+        [0, 10, 10, 10, 10, 10],
       ],
 
       // All from only installed modules.
@@ -67,7 +67,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
         [
           'GENERATED_CONTENT_CREATE=1',
         ],
-        [NULL, NULL, 10, 10, 10],
+        [NULL, NULL, NULL, 10, 10, 10],
       ],
 
       // Selected from all installed modules.
@@ -80,7 +80,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
           'GENERATED_CONTENT_CREATE=1',
           'GENERATED_CONTENT_ITEMS=media-image,taxonomy_term-tags,node-page',
         ],
-        [0, 10, 10, 10, 0],
+        [0, 0, 10, 10, 10, 0],
       ],
 
       // Selected from only installed modules.
@@ -92,7 +92,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
           'GENERATED_CONTENT_CREATE=1',
           'GENERATED_CONTENT_ITEMS=node-page',
         ],
-        [NULL, NULL, 0, 10, 0],
+        [NULL, NULL, NULL, 0, 10, 0],
       ],
     ];
   }

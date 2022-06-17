@@ -15,6 +15,10 @@ use Drupal\taxonomy\Entity\Term;
  */
 class GeneratedContentHelper extends GeneratedContentAbstractHelper {
 
+  const FILE_TYPE_IMAGE = 'image';
+  const FILE_TYPE_BINARY = 'binary';
+  const FILE_TYPE_OTHER = 'other';
+
   /**
    * Select a random generated user.
    *
@@ -385,7 +389,7 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    * Create a managed file and store it as a managed file.
    *
    * @param string $type
-   *   File type: one of 'image', 'binary', 'other'.
+   *   File type: one of FILE_TYPE_IMAGE, FILE_TYPE_BINARY, FILE_TYPE_OTHER.
    * @param array $options
    *   Array of options to pass to the asset generator.
    *
@@ -394,10 +398,10 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
    */
   public static function createFile($type, array $options = []) {
     switch ($type) {
-      case 'image':
+      case static::FILE_TYPE_IMAGE:
         return static::$assetGenerator->createImage($options);
 
-      case 'binary':
+      case static::FILE_TYPE_BINARY:
         return static::$assetGenerator->createBinaryFile($options);
 
       default:
