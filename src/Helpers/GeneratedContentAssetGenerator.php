@@ -72,7 +72,7 @@ class GeneratedContentAssetGenerator {
    *     random name will be used.
    *   - width: (int) Image width.
    *   - height: (int) Image height.
-   *   - format: (string) One of the following: gif, jpg, png. Defaults
+   *   - extension: (string) One of the following: gif, jpg, png. Defaults
    *     to 'png'.
    * @param bool $use_existing
    *   (optional) Flag to use existing image. Defaults to TRUE.
@@ -83,22 +83,22 @@ class GeneratedContentAssetGenerator {
    */
   public function createImage(array $options = [], $use_existing = TRUE) {
     $options += [
+      'filename' => '',
+      'extension' => 'png',
       'width' => 350,
       'height' => 200,
-      'format' => 'png',
-      'filename' => '',
     ];
 
     // Normalise options.
     $width = $options['width'];
     $height = $options['height'];
-    $extension = $options['format'];
-    $options['format'] = '.' . ltrim($options['format'], '.');
+    $extension = $options['extension'];
+    $options['extension'] = '.' . ltrim($options['extension'], '.');
 
     // Provide random file name.
     $filename = !empty($options['filename']) ?
-      $options['filename'] . $options['format']
-      : $this->random->word(rand(4, 12)) . $options['format'];
+      $options['filename'] . $options['extension']
+      : $this->random->word(rand(4, 12)) . $options['extension'];
 
     // Find existing files.
     if ($use_existing) {
@@ -112,7 +112,7 @@ class GeneratedContentAssetGenerator {
 
     $uri = $dir . $filename;
     // Make sure that there is an extension.
-    $uri = empty(pathinfo($uri, PATHINFO_EXTENSION)) ? $uri . $options['format'] : $uri;
+    $uri = empty(pathinfo($uri, PATHINFO_EXTENSION)) ? $uri . $options['extension'] : $uri;
 
     if (!$tmp_file = $this->fileSystem->tempnam('temporary://', 'imagefield_')) {
       throw new \RuntimeException('Unable to generate an image');
@@ -162,9 +162,9 @@ class GeneratedContentAssetGenerator {
    */
   public function createFlatFile(array $options = [], $use_existing = TRUE) {
     $options += [
-      'content' => 'Placeholder text',
       'filename' => '',
       'extension' => 'txt',
+      'content' => 'Placeholder text',
     ];
 
     $options['extension'] = '.' . ltrim($options['extension'], '.');
@@ -193,7 +193,9 @@ class GeneratedContentAssetGenerator {
   }
 
   /**
-   * Generate a placeholder file from existing dummy asset file.
+   * Generate a managed binary file.
+   *
+   * This will use pre-defined asset file.
    *
    * @param array $options
    *   Array of options for generation:
@@ -207,10 +209,10 @@ class GeneratedContentAssetGenerator {
    *   Created file object or FALSE if there was an error creating or saving
    *   a file.
    */
-  public function createFromDummyFile(array $options = [], $use_existing = TRUE) {
+  public function createBinaryFile(array $options = [], $use_existing = TRUE) {
     $options += [
       'filename' => '',
-      'extension' => 'txt',
+      'extension' => 'pdf',
     ];
 
     $options['extension'] = ltrim($options['extension'], '.');
