@@ -493,56 +493,6 @@ class GeneratedContentHelper extends GeneratedContentAbstractHelper {
   }
 
   /**
-   * Get random allowed target bundles from the field.
-   *
-   * @param string $entity_type
-   *   The entity type.
-   * @param string $bundle
-   *   The bundle.
-   * @param string $field_name
-   *   The field name.
-   * @param null|int $count
-   *   Optional values count to return. If NULL - all values will be returned.
-   *   If specified - this count of already randomised values will be returned.
-   *
-   * @return array
-   *   Array of allowed values.
-   */
-  public static function randomFieldAllowedBundles($entity_type, $bundle, $field_name, $count = NULL) {
-    $allowed_values = [];
-
-    $field_info = static::$entityTypeManager->getStorage('field_config')->load($entity_type . '.' . $bundle . '.' . $field_name);
-    if ($field_info) {
-      if ($field_info->getType() == 'entity_reference_revisions' || $field_info->getType() == 'entity_reference') {
-        $allowed_values = $field_info->getSetting('handler_settings')['target_bundles'];
-      }
-    }
-
-    $allowed_values = array_keys($allowed_values);
-
-    return $count ? static::randomArrayItems($allowed_values, $count) : $allowed_values;
-  }
-
-  /**
-   * Get random allowed target bundle from the field.
-   *
-   * @param string $entity_type
-   *   The entity type.
-   * @param string $bundle
-   *   The bundle.
-   * @param string $field_name
-   *   The field name.
-   *
-   * @return array
-   *   A single allowed value.
-   */
-  public static function randomFieldAllowedBundle($entity_type, $bundle, $field_name) {
-    $allowed_values = static::randomFieldAllowedBundles($entity_type, $bundle, $field_name, 1);
-
-    return !empty($allowed_values) ? reset($allowed_values) : NULL;
-  }
-
-  /**
    * Get terms at the specific depth.
    *
    * @param string $vid
