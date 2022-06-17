@@ -193,7 +193,9 @@ class GeneratedContentAssetGenerator {
   }
 
   /**
-   * Generate a placeholder file from existing dummy asset file.
+   * Generate a managed binary file.
+   *
+   * This will use pre-defined asset file.
    *
    * @param array $options
    *   Array of options for generation:
@@ -207,7 +209,7 @@ class GeneratedContentAssetGenerator {
    *   Created file object or FALSE if there was an error creating or saving
    *   a file.
    */
-  public function createFromDummyFile(array $options = [], $use_existing = TRUE) {
+  public function createBinaryFile(array $options = [], $use_existing = TRUE) {
     $options += [
       'filename' => '',
       'extension' => 'txt',

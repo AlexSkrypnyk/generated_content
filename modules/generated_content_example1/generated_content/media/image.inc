@@ -36,7 +36,7 @@ function generated_content_example1_generated_content_create_media_image() {
   for ($i = 0; $i < $total_files_count; $i++) {
     $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomSentence());
     /** @var \Drupal\file\Entity\File $file */
-    $file = $helper->createImage([
+    $file = $helper->createFile('image', [
       'filename' => $filename,
       'width' => 2000,
       'height' => 1000,
