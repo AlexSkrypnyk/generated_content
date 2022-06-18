@@ -626,20 +626,22 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   File type: one of FILE_TYPE_IMAGE, FILE_TYPE_BINARY, FILE_TYPE_OTHER.
    * @param array $options
    *   Array of options to pass to the asset generator.
+   * @param bool $use_existing
+   *   Flag to use existing file or create a new one.
    *
    * @return \Drupal\file\FileInterface
    *   Created managed file.
    */
-  public static function createFile($type, array $options = []) {
+  public static function createFile($type, array $options = [], $use_existing = TRUE) {
     switch ($type) {
       case static::FILE_TYPE_IMAGE:
-        return static::$assetGenerator->createImage($options);
+        return static::$assetGenerator->createImage($options, $use_existing);
 
       case static::FILE_TYPE_BINARY:
-        return static::$assetGenerator->createBinaryFile($options);
+        return static::$assetGenerator->createBinaryFile($options, $use_existing);
 
       default:
-        return static::$assetGenerator->createFlatFile($options);
+        return static::$assetGenerator->createFlatFile($options, $use_existing);
     }
   }
 
