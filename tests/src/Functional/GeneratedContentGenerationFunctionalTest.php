@@ -41,7 +41,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
       'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Generate');
-    $this->assertInfoTableItems(0, 10, 10, 10, 10, 10);
+    $this->assertInfoTableItems(0, 10, 10, 10, 3, 10);
 
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_1@example.com');
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_2@example.com');
@@ -79,7 +79,9 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 9"');
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 10"');
     $this->assertSession()->pageTextContains('Created generated content entities "taxonomy_term" with bundle "tags"');
-    $this->assertSession()->pageTextContains('Created "page" node "Generated page Sta: Y, Con: Y"');
+    $this->assertSession()->pageTextContains('Created "page" node "Demo Page, default values"');
+    $this->assertSession()->pageTextContains('Created "page" node "Demo Page, Body"');
+    $this->assertSession()->pageTextContains('Created "page" node "Demo Page, Body, Unpublished"');
     $this->assertSession()->pageTextContains('Created generated content entities "node" with bundle "page"');
 
     $edit = [

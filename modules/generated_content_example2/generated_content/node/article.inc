@@ -35,7 +35,7 @@ function generated_content_example2_generated_content_create_node_article() {
   $nodes = [];
 
   for ($i = 0; $i < $total_nodes_count; $i++) {
-    $variation = $helper::variationRandom([
+    $variation = $helper::variationRandomValue([
       'status' => NULL,
       'content' => NULL,
       'tags' => [1, 3],
