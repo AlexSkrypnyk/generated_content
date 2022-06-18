@@ -4,6 +4,8 @@ namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
+use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
+use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
 
 /**
  * Class GeneratedContentKernelTestBase.
@@ -13,6 +15,19 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 abstract class GeneratedContentKernelTestBase extends KernelTestBase {
 
   use GeneratedContentTestMockTrait;
+  use GeneratedContentTestNodeTrait;
+  use GeneratedContentTestUserTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = [
+    'system',
+    'user',
+    'node',
+    'file',
+    'generated_content',
+  ];
 
   /**
    * {@inheritdoc}
@@ -20,7 +35,9 @@ abstract class GeneratedContentKernelTestBase extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->installEntitySchema('user');
+    $this->userSetUp();
+    $this->nodeSetUp();
+
     $this->installSchema('generated_content', ['generated_content']);
   }
 

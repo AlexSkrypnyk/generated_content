@@ -23,15 +23,12 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * @var array
    */
   protected static $modules = [
-    'system',
-    'user',
     'field',
     'media',
     'file',
     'image',
     'text',
     'taxonomy',
-    'generated_content',
   ];
 
   /**

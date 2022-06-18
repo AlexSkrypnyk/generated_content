@@ -5,7 +5,6 @@ namespace Drupal\Tests\generated_content\Kernel;
 use Drupal\generated_content\GeneratedContentRepository;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
 
 /**
  * Tests user* helpers in GeneratedContentHelper class.
@@ -15,28 +14,6 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
 class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
 
   use GeneratedContentTestMockTrait;
-  use GeneratedContentTestUserTrait;
-
-  /**
-   * Modules to enable.
-   *
-   * @var array
-   */
-  protected static $modules = [
-    'system',
-    'user',
-    'field',
-    'generated_content',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    $this->userSetUp();
-  }
 
   /**
    * Tests the randomUser() method.

@@ -5,8 +5,6 @@ namespace Drupal\Tests\generated_content\Kernel;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestFieldTrait;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
-use Drupal\Tests\user\Traits\UserCreationTrait;
 
 /**
  * Tests field* helpers in GeneratedContentHelper class.
@@ -15,9 +13,7 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
  */
 class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
 
-  use UserCreationTrait;
   use GeneratedContentTestMockTrait;
-  use GeneratedContentTestNodeTrait;
   use GeneratedContentTestFieldTrait;
 
   /**
@@ -26,23 +22,10 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
    * @var array
    */
   protected static $modules = [
-    'system',
-    'user',
     'field',
-    'node',
     'text',
     'options',
-    'generated_content',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    $this->nodeSetUp();
-  }
 
   /**
    * Tests the randomFieldAllowedValue() method.

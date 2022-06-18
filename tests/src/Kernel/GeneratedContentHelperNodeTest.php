@@ -25,23 +25,10 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * @var array
    */
   protected static $modules = [
-    'system',
-    'user',
     'field',
-    'node',
     'text',
     'taxonomy',
-    'generated_content',
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    $this->nodeSetUp();
-  }
 
   /**
    * Tests the randomNode() method.
