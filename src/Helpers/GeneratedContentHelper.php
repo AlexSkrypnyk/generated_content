@@ -562,14 +562,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Array of allowed values.
    */
   public static function randomFieldAllowedValues($entity_type, $bundle, $field_name, $count = NULL) {
-    $allowed_values = [];
-
-    $field_info = static::$entityTypeManager->getStorage('field_config')->load($entity_type . '.' . $bundle . '.' . $field_name);
-    if ($field_info) {
-      $allowed_values = $field_info->getFieldStorageDefinition()->getSetting('allowed_values');
-    }
-
-    $allowed_values = array_keys($allowed_values);
+    $allowed_values = static::fieldAllowedValues($entity_type, $bundle, $field_name);
 
     return $count ? static::randomArrayItems($allowed_values, $count) : $allowed_values;
   }
@@ -610,14 +603,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Array of allowed values.
    */
   public static function staticFieldAllowedValues($entity_type, $bundle, $field_name, $count = NULL) {
-    $allowed_values = [];
-
-    $field_info = static::$entityTypeManager->getStorage('field_config')->load($entity_type . '.' . $bundle . '.' . $field_name);
-    if ($field_info) {
-      $allowed_values = $field_info->getFieldStorageDefinition()->getSetting('allowed_values');
-    }
-
-    $allowed_values = array_keys($allowed_values);
+    $allowed_values = static::fieldAllowedValues($entity_type, $bundle, $field_name);
 
     $idx = static::getStaticEntityOffset($entity_type, $bundle, $field_name);
 
@@ -845,6 +831,30 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     }
 
     return $created_mlids;
+  }
+
+  /**
+   * Get allowed values from  field.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Entity bundle.
+   * @param string $field_name
+   *   Field name.
+   *
+   * @return array
+   *   Array of allowed values.
+   */
+  protected static function fieldAllowedValues($entity_type, $bundle, $field_name) {
+    $allowed_values = [];
+
+    $field_info = static::$entityTypeManager->getStorage('field_config')->load($entity_type . '.' . $bundle . '.' . $field_name);
+    if ($field_info) {
+      $allowed_values = $field_info->getFieldStorageDefinition()->getSetting('allowed_values');
+    }
+
+    return array_keys($allowed_values);
   }
 
   /**
