@@ -3,8 +3,6 @@
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
 
 /**
  * Tests repository singleton.
@@ -12,29 +10,6 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
  * @group generated_content
  */
 class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
-
-  use GeneratedContentTestNodeTrait;
-  use GeneratedContentTestUserTrait;
-
-  /**
-   * {@inheritdoc}
-   */
-  protected static $modules = [
-    'system',
-    'user',
-    'node',
-    'generated_content',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    $this->userSetUp();
-    $this->nodeSetUp();
-  }
 
   /**
    * Test singleton instance.

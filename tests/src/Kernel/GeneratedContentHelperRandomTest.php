@@ -12,16 +12,6 @@ use Drupal\generated_content\Helpers\GeneratedContentHelper;
 class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected static $modules = [
-    'system',
-    'user',
-    'node',
-    'generated_content',
-  ];
-
-  /**
    * Test randomSentence().
    */
   public function testRandomSentence() {

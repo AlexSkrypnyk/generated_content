@@ -4,7 +4,9 @@ namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\file\FileRepository;
 
 /**
  * Class GeneratedContentAssetGenerator.
@@ -43,6 +45,20 @@ class GeneratedContentAssetGenerator {
   protected $entityTypeManager;
 
   /**
+   * The file repository.
+   *
+   * @var \Drupal\file\FileRepositoryInterface
+   */
+  protected $fileRepository;
+
+  /**
+   * The module extension list.
+   *
+   * @var \Drupal\Core\Extension\ModuleExtensionList
+   */
+  protected $moduleExtensionList;
+
+  /**
    * Array of available assets.
    *
    * Keys are extensions without a leading dot and values are paths to assets.
@@ -54,9 +70,11 @@ class GeneratedContentAssetGenerator {
   /**
    * Constructor.
    */
-  public function __construct(FileSystemInterface $file_system, EntityTypeManager $entity_type_manager) {
+  public function __construct(FileSystemInterface $file_system, EntityTypeManager $entity_type_manager, FileRepository $file_repository, ModuleExtensionList $module_extension_list) {
     $this->fileSystem = $file_system;
     $this->entityTypeManager = $entity_type_manager;
+    $this->fileRepository = $file_repository;
+    $this->moduleExtensionList = $module_extension_list;
     $this->random = new Random();
     $this->assets = $this->loadAssets();
   }
@@ -139,9 +157,7 @@ class GeneratedContentAssetGenerator {
     $save_function = 'image' . ($extension == 'jpg' ? 'jpeg' : $extension);
     $save_function($im, $this->fileSystem->realpath($destination));
 
-    $file = file_save_data(file_get_contents($destination), $uri);
-
-    return $file;
+    return $this->fileRepository->writeData(file_get_contents($destination), $destination);
   }
 
   /**
@@ -187,9 +203,8 @@ class GeneratedContentAssetGenerator {
     $uri = $dir . $filename;
     // Make sure that there is an extension.
     $uri = empty(pathinfo($uri, PATHINFO_EXTENSION)) ? $uri . $options['extension'] : $uri;
-    $file = file_save_data($options['content'], $uri);
 
-    return $file;
+    return $this->fileRepository->writeData($options['content'], $uri);
   }
 
   /**
@@ -241,9 +256,8 @@ class GeneratedContentAssetGenerator {
     $uri = $dir . $filename;
     // Make sure that there is an extension.
     $uri = empty(pathinfo($uri, PATHINFO_EXTENSION)) ? $uri . '.' . $options['extension'] : $uri;
-    $file = file_save_data(file_get_contents($asset_path), $uri);
 
-    return $file;
+    return $this->fileRepository->writeData(file_get_contents($asset_path), $uri);
   }
 
   /**
@@ -294,7 +308,7 @@ class GeneratedContentAssetGenerator {
       'svg',
     ];
 
-    $module_path = drupal_get_path('module', 'generated_content');
+    $module_path = $this->moduleExtensionList->getPath('generated_content');
     foreach ($extensions as $extension) {
       $dummy_file = $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'dummy.' . $extension;
       if (file_exists($dummy_file)) {
