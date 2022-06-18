@@ -6,8 +6,7 @@
  */
 
 use Drupal\Core\Link;
-use Drupal\generated_content\Helpers\GeneratedContentHelper;
-use Drupal\node\Entity\Node;
+use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
@@ -27,33 +26,21 @@ function generated_content_example2_generated_content_create_node_page_tracking(
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
  */
 function generated_content_example2_generated_content_create_node_page() {
-  $total_nodes_count = 10;
-
-  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
-  $helper = GeneratedContentHelper::getInstance();
-
   $nodes = [];
 
-  for ($i = 0; $i < $total_nodes_count; $i++) {
-    $variation = $helper::variationRandom([
-      'status' => NULL,
-      'content' => NULL,
-    ]);
+  /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
+  $helper = GeneratedContentExample2Helper::getInstance();
+
+  $variations = $helper::variationFetchAll(
+    '_generated_content_example2_create_node_page__variations__',
+    __DIR__ . DIRECTORY_SEPARATOR . 'page_variations'
+  );
+
+  foreach ($variations as $i => $variation) {
+    /** @var \Drupal\node\Entity\Node $node */
+    $node = $helper::variationCreateNode('page', $variation, $i, '_generated_content_example2_create_node_page__variation_to_fields');
+
     $variation_info = $helper::variationFormatInfo($variation);
-
-    $node = Node::create([
-      'type' => 'page',
-      'title' => sprintf('Generated page %s', $variation_info),
-      'status' => $variation['status'],
-    ]);
-
-    if ($variation['content']) {
-      $node->body = [
-        'value' => $helper::staticRichText(),
-        'format' => 'full_html',
-      ];
-    }
-
     $node->revision_log = $variation_info;
 
     $node->save();
@@ -70,4 +57,32 @@ function generated_content_example2_generated_content_create_node_page() {
   }
 
   return $nodes;
+}
+
+/**
+ * Processor to convert variation values to 'page' node fields.
+ */
+function _generated_content_example2_create_node_page__variation_to_fields($node, $variation) {
+  /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
+  $helper = GeneratedContentExample2Helper::getInstance();
+
+  if (!empty($variation['title'])) {
+    $node->setTitle($variation['title']);
+  }
+
+  if (!empty($variation['alias'])) {
+    // Replace tokens in an alias, using a callback to "clean" value.
+    $variation['alias'] = $helper::replaceTokens($variation['alias'], $variation, function ($value) {
+      return is_string($value) ? preg_replace('[^a-zA-Z0-9-]', '-', $value) : $value;
+    });
+
+    $node->set('path', [
+      'pathauto' => FALSE,
+      'alias' => $variation['alias'],
+    ]);
+  }
+
+  if (!empty($variation['body']) && $node->hasField('body')) {
+    $node->body = $variation['body'];
+  }
 }
