@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Link;
+use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\media\Entity\Media;
 
@@ -36,17 +37,17 @@ function generated_content_example1_generated_content_create_media_document() {
   for ($i = 0; $i < $total_files_count; $i++) {
     $filename = sprintf('Demo Document media %s %s', $i + 1, $helper::randomName());
     if ($i % 2) {
-      /** @var \Drupal\file\Entity\File $file */
-      $file = $helper->createFile($helper::FILE_TYPE_BINARY, [
-        'filename' => str_replace(' ', '_', $filename),
-        'extension' => $helper::randomArrayItem(['docx', 'pdf']),
+      $file_type = $helper::randomArrayItem([
+        GeneratedContentAssetGenerator::ASSET_TYPE_PDF,
+        GeneratedContentAssetGenerator::ASSET_TYPE_DOCX,
       ]);
+      $file = $helper->createFile($file_type, [
+        'filename' => str_replace(' ', '_', $filename),
+      ], GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC);
     }
     else {
-      /** @var \Drupal\file\Entity\File $file */
-      $file = $helper->createFile($helper::FILE_TYPE_OTHER, [
+      $file = $helper->createFile(GeneratedContentAssetGenerator::ASSET_TYPE_TXT, [
         'filename' => str_replace(' ', '_', $filename),
-        'extension' => 'txt',
         'content' => 'Contents of ' . $filename,
       ]);
     }

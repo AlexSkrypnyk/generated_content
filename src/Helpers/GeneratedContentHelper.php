@@ -24,14 +24,10 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   use GeneratedContentRandomTrait;
   use GeneratedContentStaticTrait;
 
-  const FILE_TYPE_IMAGE = 'image';
-  const FILE_TYPE_BINARY = 'binary';
-  const FILE_TYPE_OTHER = 'other';
-
   /**
    * Instances of descendant classes.
    *
-   * @var \Drupal\generated_content\Helpers\GeneratedContentAbstractHelper[]
+   * @var \Drupal\generated_content\Helpers\GeneratedContentHelper[]
    */
   protected static $instances = [];
 
@@ -620,29 +616,21 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Create a managed file and store it as a managed file.
+   * Create a file and store it as a managed file.
    *
    * @param string $type
-   *   File type: one of FILE_TYPE_IMAGE, FILE_TYPE_BINARY, FILE_TYPE_OTHER.
+   *   File type as per GeneratedContentAssetGenerator::ASSET_TYPE_* constants.
    * @param array $options
    *   Array of options to pass to the asset generator.
-   * @param bool $use_existing
-   *   Flag to use existing file or create a new one.
+   * @param string $generation_type
+   *   Generation type as
+   *   per GeneratedContentAssetGenerator::GENERATE_TYPE_* constants.
    *
    * @return \Drupal\file\FileInterface
    *   Created managed file.
    */
-  public static function createFile($type, array $options = [], $use_existing = TRUE) {
-    switch ($type) {
-      case static::FILE_TYPE_IMAGE:
-        return static::$assetGenerator->createImage($options, $use_existing);
-
-      case static::FILE_TYPE_BINARY:
-        return static::$assetGenerator->createBinaryFile($options, $use_existing);
-
-      default:
-        return static::$assetGenerator->createFlatFile($options, $use_existing);
-    }
+  public static function createFile($type, array $options = [], $generation_type = GeneratedContentAssetGenerator:: GENERATE_TYPE_RANDOM) {
+    return static::$assetGenerator->generate($type, $options, $generation_type);
   }
 
   /**
