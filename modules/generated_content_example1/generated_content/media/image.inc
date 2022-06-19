@@ -14,7 +14,7 @@ use Drupal\media\Entity\Media;
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
 function generated_content_example1_generated_content_create_media_image_weight() {
-  return 0;
+  return 1;
 }
 
 /**

@@ -43,8 +43,8 @@ abstract class GeneratedContentFunctionalTestBase extends BrowserTestBase {
 
     if (!is_null($c2)) {
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'media');
-      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'document');
-      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 0);
+      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'image');
+      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 1);
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example1');
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c2);
@@ -53,10 +53,10 @@ abstract class GeneratedContentFunctionalTestBase extends BrowserTestBase {
 
     if (!is_null($c3)) {
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'media');
-      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'image');
-      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 0);
+      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'document');
+      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 2);
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
-      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example1');
+      $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example2');
       $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c3);
       $row_idx++;
     }

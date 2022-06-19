@@ -193,19 +193,22 @@ class GeneratedContentAssetGenerator {
 
     if (is_callable($generator)) {
       $generated_filepath = call_user_func($generator, $type, $options);
-
-      if (!is_readable($generated_filepath)) {
-        throw new \Exception(sprintf('Unable to read generated file "%s".', $generated_filepath));
-      }
-
-      $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
-      $uri = $directory . DIRECTORY_SEPARATOR . $filename;
-
-      return $this->fileRepository->writeData(file_get_contents($generated_filepath), $uri);
+    }
+    elseif (count($generator) == 2 && get_class($this) == $generator[0] && method_exists($this, $generator[1])) {
+      $generated_filepath = $this->{$generator[1]}($type, $options);
     }
     else {
       throw new \RuntimeException(sprintf('Error while trying to use generator "%s".', print_r($generator, TRUE)));
     }
+
+    if (!is_readable($generated_filepath)) {
+      throw new \Exception(sprintf('Unable to read generated file "%s".', $generated_filepath));
+    }
+
+    $this->fileSystem->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
+    $uri = $directory . DIRECTORY_SEPARATOR . $filename;
+
+    return $this->fileRepository->writeData(file_get_contents($generated_filepath), $uri);
   }
 
   /**
