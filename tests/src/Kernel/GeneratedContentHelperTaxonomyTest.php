@@ -4,7 +4,6 @@ namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestTermTrait;
 
 /**
@@ -14,7 +13,6 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestTermTrait;
  */
 class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase {
 
-  use GeneratedContentTestMockTrait;
   use GeneratedContentTestTermTrait;
 
   /**

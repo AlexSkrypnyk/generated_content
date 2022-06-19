@@ -5,7 +5,6 @@ namespace Drupal\Tests\generated_content\Kernel;
 use Drupal\generated_content\GeneratedContentRepository;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMediaTrait;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 
 /**
  * Tests media* helpers in GeneratedContentHelper class.
@@ -14,7 +13,6 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
  */
 class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
 
-  use GeneratedContentTestMockTrait;
   use GeneratedContentTestMediaTrait;
 
   /**

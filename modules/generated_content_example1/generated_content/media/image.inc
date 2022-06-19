@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Link;
+use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\media\Entity\Media;
 
@@ -13,7 +14,7 @@ use Drupal\media\Entity\Media;
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
 function generated_content_example1_generated_content_create_media_image_weight() {
-  return 0;
+  return 1;
 }
 
 /**
@@ -34,14 +35,28 @@ function generated_content_example1_generated_content_create_media_image() {
 
   $entities = [];
   for ($i = 0; $i < $total_files_count; $i++) {
-    $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomName());
-    /** @var \Drupal\file\Entity\File $file */
-    $file = $helper->createFile($helper::FILE_TYPE_IMAGE, [
-      'filename' => str_replace(' ', '_', $filename),
-      'width' => 2000,
-      'height' => 1000,
-      'extension' => $helper::randomArrayItem(['png', 'jpg']),
-    ]);
+    if ($i % 2) {
+      $file_type = $helper::randomArrayItem([
+        GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
+        GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
+      ]);
+      $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomName());
+      $file = $helper->createFile($file_type, [
+        'filename' => str_replace(' ', '_', $filename),
+        'width' => 2000,
+        'height' => 1000,
+      ]);
+    }
+    else {
+      $file_type = $helper::randomArrayItem([
+        GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
+        GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
+      ]);
+      $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomName());
+      $file = $helper->createFile($file_type, [
+        'filename' => str_replace(' ', '_', $filename),
+      ], GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC);
+    }
 
     $media = Media::create([
       'bundle' => 'image',

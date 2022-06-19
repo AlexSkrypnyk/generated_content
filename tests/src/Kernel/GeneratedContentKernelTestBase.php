@@ -6,6 +6,7 @@ use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
+use Drupal\Tests\user\Traits\UserCreationTrait;
 
 /**
  * Class GeneratedContentKernelTestBase.
@@ -14,6 +15,7 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestUserTrait;
  */
 abstract class GeneratedContentKernelTestBase extends KernelTestBase {
 
+  use UserCreationTrait;
   use GeneratedContentTestMockTrait;
   use GeneratedContentTestNodeTrait;
   use GeneratedContentTestUserTrait;
@@ -32,7 +34,7 @@ abstract class GeneratedContentKernelTestBase extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->userSetUp();
