@@ -5,6 +5,8 @@ namespace Drupal\generated_content\Form;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\generated_content\GeneratedContentRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -56,8 +58,8 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
     $options = [];
     foreach ($info as $item) {
       $options[$item['entity_type'] . '__' . $item['bundle']] = [
-        $item['entity_type'],
-        $item['bundle'],
+        $this->entityInfoToLink($item['entity_type']),
+        $this->entityInfoToLink($item['entity_type'], $item['bundle']),
         $item['#weight'],
         $item['#tracking'] ? $this->t('Enabled') : $this->t('Disabled'),
         $item['#module'],
@@ -69,7 +71,7 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
       $this->t('Entity'),
       $this->t('Bundle'),
       $this->t('Weight'),
-      $this->t('Tracked'),
+      $this->t('Tracking'),
       $this->t('Module'),
       $this->t('Created count'),
     ];
@@ -122,6 +124,60 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
     elseif ($button_name === 'delete') {
       $this->repository->removeBatch($info);
     }
+  }
+
+  /**
+   * Get link for specific entity_type and optional bundle.
+   *
+   * Since each entity type declares routes for collection pages in own ways,
+   * this method tries to "guess" collection links from provided information.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Optional bundle. If provided - more "granular" link will be returned.
+   *
+   * @return \Drupal\Core\GeneratedLink|string
+   *   Link to the entity collection or originally passed value if there is no
+   *   internal mapping for this entity_type/bundle.
+   */
+  protected function entityInfoToLink($entity_type, $bundle = NULL) {
+    $collection_route = NULL;
+    $route_params = [];
+    $path = NULL;
+    $query = [];
+
+    switch ($entity_type) {
+      case 'node':
+        $collection_route = 'system.admin_content';
+        $query = $bundle ? ['type' => $bundle] : $query;
+        break;
+
+      case 'media':
+        $path = '/admin/content/media';
+        $query = $bundle ? ['type' => $bundle] : $query;
+        break;
+
+      case 'taxonomy_term':
+        $collection_route = $bundle ? 'entity.taxonomy_vocabulary.overview_form' : 'entity.taxonomy_vocabulary.collection';
+        $route_params = $bundle ? ['taxonomy_vocabulary' => $bundle] : $route_params;
+        break;
+
+      case 'user':
+        $collection_route = 'entity.user.collection';
+        break;
+    }
+
+    $label = $bundle ?: $entity_type;
+
+    if ($collection_route) {
+      return Link::createFromRoute($label, $collection_route, $route_params, ['query' => $query])->toString();
+    }
+    elseif ($path) {
+      return Link::fromTextAndUrl($label, Url::fromUserInput($path, ['query' => $query]))->toString();
+    }
+
+    return $label;
   }
 
 }
