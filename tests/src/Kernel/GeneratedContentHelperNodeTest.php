@@ -4,9 +4,6 @@ namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
-use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
-use Drupal\Tests\user\Traits\UserCreationTrait;
 
 /**
  * Tests node* helpers in GeneratedContentHelper class.
@@ -14,10 +11,6 @@ use Drupal\Tests\user\Traits\UserCreationTrait;
  * @group generated_content
  */
 class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
-
-  use UserCreationTrait;
-  use GeneratedContentTestMockTrait;
-  use GeneratedContentTestNodeTrait;
 
   /**
    * Modules to enable.

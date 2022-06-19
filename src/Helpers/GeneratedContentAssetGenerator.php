@@ -14,7 +14,6 @@ use Drupal\file\FileRepository;
  * The utility class for generating data.
  *
  * @package Drupal\generated_content
- * @SuppressWarnings(PHPMD)
  */
 class GeneratedContentAssetGenerator {
 
