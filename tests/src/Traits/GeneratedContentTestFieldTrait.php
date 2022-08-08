@@ -18,7 +18,7 @@ trait GeneratedContentTestFieldTrait {
    * Create an allowed values list field storage, instance and display.
    */
   public function fieldCreateListAllowedValues($entity_type, $bundle, $field_name, $allowed_values) {
-    /** @var \Drupal\field\Entity\FieldStorageConfig $field_storage */
+    /** @var \Drupal\field\Entity\FieldStorageConfig $field_storage_config */
     $field_storage_config = FieldStorageConfig::create([
       'field_name' => $field_name,
       'entity_type' => $entity_type,

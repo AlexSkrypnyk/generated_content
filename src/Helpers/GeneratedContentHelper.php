@@ -98,7 +98,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * Get singleton instance of one of the descendant classes.
    *
-   * @return \Drupal\generated_content\Helpers\GeneratedContentAbstractHelper
+   * @return \Drupal\generated_content\Helpers\GeneratedContentHelper
    *   Helper class instance.
    */
   public static function getInstance() {
@@ -113,7 +113,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * Reset singleton instance.
    *
-   * @return \Drupal\generated_content\Helpers\GeneratedContentAbstractHelper
+   * @return \Drupal\generated_content\Helpers\GeneratedContentHelper
    *   A new singleton instance.
    */
   public function reset() {
@@ -730,6 +730,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     $tree = static::$entityTypeManager->getStorage('taxonomy_term')->loadTree($vid, 0, $depth + 1, $load_entities);
 
     foreach ($tree as $k => $leaf) {
+      // @phpstan-ignore-next-line
       if ($leaf->depth != $depth) {
         unset($tree[$k]);
       }
@@ -989,13 +990,13 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * Note that entity offsets with and without $bundle value are tracked
    * separately.
    *
-   * @param ...
+   * @param mixed ...$arguments
    *   A list of properties to track.
    *
    * @return int
    *   Offset value.
    */
-  protected static function getStaticEntityOffset() {
+  protected static function getStaticEntityOffset(...$arguments) {
     $key = implode('__', func_get_args());
     self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
 
@@ -1008,10 +1009,10 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * Note that this will further offset any existing entity offsets by an
    * $offset value.
    *
-   * @param ...
+   * @param mixed ...$arguments
    *   A list of properties to track. First argument being the offset.
    */
-  protected static function setStaticEntityOffset() {
+  protected static function setStaticEntityOffset(...$arguments) {
     $args = func_get_args();
     $offset = array_shift($args);
     $key = implode('__', $args);

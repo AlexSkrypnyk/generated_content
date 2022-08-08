@@ -49,6 +49,7 @@ trait GeneratedContentTestMediaTrait {
 
     $bundle = $bundles[0];
     $image = File::create([
+      // @phpstan-ignore-next-line
       'uri' => $this->getTestFiles('image')[0]->uri,
     ]);
     $image->save();
@@ -71,6 +72,7 @@ trait GeneratedContentTestMediaTrait {
 
     $bundle = $bundles[1];
     $file = File::create([
+      // @phpstan-ignore-next-line
       'uri' => $this->getTestFiles('binary')[0]->uri,
     ]);
     $file->save();

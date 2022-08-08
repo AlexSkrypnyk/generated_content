@@ -424,6 +424,8 @@ class GeneratedContentAssetGenerator {
       'svg',
     ];
 
+    $assets = [];
+
     $module_path = $this->moduleExtensionList->getPath('generated_content');
     foreach ($extensions as $extension) {
       $dummy_file = $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'dummy.' . $extension;

@@ -63,8 +63,10 @@ function generated_content_example1_generated_content_create_media_image() {
       'name' => $filename,
     ]);
 
-    $media->field_media_image->setValue($file->id());
-    $media->field_media_image->alt = sprintf('Alt for %s', $filename);
+    $media->field_media_image->setValue([
+      'target_id' => $file->id(),
+      'alt' => sprintf('Alt for %s', $filename),
+    ]);
     $media->save();
 
     $helper::log(
