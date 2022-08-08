@@ -15,7 +15,7 @@
 #
 # This script will re-build everything from scratch every time it runs.
 
-# shellcheck disable=SC2015,SC2094
+# shellcheck disable=SC2015,SC2094,SC2002
 
 set -e
 
@@ -92,6 +92,12 @@ else
   php -d memory_limit=-1 "$(command -v composer)" create-project drupal-composer/drupal-project:9.x-dev "${BUILD_DIR}" --no-interaction
 fi
 
+echo "  > Installing suggested dependencies from module's composer.json."
+composer_suggests=$(cat composer.json | jq -r 'select(.suggest != null) | .suggest | keys[]')
+for composer_suggest in $composer_suggests; do
+  php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require "${composer_suggest}"
+done
+
 echo "==> Adjusting codebase."
 echo "  > Updating composer.json with a list of allowed plugins."
 cat <<< "$(jq --indent 4 '.config["allow-plugins"]["dealerdirect/phpcodesniffer-composer-installer"] = true' "${BUILD_DIR}/composer.json")" > "${BUILD_DIR}/composer.json"
@@ -102,8 +108,14 @@ php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" upd
 
 echo "  > Installing other dev dependencies."
 cat <<< "$(jq --indent 4 '.extra["phpcodesniffer-search-depth"] = 10' "${BUILD_DIR}/composer.json")" > "${BUILD_DIR}/composer.json"
-php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require --dev dealerdirect/phpcodesniffer-composer-installer
-php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require --dev phpspec/prophecy-phpunit:^2
+php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require --dev \
+  dealerdirect/phpcodesniffer-composer-installer \
+  phpspec/prophecy-phpunit:^2 \
+  mglaman/drupal-check \
+  palantirnet/drupal-rector
+cp "${BUILD_DIR}/vendor/palantirnet/drupal-rector/rector.php" "${BUILD_DIR}/."
+# Fix rector config from https://www.drupal.org/files/issues/2022-08-02/3269329-14.patch
+curl https://www.drupal.org/files/issues/2022-08-02/3269329-14.patch | patch -l "${BUILD_DIR}/rector.php" || true
 
 echo "==> Starting builtin PHP server at http://${WEBSERVER_HOST}:${WEBSERVER_PORT} in $(pwd)/${BUILD_DIR}/web."
 # Stop previously started services.
@@ -130,6 +142,12 @@ ln -s "$(pwd)"/* "${BUILD_DIR}/web/modules/${MODULE}" && rm "${BUILD_DIR}/web/mo
 echo "  > Enabling module ${MODULE}."
 "${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" pm:enable "${MODULE}" -y
 "${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" cr
+
+echo "  > Enabling suggested modules, if any."
+drupal_suggests=$(cat composer.json | jq -r 'select(.suggest != null) | .suggest | keys[]' | sed "s/drupal\///" | cut -f1 -d":")
+for drupal_suggest in $drupal_suggests; do
+  "${BUILD_DIR}/vendor/bin/drush" -r "${BUILD_DIR}/web" pm:enable "${drupal_suggest}" -y
+done
 
 # Visit site to pre-warm caches.
 curl -s "http://${WEBSERVER_HOST}:${WEBSERVER_PORT}" > /dev/null

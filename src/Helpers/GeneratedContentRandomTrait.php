@@ -130,7 +130,7 @@ trait GeneratedContentRandomTrait {
   /**
    * Generate random external URL.
    *
-   * @param string $domain
+   * @param string|bool $domain
    *   (optional) Domain name. Defaults to 'www.example.com'.
    *
    * @return string

@@ -42,6 +42,7 @@ function generated_content_example1_generated_content_create_user_user() {
     for ($i = 1; $i <= $total_users_per_role; $i++) {
       $name = sprintf('generated_%s_%s@example.com', $role->id(), $i);
 
+      /** @var \Drupal\user\Entity\User $existing_user */
       $existing_user = user_load_by_name($name);
       if ($existing_user) {
         \Drupal::entityTypeManager()->getStorage('user')->load($existing_user->id())->delete();
