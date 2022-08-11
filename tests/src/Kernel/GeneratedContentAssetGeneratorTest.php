@@ -30,8 +30,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   protected function setUp(): void {
     parent::setUp();
 
-    $this->installEntitySchema('file');
-    $this->installSchema('file', ['file_usage']);
+    $this->fileSetUp();
   }
 
   /**

@@ -52,4 +52,15 @@ class GeneratedContentExample2AssetGenerator extends GeneratedContentAssetGenera
     return $this->generatorContentFile($type, $options);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function getAssetsDirs() {
+    $module_path = $this->moduleExtensionList->getPath('generated_content_example2');
+
+    return array_merge(parent::getAssetsDirs(), [
+      $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR),
+    ]);
+  }
+
 }

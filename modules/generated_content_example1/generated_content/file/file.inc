@@ -35,22 +35,27 @@ function generated_content_example1_generated_content_create_file_file() {
 
   $entities = [];
 
-  $file_generation_types = [
-    GeneratedContentAssetGenerator:: GENERATE_TYPE_STATIC => 'static',
+  $generation_types = [
+    GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM => [
+      GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
+      GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
+      GeneratedContentAssetGenerator::ASSET_TYPE_TXT,
+    ],
+    GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC => [
+      GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
+      GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
+      GeneratedContentAssetGenerator::ASSET_TYPE_PDF,
+      GeneratedContentAssetGenerator::ASSET_TYPE_DOCX,
+    ],
   ];
 
-  $file_types = [
-    GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
-    GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
-  ];
-
-  foreach ($file_generation_types as $file_generation_type => $file_generation_type_name) {
-    foreach ($file_types as $file_type) {
+  foreach ($generation_types as $generation_type => $asset_types) {
+    foreach ($asset_types as $asset_type) {
       for ($i = 0; $i < $total_files_count_per_type; $i++) {
-        $filename = sprintf('Demo %s %s image file %s %s', $file_generation_type_name, $file_type, $i + 1, $helper::randomName(4));
-        $file = $helper->createFile($file_type, [
+        $filename = sprintf('Demo %s %s file %s %s', $generation_type, $asset_type, $i + 1, $helper::randomName(4));
+        $file = $helper->createFile($asset_type, [
           'filename' => str_replace(' ', '_', $filename),
-        ], $file_generation_type);
+        ], $generation_type);
 
         $link_options = ['attributes' => ['target' => '_blank']];
         $helper::log(

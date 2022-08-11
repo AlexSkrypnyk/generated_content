@@ -2,9 +2,7 @@
 
 namespace Drupal\Tests\generated_content\Traits;
 
-use Drupal\file\Entity\File;
 use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
-use Drupal\Tests\TestFileCreationTrait;
 
 /**
  * Trait GeneratedContentTestMediaTrait.
@@ -15,8 +13,8 @@ use Drupal\Tests\TestFileCreationTrait;
  */
 trait GeneratedContentTestMediaTrait {
 
-  use TestFileCreationTrait;
   use MediaTypeCreationTrait;
+  use GeneratedContentTestFileTrait;
 
   /**
    * Media types.
@@ -29,10 +27,9 @@ trait GeneratedContentTestMediaTrait {
    * Test setup for media.
    */
   public function mediaSetUp() {
+    $this->fileSetUp();
+
     $this->installEntitySchema('media');
-    $this->installEntitySchema('file');
-    $this->installSchema('file', 'file_usage');
-    $this->installConfig('image');
     $this->installConfig('media');
 
     $this->mediaTypes[] = 'image';
@@ -45,14 +42,11 @@ trait GeneratedContentTestMediaTrait {
   protected function prepareMediaItems($count, $bundles = NULL, $single_bundle = FALSE) {
     $bundles = $bundles ?? $this->mediaTypes;
 
+    $files = $this->prepareFiles(2);
+
     $medias = [];
 
     $bundle = $bundles[0];
-    $image = File::create([
-      // @phpstan-ignore-next-line
-      'uri' => $this->getTestFiles('image')[0]->uri,
-    ]);
-    $image->save();
     $this->createMediaType('image', ['id' => $bundle]);
     for ($i = 0; $i < $count; $i++) {
       $media = $this->container->get('entity_type.manager')->getStorage('media')->create([
@@ -60,7 +54,7 @@ trait GeneratedContentTestMediaTrait {
         'name' => sprintf('Media %s of bundle %s.', $i + 1, $bundle),
         'field_media_image' => [
           [
-            'target_id' => $image->id(),
+            'target_id' => $files[0]->id(),
             'alt' => 'default alt',
             'title' => 'default title',
           ],
@@ -71,11 +65,6 @@ trait GeneratedContentTestMediaTrait {
     }
 
     $bundle = $bundles[1];
-    $file = File::create([
-      // @phpstan-ignore-next-line
-      'uri' => $this->getTestFiles('binary')[0]->uri,
-    ]);
-    $file->save();
     $this->createMediaType('file', ['id' => $bundle]);
     for ($i = 0; $i < $count; $i++) {
       $media = $this->container->get('entity_type.manager')->getStorage('media')->create([
@@ -83,7 +72,7 @@ trait GeneratedContentTestMediaTrait {
         'name' => sprintf('Media %s of bundle %s.', $i + 1, $bundle),
         'field_media_file' => [
           [
-            'target_id' => $file->id(),
+            'target_id' => $files[1]->id(),
           ],
         ],
       ]);
