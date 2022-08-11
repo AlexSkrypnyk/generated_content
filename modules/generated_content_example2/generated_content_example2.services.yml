@@ -1,4 +1,0 @@
-services:
-  generated_content.asset_generator:
-    class: Drupal\generated_content_example2\GeneratedContentExample2AssetGenerator
-    arguments: [ '@file_system', '@entity_type.manager', '@file.repository', '@extension.list.module' ]
