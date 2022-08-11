@@ -67,11 +67,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static $verbose = TRUE;
 
   /**
-   * Array of static entity offsets to track calls to retrieve static entities.
+   * Array of static offsets used to track calls to retrieve static items.
    *
    * @var array
    */
-  protected static $staticEntityOffsets;
+  protected static $staticOffsets;
 
   /**
    * GeneratedContentHelper constructor.
@@ -119,7 +119,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   public function reset() {
     static::$instances = [];
     static::$staticOffset = 0;
-    static::$staticEntityOffsets = [];
+    static::$staticOffsets = [];
 
     return static::getInstance();
   }
@@ -221,7 +221,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a static user.
+   * Select static users.
    *
    * @param null|int $count
    *   Number of users to return. If none provided - all users will be returned.
@@ -314,7 +314,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a static node.
+   * Select static nodes.
    *
    * @param string $bundle
    *   The type of the node to return. If not provided - random type will be
@@ -410,7 +410,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a random real term.
+   * Select static terms.
    *
    * @param string $vid
    *   The vocabulary of the term to return. If not provided - term from random
@@ -426,7 +426,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a random media.
+   * Select a random media item.
    *
    * @param string $bundle
    *   The type of the media to return. If not provided - random type will be
@@ -442,7 +442,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select random medias.
+   * Select random media items.
    *
    * @param string $bundle
    *   The type of the media to return. If not provided - random type will be
@@ -458,7 +458,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a random real media.
+   * Select a random real media item.
    *
    * @param string $bundle
    *   The type of the media to return. If not provided - random type will be
@@ -474,7 +474,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select random medias.
+   * Select random real media items.
    *
    * @param string $bundle
    *   The type of the media to return. If not provided - random type will be
@@ -490,7 +490,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a static media.
+   * Select a static media item.
    *
    * @param string $bundle
    *   The type of the media to return. If not provided - random type will be
@@ -506,7 +506,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Select a static media.
+   * Select static media items.
    *
    * @param string $bundle
    *   The type of the media to return. If not provided - random type will be
@@ -564,7 +564,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Get random allowed value from the field.
+   * Get static allowed value from the field.
    *
    * @param string $entity_type
    *   The entity type.
@@ -583,7 +583,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Get random allowed values from the field.
+   * Get static allowed values from the field.
    *
    * @param string $entity_type
    *   The entity type.
@@ -601,7 +601,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   public static function staticFieldAllowedValues($entity_type, $bundle, $field_name, $count = NULL) {
     $allowed_values = static::fieldAllowedValues($entity_type, $bundle, $field_name);
 
-    $idx = static::getStaticEntityOffset($entity_type, $bundle, $field_name);
+    $idx = static::getStaticOffset($entity_type, $bundle, $field_name);
 
     if (is_null($count)) {
       $return = self::arraySliceCircular($allowed_values, count($allowed_values), $idx);
@@ -610,7 +610,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       $return = self::arraySliceCircular($allowed_values, $count, $idx);
     }
 
-    static::setStaticEntityOffset(count($return), $entity_type, $bundle, $field_name);
+    static::setStaticOffset(count($return), $entity_type, $bundle, $field_name);
 
     return $return;
   }
@@ -941,7 +941,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Get random static entities.
+   * Get static entities.
    *
    * Static entities are entities within a repository, returned in a predictable
    * order based on the called argument list. So, calls with and without $bundle
@@ -953,7 +953,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Entity bundle. If none provided - all entities of this type will be
    *   returned.
    * @param null|int $count
-   *   Number of entities to return. If none provided - all entities will be
+   *   Number of entities to return. If NULL- all entities will be
    *   returned with previously used offsets.
    *
    * @return \Drupal\Core\Entity\EntityInterface[]
@@ -962,24 +962,48 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static function staticEntities($entity_type, $bundle = NULL, $count = NULL) {
     $entities = static::$repository->getEntities($entity_type, $bundle);
 
-    if (!empty($entities) && !$bundle) {
-      $entities_all = [];
-      foreach ($entities as $bundled_entities) {
-        $entities_all = array_merge($entities_all, $bundled_entities);
+    return static::filterStaticItems($entities, $entity_type, $bundle, $count);
+  }
+
+  /**
+   * Filter static items.
+   *
+   * Static items returned in a predictable order based on the called argument
+   * list. So, calls with and without $subtype value are tracked separately.
+   *
+   * @param array $items
+   *   Array of items to filter.
+   * @param string $type
+   *   Type to filter by.
+   * @param string|null $subtype
+   *   An optional sub-type to filter by.
+   * @param int|null $count
+   *   Number of items to return. If NULL - all entities will be
+   *   returned with previously used offsets.
+   *
+   * @return array
+   *   Array of items.
+   */
+  protected static function filterStaticItems(array $items, $type, $subtype = NULL, $count = NULL) {
+    // Merge all items if subtype was not provided.
+    if (!empty($items) && !$subtype) {
+      $items_all = [];
+      foreach ($items as $typed_items) {
+        $items_all = array_merge($items_all, $typed_items);
       }
-      $entities = $entities_all;
+      $items = $items_all;
     }
 
-    $idx = static::getStaticEntityOffset($entity_type, $bundle);
+    $idx = static::getStaticOffset($type, $subtype);
 
     if (is_null($count)) {
-      $return = self::arraySliceCircular($entities, count($entities), $idx);
+      $return = self::arraySliceCircular($items, count($items), $idx);
     }
     else {
-      $return = self::arraySliceCircular($entities, $count, $idx);
+      $return = self::arraySliceCircular($items, $count, $idx);
     }
 
-    static::setStaticEntityOffset(count($return), $entity_type, $bundle);
+    static::setStaticOffset(count($return), $type, $subtype);
 
     return $return;
   }
@@ -987,7 +1011,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * Set static entity offset.
    *
-   * Note that entity offsets with and without $bundle value are tracked
+   * Note that offsets with different number of arguments are tracked
    * separately.
    *
    * @param mixed ...$arguments
@@ -996,28 +1020,28 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @return int
    *   Offset value.
    */
-  protected static function getStaticEntityOffset(...$arguments) {
+  protected static function getStaticOffset(...$arguments) {
     $key = implode('__', func_get_args());
-    self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
+    self::$staticOffsets[$key] = self::$staticOffsets[$key] ?? 0;
 
-    return self::$staticEntityOffsets[$key];
+    return self::$staticOffsets[$key];
   }
 
   /**
-   * Set static entity offset to a value.
+   * Set static offset to a value.
    *
-   * Note that this will further offset any existing entity offsets by an
+   * Note that this will further offset any existing offsets by an
    * $offset value.
    *
    * @param mixed ...$arguments
    *   A list of properties to track. First argument being the offset.
    */
-  protected static function setStaticEntityOffset(...$arguments) {
+  protected static function setStaticOffset(...$arguments) {
     $args = func_get_args();
     $offset = array_shift($args);
     $key = implode('__', $args);
-    self::$staticEntityOffsets[$key] = self::$staticEntityOffsets[$key] ?? 0;
-    self::$staticEntityOffsets[$key] += $offset;
+    self::$staticOffsets[$key] = self::$staticOffsets[$key] ?? 0;
+    self::$staticOffsets[$key] += $offset;
   }
 
   /**
