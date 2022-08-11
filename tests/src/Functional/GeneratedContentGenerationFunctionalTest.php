@@ -30,45 +30,93 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
 
     $this->drupalGet('/admin/config/development/generated-content');
 
-    $this->assertInfoTableItems(0, 0, 0, 0, 0, 0);
+    $this->assertInfoTableItems(0, 0, 0, 0, 0, 0, 0);
 
     $edit = [
       'table[user__user]' => TRUE,
-      'table[media__document]' => TRUE,
+      'table[file__file]' => TRUE,
       'table[media__image]' => TRUE,
+      'table[media__document]' => TRUE,
       'table[taxonomy_term__tags]' => TRUE,
       'table[node__page]' => TRUE,
       'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Generate');
-    $this->assertInfoTableItems(0, 10, 10, 10, 3, 10);
+    $this->assertInfoTableItems(0, 70, 10, 10, 10, 3, 10);
 
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_1@example.com');
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_2@example.com');
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_3@example.com');
     $this->assertSession()->pageTextContains('Created generated content entities "user" with bundle "user"');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 1');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 2');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 3');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 4');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 5');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 6');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 7');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 8');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 9');
-    $this->assertSession()->pageTextContains('Created media Image "Demo Image media 10 ');
+
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_1');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_2');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_3');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_4');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_5');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_6');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_7');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_8');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_9');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_jpg_file_10');
+
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_1');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_2');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_3');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_4');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_5');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_6');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_7');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_8');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_9');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_png_file_10');
+
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_1');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_2');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_3');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_4');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_5');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_6');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_7');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_8');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_9');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_pdf_file_10');
+
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_1');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_2');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_3');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_4');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_5');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_6');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_7');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_8');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_9');
+    $this->assertSession()->pageTextContains('Created file "Demo_static_docx_file_10');
+
+    $this->assertSession()->pageTextContains('Created media Image "Demo static Image media 1');
+    $this->assertSession()->pageTextContains('Created media Image "Demo random Image media 2');
+    $this->assertSession()->pageTextContains('Created media Image "Demo static Image media 3');
+    $this->assertSession()->pageTextContains('Created media Image "Demo random Image media 4');
+    $this->assertSession()->pageTextContains('Created media Image "Demo static Image media 5');
+    $this->assertSession()->pageTextContains('Created media Image "Demo random Image media 6');
+    $this->assertSession()->pageTextContains('Created media Image "Demo static Image media 7');
+    $this->assertSession()->pageTextContains('Created media Image "Demo random Image media 8');
+    $this->assertSession()->pageTextContains('Created media Image "Demo static Image media 9');
+    $this->assertSession()->pageTextContains('Created media Image "Demo random Image media 10');
     $this->assertSession()->pageTextContains('Created generated content entities "media" with bundle "image"');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 1');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 2');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 3');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 4');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 5');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 6');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 7');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 8');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 9');
-    $this->assertSession()->pageTextContains('Created media Document "Demo Document media 10 ');
+
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 1');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 2');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 3');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 4');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 5');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 6');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 7');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 8');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 9');
+    $this->assertSession()->pageTextContains('Created media Document "Demo random Document media 10 ');
     $this->assertSession()->pageTextContains('Created generated content entities "media" with bundle "document"');
+
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 1"');
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 2"');
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 3"');
@@ -80,86 +128,35 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 9"');
     $this->assertSession()->pageTextContains('Created "tags" term "Generated term 10"');
     $this->assertSession()->pageTextContains('Created generated content entities "taxonomy_term" with bundle "tags"');
+
     $this->assertSession()->pageTextContains('Created "page" node "Demo Page, default values"');
     $this->assertSession()->pageTextContains('Created "page" node "Demo Page, Body"');
     $this->assertSession()->pageTextContains('Created "page" node "Demo Page, Body, Unpublished"');
     $this->assertSession()->pageTextContains('Created generated content entities "node" with bundle "page"');
+
+    $this->assertSession()->pageTextContains('Created "article" node "Generated article');
     $this->assertSession()->pageTextContains('Created generated content entities "node" with bundle "article"');
 
     $edit = [
       'table[user__user]' => TRUE,
-      'table[media__document]' => TRUE,
+      'table[file__file]' => TRUE,
       'table[media__image]' => TRUE,
+      'table[media__document]' => TRUE,
       'table[taxonomy_term__tags]' => TRUE,
       'table[node__page]' => TRUE,
       'table[node__article]' => TRUE,
     ];
     $this->submitForm($edit, 'Delete');
-    $this->assertInfoTableItems(0, 0, 0, 0, 0, 0);
+    $this->assertInfoTableItems(0, 0, 0, 0, 0, 0, 0);
 
     $this->assertSession()->pageTextContains('Removed all generated content entities "user" in bundle "user"');
-    $this->assertSession()->pageTextContains('Removed all generated content entities "media" in bundle "document"');
+    $this->assertSession()->pageTextContains('Removed all generated content entities "file" in bundle "file"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "media" in bundle "image"');
+    $this->assertSession()->pageTextContains('Removed all generated content entities "media" in bundle "document"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "taxonomy_term" in bundle "tags"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "page"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "article"');
-    $this->assertSession()->pageTextContains('6 items processed.');
-  }
-
-  /**
-   * Assert table items are present with values.
-   */
-  protected function assertInfoTableItems($c1, $c2, $c3, $c4, $c5, $c6) {
-    $this->assertSession()->responseContains('Generate content');
-
-    $row_idx = 1;
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'user');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'user');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", -100);
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Disabled');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example1');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c1);
-    $row_idx++;
-
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'media');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'image');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 1);
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example1');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c2);
-    $row_idx++;
-
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'media');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'document');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 2);
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example2');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c3);
-    $row_idx++;
-
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'taxonomy_term');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'tags');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 12);
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example2');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c4);
-    $row_idx++;
-
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'node');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'page');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 35);
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example2');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c5);
-    $row_idx++;
-
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[2]", 'node');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[3]", 'article');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[4]", 36);
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[5]", 'Enabled');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[6]", 'generated_content_example2');
-    $this->assertSession()->elementTextContains('xpath', "//table/tbody/tr[$row_idx]/td[7]", $c6);
-    $row_idx++;
+    $this->assertSession()->pageTextContains('7 items processed.');
   }
 
 }

@@ -32,35 +32,35 @@ function generated_content_example2_generated_content_create_media_document() {
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
   $helper = GeneratedContentExample2Helper::getInstance();
 
-  $total_files_count = 10;
+  $total_media_count = 10;
 
   $entities = [];
-  for ($i = 0; $i < $total_files_count; $i++) {
-    $filename = sprintf('Demo Document media %s %s', $i + 1, $helper::randomName());
-    if ($i % 3) {
+  for ($i = 0; $i < $total_media_count; $i++) {
+    $name = sprintf('Demo random Document media %s %s', $i + 1, $helper::randomName());
+    $file = NULL;
+    if ($i % 2) {
       $file_type = $helper::randomArrayItem([
         GeneratedContentAssetGenerator::ASSET_TYPE_PDF,
         GeneratedContentAssetGenerator::ASSET_TYPE_DOCX,
+        GeneratedContentAssetGenerator::ASSET_TYPE_TXT,
       ]);
-      $file = $helper->createFile($file_type, [
-        'filename' => str_replace(' ', '_', $filename),
-      ], GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC);
-    }
-    elseif ($i % 3 == 1) {
-      $file = $helper->createFile(GeneratedContentAssetGenerator::ASSET_TYPE_TXT, [
-        'filename' => str_replace(' ', '_', $filename),
-        'content' => 'Contents of ' . $filename,
-      ]);
+      $file = $helper->randomFile($file_type);
     }
     else {
+      // Example of the direct file creation for the format defined in the
+      // custom generator.
       $file = $helper->createFile(GeneratedContentExample2AssetGenerator::ASSET_TYPE_RTF, [
-        'filename' => str_replace(' ', '_', $filename),
+        'filename' => str_replace(' ', '_', $name),
       ]);
+    }
+
+    if (!$file) {
+      continue;
     }
 
     $media = Media::create([
       'bundle' => 'document',
-      'name' => $filename,
+      'name' => $name,
     ]);
 
     $media->field_media_document->setValue($file->id());

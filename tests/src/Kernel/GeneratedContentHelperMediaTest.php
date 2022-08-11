@@ -26,7 +26,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
     'file',
     'image',
     'text',
-    'taxonomy',
   ];
 
   /**

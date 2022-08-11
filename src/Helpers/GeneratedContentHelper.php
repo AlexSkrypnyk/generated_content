@@ -523,6 +523,149 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   }
 
   /**
+   * Select a random file.
+   *
+   * @param string $extension
+   *   The extension of the file to return. If not provided - a file with a
+   *   random available extension will be returned.
+   *
+   * @return \Drupal\file\Entity\File|null
+   *   File entity object or NULL if no entities were found.
+   */
+  public static function randomFile($extension = NULL) {
+    $entities = static::randomFiles($extension, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random files.
+   *
+   * @param string $extension
+   *   The extension of the file to return. If not provided - a file with a
+   *   random available extension will be returned.
+   * @param bool|int $count
+   *   Optional count of Files. If FALSE, 20 Files will be returned.
+   *
+   * @return \Drupal\file\Entity\File[]
+   *   Array of file entities.
+   */
+  public static function randomFiles($extension = NULL, $count = 5) {
+    /** @var \Drupal\file\Entity\File[] $entities */
+    $entities = static::randomEntities('file');
+
+    $entities = static::filterFilesByExtension($entities, $extension, $count);
+
+    return $entities;
+  }
+
+  /**
+   * Select a random real file.
+   *
+   * @param string $extension
+   *   The extension of the file to return. If not provided - a file with a
+   *   random available extension will be returned.
+   *
+   * @return \Drupal\file\Entity\File|null
+   *   File entity object or NULL if no entities were found.
+   */
+  public static function randomRealFile($extension = NULL) {
+    $entities = static::randomRealFiles($extension, 1);
+
+    return count($entities) > 0 ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select random real files.
+   *
+   * @param string $extension
+   *   The extension of the file to return. If not provided - a file with a
+   *   random available extension will be returned.
+   * @param bool|int $count
+   *   Optional count of Files. If FALSE, 5 Files will be returned.
+   *
+   * @return \Drupal\file\Entity\File[]
+   *   Array of file entities.
+   */
+  public static function randomRealFiles($extension = NULL, $count = 5) {
+    $entities = static::randomRealEntities('file');
+
+    $entities = static::filterFilesByExtension($entities, $extension, $count);
+
+    return $entities;
+  }
+
+  /**
+   * Select a static file.
+   *
+   * @param string $extension
+   *   The extension of the file to return. If not provided - a file with a
+   *   random available extension will be returned.
+   *
+   * @return \Drupal\file\Entity\File|null
+   *   The file object or NULL if no entities were found.
+   */
+  public static function staticFile($extension = NULL) {
+    $entities = static::staticFiles($extension, 1);
+
+    return !empty($entities) ? reset($entities) : NULL;
+  }
+
+  /**
+   * Select static files.
+   *
+   * @param string $extension
+   *   The extension of the file to return. If not provided - a file with a
+   *   random available extension will be returned.
+   * @param null|int $count
+   *   Number of files to return. If none provided - all files will be returned.
+   *
+   * @return \Drupal\file\Entity\File[]
+   *   Array of file objects.
+   */
+  public static function staticFiles($extension = NULL, $count = NULL) {
+    // Because extension is not an entity bundle, filtering files by extension
+    // requires working with a full set of entities _before_ they can be
+    // filtered by extension and filtered further by static index and count.
+    $entities = static::$repository->getEntities('file', 'file');
+
+    $entities = static::filterFilesByExtension($entities, $extension);
+
+    return static::filterStaticItems($entities, 'file', $extension, $count);
+  }
+
+  /**
+   * Filter files by extension.
+   *
+   * @param array $files
+   *   Array of File objects.
+   * @param string $extension
+   *   Extension without a leading dot to filter by.
+   * @param int|null $count
+   *   Optional number of items to return after filtering. If NULL - all
+   *   filtered-out items will be returned.
+   *
+   * @return array
+   *   Array of File objects filtered by the extension.
+   */
+  protected static function filterFilesByExtension(array $files, $extension, $count = NULL) {
+    if (!is_null($extension)) {
+      foreach ($files as $k => $file) {
+        $ext = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
+        if ($ext != $extension) {
+          unset($files[$k]);
+        }
+      }
+    }
+
+    if (!is_null($count)) {
+      $count = max(0, min($count, count($files)));
+    }
+
+    return is_null($count) ? $files : array_slice($files, 0, $count);
+  }
+
+  /**
    * Get random allowed value from the field.
    *
    * @param string $entity_type
@@ -629,8 +772,31 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @return \Drupal\file\FileInterface
    *   Created managed file.
    */
-  public static function createFile($type, array $options = [], $generation_type = GeneratedContentAssetGenerator:: GENERATE_TYPE_RANDOM) {
-    return static::$assetGenerator->generate($type, $options, $generation_type);
+  public static function createFile($type, array $options = [], $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM) {
+    $return = [];
+
+    // Track the asset offset of statically generated files.
+    if ($generation_type == GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC) {
+      $assets = static::$assetGenerator->getAssets($type);
+      $asset_indices = array_keys($assets);
+
+      $idx = static::getStaticOffset('file_asset', $type);
+
+      $return = self::arraySliceCircular($asset_indices, 1, $idx);
+
+      $options += [
+        'index' => $return[0] ?? 0,
+      ];
+    }
+
+    $file = static::$assetGenerator->generate($type, $options, $generation_type);
+
+    // Track the asset offset of statically generated files.
+    if ($generation_type == GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC) {
+      static::setStaticOffset(count($return), 'file_asset', $type);
+    }
+
+    return $file;
   }
 
   /**
@@ -988,10 +1154,23 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     // Merge all items if subtype was not provided.
     if (!empty($items) && !$subtype) {
       $items_all = [];
+      $items_merged = 0;
       foreach ($items as $typed_items) {
-        $items_all = array_merge($items_all, $typed_items);
+        // There may be a case when subtype was not provided abd $items is
+        // already flattened - need to discover this case and check if every
+        // element of the array is another array that needs to be merged.
+        if (is_array($typed_items)) {
+          $items_all = array_merge($items_all, $typed_items);
+          $items_merged++;
+        }
       }
-      $items = $items_all;
+
+      if ($items_merged > 0 && count($items) != $items_merged) {
+        throw new \Exception(sprintf('Mixed data provided when trying to merge %s static items.', $type));
+      }
+      elseif ($items_merged > 0) {
+        $items = $items_all;
+      }
     }
 
     $idx = static::getStaticOffset($type, $subtype);

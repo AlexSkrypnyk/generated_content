@@ -413,23 +413,23 @@ class GeneratedContentAssetGenerator {
   /**
    * Get a list of available assets.
    *
-   * @param string $type
-   *   Optional asset type.
+   * @param string $extension
+   *   Optional asset extension.
    *
    * @return array
-   *   Array of available assets. If $type is provided - limited to assets
-   *   of this type. Otherwise - an array of arrays per type.
+   *   Array of available assets. If $extension is provided - limited to assets
+   *   with this extension. Otherwise - an array of arrays per extension.
    *
    * @throws \Exception
    *   If an asset with a requested type is not available.
    */
-  public function getAssets($type = NULL) {
-    if ($type) {
-      if (empty($this->assets[$type])) {
-        throw new \Exception(sprintf('Assets of type %s do not exist.', $type));
+  public function getAssets($extension = NULL) {
+    if ($extension) {
+      if (empty($this->assets[$extension])) {
+        throw new \Exception(sprintf('Assets of type %s do not exist.', $extension));
       }
 
-      return $this->assets[$type];
+      return $this->assets[$extension];
     }
 
     return $this->assets;

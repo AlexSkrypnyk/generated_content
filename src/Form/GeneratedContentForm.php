@@ -153,6 +153,10 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
         $query = $bundle ? ['type' => $bundle] : $query;
         break;
 
+      case 'file':
+        $path = '/admin/content/files';
+        break;
+
       case 'media':
         $path = '/admin/content/media';
         $query = $bundle ? ['type' => $bundle] : $query;

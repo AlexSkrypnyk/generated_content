@@ -31,41 +31,37 @@ function generated_content_example1_generated_content_create_media_image() {
   /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
   $helper = GeneratedContentHelper::getInstance();
 
-  $total_files_count = 10;
+  $total_media_count = 10;
 
   $entities = [];
-  for ($i = 0; $i < $total_files_count; $i++) {
+  for ($i = 0; $i < $total_media_count; $i++) {
+    /** @var \Drupal\file\Entity\File $file */
+    $file = NULL;
     if ($i % 2) {
       $file_type = $helper::randomArrayItem([
         GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
         GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
       ]);
-      $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomName());
-      $file = $helper->createFile($file_type, [
-        'filename' => str_replace(' ', '_', $filename),
-        'width' => 2000,
-        'height' => 1000,
-      ]);
+      $file = $helper->randomFile($file_type);
+      $name = sprintf('Demo random Image media %s %s', $i + 1, $helper::randomName());
     }
     else {
-      $file_type = $helper::randomArrayItem([
-        GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
-        GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
-      ]);
-      $filename = sprintf('Demo Image media %s %s', $i + 1, $helper::randomName());
-      $file = $helper->createFile($file_type, [
-        'filename' => str_replace(' ', '_', $filename),
-      ], GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC);
+      $file = $helper->staticFile(GeneratedContentAssetGenerator::ASSET_TYPE_PNG);
+      $name = sprintf('Demo static Image media %s %s', $i + 1, $helper::randomName());
+    }
+
+    if (!$file) {
+      continue;
     }
 
     $media = Media::create([
       'bundle' => 'image',
-      'name' => $filename,
+      'name' => $name,
     ]);
 
     $media->field_media_image->setValue([
       'target_id' => $file->id(),
-      'alt' => sprintf('Alt for %s', $filename),
+      'alt' => sprintf('Alt for %s', $name),
     ]);
     $media->save();
 
