@@ -99,7 +99,8 @@ class GeneratedContentAssetGenerator {
   /**
    * Array of available assets.
    *
-   * Keys are extensions without a leading dot and values are paths to assets.
+   * Keys are extensions without a leading dot and values are an array of paths
+   * to assets of the same type.
    *
    * @var array
    */
@@ -346,6 +347,9 @@ class GeneratedContentAssetGenerator {
   /**
    * Generate a static file.
    *
+   * This generator or does not actually generate the file. Instead - it
+   * provides a path to one of the available static files.
+   *
    * @param string $type
    *   File type.
    * @param array $options
@@ -355,13 +359,19 @@ class GeneratedContentAssetGenerator {
    *   Real path to generated file.
    */
   protected function generatorStaticFile($type, array $options = []) {
-    $filepath = $this->assets[$type] ?? NULL;
+    $options += [
+      'index' => 0,
+    ];
 
-    if (!$filepath) {
+    $files = $this->assets[$type] ?? NULL;
+
+    if (empty($files)) {
       throw new \RuntimeException(sprintf('Unable to create a static asset: "%s" source asset type is not available.', $type));
     }
 
-    return $filepath;
+    $index = max(0, min($options['index'], count($files)));
+
+    return $files[$index];
   }
 
   /**
@@ -401,6 +411,31 @@ class GeneratedContentAssetGenerator {
   }
 
   /**
+   * Get a list of available assets.
+   *
+   * @param string $type
+   *   Optional asset type.
+   *
+   * @return array
+   *   Array of available assets. If $type is provided - limited to assets
+   *   of this type. Otherwise - an array of arrays per type.
+   *
+   * @throws \Exception
+   *   If an asset with a requested type is not available.
+   */
+  public function getAssets($type = NULL) {
+    if ($type) {
+      if (empty($this->assets[$type])) {
+        throw new \Exception(sprintf('Assets of type %s do not exist.', $type));
+      }
+
+      return $this->assets[$type];
+    }
+
+    return $this->assets;
+  }
+
+  /**
    * Load assets.
    *
    * @return array
@@ -409,32 +444,67 @@ class GeneratedContentAssetGenerator {
    */
   protected function loadAssets() {
     // Pre-load replacement assets.
-    $extensions = [
-      'jpg',
-      'jpeg',
-      'gif',
-      'png',
-      'pdf',
-      'doc',
-      'docx',
-      'xls',
-      'xlsx',
-      'mp3',
-      'mp4',
-      'svg',
-    ];
+    $extensions = $this->getAssetsExtensions();
 
     $assets = [];
 
-    $module_path = $this->moduleExtensionList->getPath('generated_content');
-    foreach ($extensions as $extension) {
-      $dummy_file = $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'dummy.' . $extension;
-      if (file_exists($dummy_file)) {
-        $assets[$extension] = $dummy_file;
+    $dirs = $this->getAssetsDirs();
+    foreach ($dirs as $dir) {
+      if (file_exists($dir)) {
+        foreach ($extensions as $extension) {
+          $files = glob($dir . '/*.' . $extension);
+          if ($files) {
+            $assets[$extension] = $assets[$extension] ?? [];
+            $assets[$extension] = array_merge($assets[$extension], $files);
+          }
+        }
       }
     }
 
     return $assets;
+  }
+
+  /**
+   * Get a list of assets directories.
+   *
+   * Descendant classes can extend or replace this list to limit available
+   * assets.
+   *
+   * @return string[]
+   *   Array of real directory paths where assets are stored.
+   */
+  protected function getAssetsDirs() {
+    $module_path = $this->moduleExtensionList->getPath('generated_content');
+
+    return [
+      $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR),
+    ];
+  }
+
+  /**
+   * Get supported assets extensions.
+   *
+   * Descendant classes can extend or replace this list to limit available
+   * assets.
+   *
+   * @return string[]
+   *   Array of asset extensions to discover.
+   */
+  protected function getAssetsExtensions() {
+    return [
+      static::ASSET_TYPE_DOC,
+      static::ASSET_TYPE_DOCX,
+      static::ASSET_TYPE_GIF,
+      static::ASSET_TYPE_JPEG,
+      static::ASSET_TYPE_JPG,
+      static::ASSET_TYPE_MP3,
+      static::ASSET_TYPE_MP4,
+      static::ASSET_TYPE_PDF,
+      static::ASSET_TYPE_PNG,
+      static::ASSET_TYPE_SVG,
+      static::ASSET_TYPE_XLS,
+      static::ASSET_TYPE_XLSX,
+    ];
   }
 
 }

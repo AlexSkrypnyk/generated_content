@@ -157,8 +157,7 @@ known aliases in 2 environments and report differences, if any.
 
 1. Add more random and static generators.
 2. Add tests for existing random and static generators.
-3. Several custom assets directories.
-4. [Suggest yours](https://www.drupal.org/project/issues/generated_content).
+3. [Suggest yours](https://www.drupal.org/project/issues/generated_content).
 
 ---
 
