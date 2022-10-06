@@ -387,7 +387,10 @@ class GeneratedContentAssetGenerator {
     $file = NULL;
 
     $storage = $this->entityTypeManager->getStorage('file');
-    $query = $storage->getQuery('AND')->condition('filename', $filename);
+    $query = $storage
+      ->getQuery('AND')
+      ->accessCheck(FALSE)
+      ->condition('filename', $filename);
     $ids = $query->execute();
 
     if (!empty($ids)) {
