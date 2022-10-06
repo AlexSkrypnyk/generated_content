@@ -21,7 +21,7 @@
     },
     "require": {
         "php": ">=7.4",
-        "drupal/core": ">=9.3"
+        "drupal/core": "^9 || ^10"
     },
     "suggest": {
         "drupal/config_ignore": "Ignore certain configuration during import."
