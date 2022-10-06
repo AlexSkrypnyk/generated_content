@@ -1,5 +1,5 @@
 name: Generated Content
 type: module
 description: Programmatically generate content.
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 package: Other
