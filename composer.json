@@ -20,7 +20,8 @@
         "source": "https://github.com/drevops/generated_content"
     },
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "drupal/core": "^9 || ^10"
     },
     "suggest": {
         "drupal/config_ignore": "Ignore certain configuration during import."

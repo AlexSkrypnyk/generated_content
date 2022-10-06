@@ -1,7 +1,7 @@
 name: Generated Content Example 1
 type: module
 description: Example 1 to programmatically generate content.
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 package: Other
 dependencies:
   - generated_content:generated_content
