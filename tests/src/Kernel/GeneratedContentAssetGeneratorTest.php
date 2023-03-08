@@ -41,13 +41,16 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   public function testGenerate($type, $options = [], $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, $expected_uri = NULL, $expected_exception_message = NULL, $expected_exception_is_notice = FALSE) {
     if ($expected_exception_message) {
       if ($expected_exception_is_notice) {
-        $this->expectNotice();
-        $this->expectNoticeMessage($expected_exception_message);
+        set_error_handler(
+          static function ($errno, $errstr) {
+            restore_error_handler();
+            throw new \Exception($errstr, $errno);
+          },
+          E_ALL
+        );
       }
-      else {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage($expected_exception_message);
-      }
+      $this->expectException(\Exception::class);
+      $this->expectExceptionMessage($expected_exception_message);
     }
 
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
