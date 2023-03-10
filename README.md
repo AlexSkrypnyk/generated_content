@@ -158,9 +158,3 @@ known aliases in 2 environments and report differences, if any.
 1. Add more random and static generators.
 2. Add tests for existing random and static generators.
 3. [Suggest yours](https://www.drupal.org/project/issues/generated_content).
-
----
-
-This module is a part of [DrevOps](https://github.com/drevops/) ecosystem -
-Drupal project template and tooling to speed-up DevOps when working on Drupal
-sites.
