@@ -1,5 +1,5 @@
 {
-    "name": "drevops/generated_content",
+    "name": "drupal/generated_content",
     "description": "Drupal module to programmatically generate content.",
     "license": "GPL-2.0-or-later",
     "type": "drupal-module",
@@ -8,20 +8,18 @@
         "generate",
         "random"
     ],
-    "homepage": "https://www.drupal.org/project/generated_content",
     "authors": [
         {
             "name": "Alex Skrypnyk",
-            "email": "alex@drevops.com"
+            "email": "alex@drevops.com",
+            "homepage": "https://www.drupal.org/u/alexskrypnyk",
+            "role": "Maintainer"
         }
     ],
+    "homepage": "https://drupal.org/project/generated_content",
     "support": {
-        "issues": "https://www.drupal.org/project/issues/generated_content",
-        "source": "https://github.com/drevops/generated_content"
-    },
-    "require": {
-        "php": ">=7.4",
-        "drupal/core": "^9 || ^10"
+        "issues": "https://drupal.org/project/issues/generated_content",
+        "source": "https://git.drupalcode.org/project/generated_content"
     },
     "suggest": {
         "drupal/config_ignore": "Ignore certain configuration during import."
