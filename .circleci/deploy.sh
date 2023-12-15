@@ -73,8 +73,10 @@ git remote add deployremote "${DEPLOY_REMOTE}"
 
 echo "==> Deploying to remote ${DEPLOY_REMOTE}."
 
-echo "  > Pushing code to branch ${DEPLOY_BRANCH}."
-git push --force deployremote HEAD:"${DEPLOY_BRANCH}"
+if [ -n "${DEPLOY_BRANCH}" ]; then
+  echo "  > Pushing code to branch ${DEPLOY_BRANCH}."
+  git push --force deployremote HEAD:"${DEPLOY_BRANCH}"
+fi
 
 echo "  > Pushing tags."
 git push --force --tags deployremote || true
