@@ -82,22 +82,22 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
     $repository->addEntities($medias_merged);
 
     $actual_medias = $helper::randomMediaItems();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_merged))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_merged)));
 
     $actual_medias = $helper::randomMediaItems(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_merged))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_merged)));
 
     $actual_medias = $helper::randomMediaItems(NULL, 20);
-    $this->assertSame(10, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_merged))));
+    $this->assertCount(10, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_merged)));
 
     $actual_medias = $helper::randomMediaItems($this->mediaTypes[0]);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]])));
 
     $actual_medias = $helper::randomMediaItems($this->mediaTypes[0], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]])));
 
     $actual_medias = $helper::randomMediaItems($this->mediaTypes[0], 20);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]])));
   }
 
   /**
@@ -154,29 +154,29 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
     $repository->addEntities($medias_in_repository);
 
     $actual_medias = $helper::randomRealMediaItems();
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_not_in_repository))));
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_in_repository))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_not_in_repository)));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_in_repository)));
 
     $actual_medias = $helper::randomRealMediaItems(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_not_in_repository))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_not_in_repository)));
 
     $actual_medias = $helper::randomRealMediaItems(NULL, 10);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_not_in_repository))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias_not_in_repository)));
 
     $actual_medias = $helper::randomRealMediaItems($this->mediaTypes[0]);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]])));
     $actual_medias = $helper::randomRealMediaItems($this->mediaTypes[1]);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[1]]))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[1]])));
 
     $actual_medias = $helper::randomRealMediaItems($this->mediaTypes[0], 2);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]])));
     $actual_medias = $helper::randomRealMediaItems($this->mediaTypes[1], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[1]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[1]])));
 
     $actual_medias = $helper::randomRealMediaItems($this->mediaTypes[0], 20);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[0]])));
     $actual_medias = $helper::randomRealMediaItems($this->mediaTypes[1], 20);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[1]]))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_medias), $this->replaceEntitiesWithIds($medias[$this->mediaTypes[1]])));
   }
 
   /**
@@ -236,7 +236,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
     $ids = array_values($this->replaceEntitiesWithIds($medias_merged));
 
     $actual_medias = $helper::staticMediaItems();
-    $this->assertSame(6, count(array_intersect($this->replaceEntitiesWithIds($actual_medias), $ids)));
+    $this->assertCount(6, array_intersect($this->replaceEntitiesWithIds($actual_medias), $ids));
 
     $helper->reset();
 

@@ -70,22 +70,22 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
     $repository->addEntities($nodes_merged);
 
     $actual_nodes = $helper::randomNodes();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_merged))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_merged)));
 
     $actual_nodes = $helper::randomNodes(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_merged))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_merged)));
 
     $actual_nodes = $helper::randomNodes(NULL, 20);
-    $this->assertSame(15, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_merged))));
+    $this->assertCount(15, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_merged)));
 
     $actual_nodes = $helper::randomNodes($this->nodeTypes[0]);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]])));
 
     $actual_nodes = $helper::randomNodes($this->nodeTypes[0], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]])));
 
     $actual_nodes = $helper::randomNodes($this->nodeTypes[0], 20);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]])));
   }
 
   /**
@@ -142,35 +142,35 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
     $repository->addEntities($nodes_in_repository);
 
     $actual_nodes = $helper::randomRealNodes();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_not_in_repository))));
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_in_repository))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_not_in_repository)));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_in_repository)));
 
     $actual_nodes = $helper::randomRealNodes(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_not_in_repository))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_not_in_repository)));
 
     $actual_nodes = $helper::randomRealNodes(NULL, 10);
-    $this->assertSame(8, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_not_in_repository))));
+    $this->assertCount(8, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes_not_in_repository)));
 
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[0]);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]])));
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[1]);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[1]]))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[1]])));
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[2]);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[2]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[2]])));
 
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[0], 2);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]])));
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[1], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[1]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[1]])));
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[2], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[2]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[2]])));
 
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[0], 20);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[0]])));
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[1], 20);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[1]]))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[1]])));
     $actual_nodes = $helper::randomRealNodes($this->nodeTypes[2], 20);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[2]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $this->replaceEntitiesWithIds($nodes[$this->nodeTypes[2]])));
   }
 
   /**
@@ -237,7 +237,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
     $ids = array_values($this->replaceEntitiesWithIds($nodes_merged));
 
     $actual_nodes = $helper::staticNodes();
-    $this->assertSame(9, count(array_intersect($this->replaceEntitiesWithIds($actual_nodes), $ids)));
+    $this->assertCount(9, array_intersect($this->replaceEntitiesWithIds($actual_nodes), $ids));
 
     $helper->reset();
 
