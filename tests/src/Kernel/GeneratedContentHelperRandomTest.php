@@ -251,7 +251,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
 
     $content = $helper::randomUuid();
     $parts = explode('-', $content);
-    $this->assertSame(5, count($parts));
+    $this->assertCount(5, $parts);
     $this->assertMatchesRegularExpression('/[0-9a-f-]/', $content);
 
     $content1 = $helper::randomUuid();
@@ -291,13 +291,13 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
 
     $values = $helper::randomArrayItems($array, 1);
     $this->assertIsArray($values);
-    $this->assertSame(1, count(array_intersect($values, $array)));
-    $this->assertSame(1, count(array_intersect_key($values, $array)));
+    $this->assertCount(1, array_intersect($values, $array));
+    $this->assertCount(1, array_intersect_key($values, $array));
 
     $values = $helper::randomArrayItems($array, 2);
     $this->assertIsArray($values);
-    $this->assertSame(2, count(array_intersect($values, $array)));
-    $this->assertSame(2, count(array_intersect_key($values, $array)));
+    $this->assertCount(2, array_intersect($values, $array));
+    $this->assertCount(2, array_intersect_key($values, $array));
   }
 
   /**

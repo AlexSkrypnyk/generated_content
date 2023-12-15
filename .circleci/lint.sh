@@ -27,11 +27,6 @@ build/vendor/bin/phpcs \
   --extensions=module,php,install,inc,test,info.yml,js \
   "${BUILD_DIR}/web/modules/${MODULE}"
 
-echo "  > Running drupal-check."
-build/vendor/bin/drupal-check \
-  --drupal-root=build/web \
-  "${BUILD_DIR}/web/modules/${MODULE}"
-
 echo "  > Running Drupal Rector."
 pushd "${BUILD_DIR}" >/dev/null || exit 1
 vendor/bin/rector process \

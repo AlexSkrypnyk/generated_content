@@ -76,7 +76,7 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
     ];
     $this->fieldCreateListAllowedValues('node', $this->nodeTypes[0], $field_name, $allowed_values);
     $actual_values = $helper::randomFieldAllowedValues('node', $this->nodeTypes[0], $field_name);
-    $this->assertSame(3, count(array_intersect($actual_values, array_keys($allowed_values))));
+    $this->assertCount(3, array_intersect($actual_values, array_keys($allowed_values)));
 
     $field_name = strtolower($this->randomMachineName());
     $allowed_values = [
@@ -86,7 +86,7 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
     ];
     $this->fieldCreateListAllowedValues('node', $this->nodeTypes[0], $field_name, $allowed_values);
     $actual_values = $helper::randomFieldAllowedValues('node', $this->nodeTypes[0], $field_name, 1);
-    $this->assertSame(1, count(array_intersect($actual_values, array_keys($allowed_values))));
+    $this->assertCount(1, array_intersect($actual_values, array_keys($allowed_values)));
 
     $field_name = strtolower($this->randomMachineName());
     $allowed_values = [
@@ -96,7 +96,7 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
     ];
     $this->fieldCreateListAllowedValues('node', $this->nodeTypes[0], $field_name, $allowed_values);
     $actual_values = $helper::randomFieldAllowedValues('node', $this->nodeTypes[0], $field_name, 2);
-    $this->assertSame(2, count(array_intersect($actual_values, array_keys($allowed_values))));
+    $this->assertCount(2, array_intersect($actual_values, array_keys($allowed_values)));
   }
 
   /**

@@ -5,6 +5,7 @@ namespace Drupal\generated_content;
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Utility\Error;
 
 /**
  * Class GeneratedContentRepository.
@@ -487,7 +488,8 @@ class GeneratedContentRepository {
         ->execute();
     }
     catch (\Exception $exception) {
-      watchdog_exception('generated_content', $exception);
+      $logger = \Drupal::logger('generated_content');
+      Error::logException($logger, $exception);
     }
   }
 
@@ -528,12 +530,14 @@ class GeneratedContentRepository {
           }
         }
         catch (\Exception $exception) {
-          watchdog_exception('generated_content', $exception);
+          $logger = \Drupal::logger('generated_content');
+          Error::logException($logger, $exception);
         }
       }
     }
     catch (\Exception $exception) {
-      watchdog_exception('generated_content', $exception);
+      $logger = \Drupal::logger('generated_content');
+      Error::logException($logger, $exception);
     }
   }
 

@@ -9,6 +9,7 @@
  */
 
 use Drupal\Core\Link;
+use Drupal\Core\Utility\Error;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -67,7 +68,8 @@ function generated_content_example1_generated_content_create_user_user() {
           );
         }
         catch (\Exception $exception) {
-          watchdog_exception('generated_content_example1', $exception);
+          $logger = \Drupal::logger('generated_content_example1');
+          Error::logException($logger, $exception);
         }
       }
     }
