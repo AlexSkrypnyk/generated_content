@@ -52,11 +52,11 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
 
     // All added users.
     $actual_users = $helper::randomUsers();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users)));
 
     // Only 2 of added users.
     $actual_users = $helper::randomUsers(2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users)));
   }
 
   /**
@@ -108,12 +108,12 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
 
     // All added users.
     $actual_users = $helper::randomRealUsers();
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users_not_in_repository))));
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users_in_repository))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users_not_in_repository)));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users_in_repository)));
 
     // Only 2 of added users.
     $actual_users = $helper::randomRealUsers(2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users_not_in_repository))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_users), $this->replaceEntitiesWithIds($users_not_in_repository)));
   }
 
   /**
@@ -162,7 +162,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
     $ids = array_values($this->replaceEntitiesWithIds($users));
 
     $actual_users = $helper::staticUsers();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_users), $ids)));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_users), $ids));
 
     $actual_users = $helper::staticUsers(1);
     $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_users)), [$ids[0]]);

@@ -82,22 +82,22 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
     $repository->addEntities($terms_merged);
 
     $actual_terms = $helper::randomTerms();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_merged))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_merged)));
 
     $actual_terms = $helper::randomTerms(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_merged))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_merged)));
 
     $actual_terms = $helper::randomTerms(NULL, 20);
-    $this->assertSame(15, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_merged))));
+    $this->assertCount(15, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_merged)));
 
     $actual_terms = $helper::randomTerms($this->vids[0]);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]])));
 
     $actual_terms = $helper::randomTerms($this->vids[0], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]])));
 
     $actual_terms = $helper::randomTerms($this->vids[0], 20);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]])));
   }
 
   /**
@@ -154,35 +154,35 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
     $repository->addEntities($terms_in_repository);
 
     $actual_terms = $helper::randomRealTerms();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_not_in_repository))));
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_in_repository))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_not_in_repository)));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_in_repository)));
 
     $actual_terms = $helper::randomRealTerms(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_not_in_repository))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_not_in_repository)));
 
     $actual_terms = $helper::randomRealTerms(NULL, 10);
-    $this->assertSame(8, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_not_in_repository))));
+    $this->assertCount(8, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms_not_in_repository)));
 
     $actual_terms = $helper::randomRealTerms($this->vids[0]);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]])));
     $actual_terms = $helper::randomRealTerms($this->vids[1]);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[1]]))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[1]])));
     $actual_terms = $helper::randomRealTerms($this->vids[2]);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[2]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[2]])));
 
     $actual_terms = $helper::randomRealTerms($this->vids[0], 2);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]])));
     $actual_terms = $helper::randomRealTerms($this->vids[1], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[1]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[1]])));
     $actual_terms = $helper::randomRealTerms($this->vids[2], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[2]]))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[2]])));
 
     $actual_terms = $helper::randomRealTerms($this->vids[0], 20);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]]))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[0]])));
     $actual_terms = $helper::randomRealTerms($this->vids[1], 20);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[1]]))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[1]])));
     $actual_terms = $helper::randomRealTerms($this->vids[2], 20);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[2]]))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_terms), $this->replaceEntitiesWithIds($terms[$this->vids[2]])));
   }
 
   /**
@@ -249,7 +249,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
     $ids = array_values($this->replaceEntitiesWithIds($terms_merged));
 
     $actual_terms = $helper::staticTerms();
-    $this->assertSame(9, count(array_intersect($this->replaceEntitiesWithIds($actual_terms), $ids)));
+    $this->assertCount(9, array_intersect($this->replaceEntitiesWithIds($actual_terms), $ids));
 
     $helper->reset();
 

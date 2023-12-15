@@ -22,6 +22,6 @@
         "source": "https://git.drupalcode.org/project/generated_content"
     },
     "suggest": {
-        "drupal/config_ignore": "Ignore certain configuration during import."
+        "drupal/config_filter": "Provides API to modify the configuration when it is synchronized between the database and the exported yaml files."
     }
 }

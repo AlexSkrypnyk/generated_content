@@ -83,22 +83,22 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
     $repository->addEntities($files_merged);
 
     $actual_files = $helper::randomFiles();
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_merged))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_merged)));
 
     $actual_files = $helper::randomFiles(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_merged))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_merged)));
 
     $actual_files = $helper::randomFiles(NULL, 20);
-    $this->assertSame(10, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_merged))));
+    $this->assertCount(10, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_merged)));
 
     $actual_files = $helper::randomFiles($this->fileExtensions[0]);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1)));
 
     $actual_files = $helper::randomFiles($this->fileExtensions[0], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1)));
 
     $actual_files = $helper::randomFiles($this->fileExtensions[0], 20);
-    $this->assertSame(5, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1))));
+    $this->assertCount(5, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1)));
   }
 
   /**
@@ -157,29 +157,29 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
     $repository->addEntities($files_in_repository);
 
     $actual_files = $helper::randomRealFiles();
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_not_in_repository))));
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_in_repository))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_not_in_repository)));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_in_repository)));
 
     $actual_files = $helper::randomRealFiles(NULL, 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_not_in_repository))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_not_in_repository)));
 
     $actual_files = $helper::randomRealFiles(NULL, 10);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_not_in_repository))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files_not_in_repository)));
 
     $actual_files = $helper::randomRealFiles($this->fileExtensions[0]);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1)));
     $actual_files = $helper::randomRealFiles($this->fileExtensions[1]);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files2))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files2)));
 
     $actual_files = $helper::randomRealFiles($this->fileExtensions[0], 2);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1)));
     $actual_files = $helper::randomRealFiles($this->fileExtensions[1], 2);
-    $this->assertSame(2, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files2))));
+    $this->assertCount(2, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files2)));
 
     $actual_files = $helper::randomRealFiles($this->fileExtensions[0], 20);
-    $this->assertSame(0, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1))));
+    $this->assertCount(0, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files1)));
     $actual_files = $helper::randomRealFiles($this->fileExtensions[1], 20);
-    $this->assertSame(3, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files2))));
+    $this->assertCount(3, array_intersect($this->replaceEntitiesWithIds($actual_files), $this->replaceEntitiesWithIds($files2)));
   }
 
   /**
@@ -241,7 +241,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
     $ids = array_values($this->replaceEntitiesWithIds($files_merged));
 
     $actual_files = $helper::staticFiles();
-    $this->assertSame(6, count(array_intersect($this->replaceEntitiesWithIds($actual_files), $ids)));
+    $this->assertCount(6, array_intersect($this->replaceEntitiesWithIds($actual_files), $ids));
 
     $helper->reset();
 

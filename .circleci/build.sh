@@ -124,12 +124,13 @@ for composer_suggest in $composer_suggests; do
 done
 
 echo "  > Installing other dev dependencies."
+php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" config --no-plugins allow-plugins.phpstan/extension-installer true
 php -d memory_limit=-1 "$(command -v composer)" --working-dir="${BUILD_DIR}" require --dev \
   dealerdirect/phpcodesniffer-composer-installer \
   phpspec/prophecy-phpunit:^2 \
-  mglaman/drupal-check \
-  rector/rector:0.15.13 \
-  palantirnet/drupal-rector
+  mglaman/phpstan-drupal:^1 \
+  palantirnet/drupal-rector:^0.18 \
+  phpstan/extension-installer
 cp "${BUILD_DIR}/vendor/palantirnet/drupal-rector/rector.php" "${BUILD_DIR}/."
 
 echo "-------------------------------"
