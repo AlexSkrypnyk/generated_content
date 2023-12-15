@@ -2,8 +2,7 @@
 
 namespace Drupal\generated_content\Plugin\ConfigFilter;
 
-use Drupal\config_ignore\Plugin\ConfigFilter\IgnoreFilter;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\config_filter\Plugin\ConfigFilterBase;
 
 /**
  * Ignore all generated_content config.
@@ -14,7 +13,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
  *   weight = 100
  * )
  */
-class GeneratedContentIgnoreFilter extends IgnoreFilter implements ContainerFactoryPluginInterface {
+class GeneratedContentIgnoreFilter extends ConfigFilterBase {
 
   /**
    * {@inheritdoc}
