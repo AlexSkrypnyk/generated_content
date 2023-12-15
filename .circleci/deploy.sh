@@ -15,17 +15,18 @@
 # - DEPLOY_REMOTE - remote repository to push code to.
 # - DEPLOY_PROCEED - set to 1 if the deployment should proceed. Useful for testing CI configuration before an actual code push.
 
-set -e
+set -eu
+[ -n "${DEBUG:-}" ] && set -x
 
 #-------------------------------------------------------------------------------
 # Variables (passed from environment; provided for reference only).
 #-------------------------------------------------------------------------------
 
 # Name of the user who will be committing to a remote repository.
-DEPLOY_USER_NAME="${DEPLOY_USER_NAME}"
+DEPLOY_USER_NAME="${DEPLOY_USER_NAME:-}"
 
 # Email address of the user who will be committing to a remote repository.
-DEPLOY_USER_EMAIL="${DEPLOY_USER_EMAIL}"
+DEPLOY_USER_EMAIL="${DEPLOY_USER_EMAIL:-}"
 
 # Remote repository to push code to.
 DEPLOY_REMOTE="${DEPLOY_REMOTE:-}"
@@ -55,8 +56,8 @@ mkdir -p "${HOME}/.ssh/"
 echo -e "Host *\n\tStrictHostKeyChecking no\n" > "${HOME}/.ssh/config"
 DEPLOY_SSH_FILE="${DEPLOY_SSH_FINGERPRINT//:}"
 DEPLOY_SSH_FILE="${HOME}/.ssh/id_rsa_${DEPLOY_SSH_FILE//\"}"
-[ ! -f "${DEPLOY_SSH_FILE}" ] && echo "ERROR: Unable to find Deploy SSH key file ${DEPLOY_SSH_FILE}." && exit 1
-if [ -z "${SSH_AGENT_PID}" ]; then eval "$(ssh-agent)"; fi
+[ ! -f "${DEPLOY_SSH_FILE:-}" ] && echo "ERROR: Unable to find Deploy SSH key file ${DEPLOY_SSH_FILE}." && exit 1
+if [ -z "${SSH_AGENT_PID:-}" ]; then eval "$(ssh-agent)"; fi
 ssh-add -D > /dev/null
 ssh-add "${DEPLOY_SSH_FILE}"
 
@@ -71,8 +72,12 @@ echo "==> Adding remote ${DEPLOY_REMOTE}."
 git remote add deployremote "${DEPLOY_REMOTE}"
 
 echo "==> Deploying to remote ${DEPLOY_REMOTE}."
-# shellcheck disable=SC2086
-git push --force --tags deployremote ${DEPLOY_BRANCH}
+
+echo "  > Pushing code to branch ${DEPLOY_BRANCH}."
+git push --force deployremote HEAD:"${DEPLOY_BRANCH}"
+
+echo "  > Pushing tags."
+git push --force --tags deployremote || true
 
 echo
 echo "==> Deployment finished."
