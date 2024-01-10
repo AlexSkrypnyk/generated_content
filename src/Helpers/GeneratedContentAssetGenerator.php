@@ -196,7 +196,7 @@ class GeneratedContentAssetGenerator {
         $type,
         static::class . '::generatorMap()',
         // @phpstan-ignore-next-line
-        call_user_func($generator_callable),
+        (is_array($generator) ? $generator[0] . '::' . $generator[1] : $generator) . '()',
       ), E_USER_NOTICE);
     }
 
