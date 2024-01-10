@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Functional;
 
 /**
@@ -15,9 +17,18 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
   /**
    * Test generation when modules are enabled.
    *
+   * @param string[] $modules
+   *   Modules.
+   * @param string[] $env_vars
+   *   Env vars.
+   * @param int[] $expected_count
+   *   Expected count.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   *
    * @dataProvider dataProviderGenerateOnModuleInstall
    */
-  public function testGenerateOnModuleInstall(array $modules, array $env_vars, array $expected_count) {
+  public function testGenerateOnModuleInstall(array $modules, array $env_vars, array $expected_count): void {
     foreach ($env_vars as $env_var) {
       putenv($env_var);
     }
@@ -34,8 +45,11 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
 
   /**
    * Data provider for testGenerateOnModuleInstall().
+   *
+   * @return array<mixed>
+   *   Test data.
    */
-  public function dataProviderGenerateOnModuleInstall() {
+  public function dataProviderGenerateOnModuleInstall(): array {
     return [
       // None from installed modules.
       [

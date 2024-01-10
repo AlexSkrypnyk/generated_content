@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
@@ -18,7 +20,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Modules to enable.
    *
-   * @var array
+   * @var string[]
    */
   protected static $modules = [
     'field',
@@ -38,7 +40,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Tests the randomTerm() method.
    */
-  public function testRandomTerm() {
+  public function testRandomTerm(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -68,7 +70,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Tests the randomTerms() method.
    */
-  public function testRandomTerms() {
+  public function testRandomTerms(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -103,7 +105,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Tests the randomRealTerm() method.
    */
-  public function testRandomRealTerm() {
+  public function testRandomRealTerm(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -135,7 +137,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Tests the randomRealTerms() method.
    */
-  public function testRandomRealTerms() {
+  public function testRandomRealTerms(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -188,7 +190,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Tests the staticTerm() method.
    */
-  public function testStaticTerm() {
+  public function testStaticTerm(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -231,7 +233,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
   /**
    * Tests the staticTerms() method.
    */
-  public function testStaticTerms() {
+  public function testStaticTerms(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 

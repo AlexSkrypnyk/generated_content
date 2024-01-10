@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Unit;
 
 /**
@@ -14,9 +16,18 @@ class GeneratedContentHelperUnitTest extends GeneratedContentUnitTestBase {
   /**
    * Test for GeneratedContentHelper::arraySliceCircular().
    *
+   * @param string[] $array
+   *   Array input.
+   * @param int $count
+   *   Count.
+   * @param int $idx
+   *   Index.
+   * @param string[] $expected
+   *   Expected array.
+   *
    * @dataProvider dataProviderArraySliceCircular
    */
-  public function testArraySliceCircular($array, $count, $idx, $expected) {
+  public function testArraySliceCircular(array $array, int $count, int $idx, array $expected): void {
     $actual = $this->callProtectedMethod(
       'Drupal\generated_content\Helpers\GeneratedContentHelper',
       'arraySliceCircular',
@@ -27,8 +38,11 @@ class GeneratedContentHelperUnitTest extends GeneratedContentUnitTestBase {
 
   /**
    * Data provider for testArraySliceCircular.
+   *
+   * @return array<mixed>
+   *   Provider test data.
    */
-  public function dataProviderArraySliceCircular() {
+  public function dataProviderArraySliceCircular(): array {
     return [
       [[], 0, 0, []],
       [[], 5, 10, []],

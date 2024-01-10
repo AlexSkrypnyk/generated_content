@@ -1,9 +1,20 @@
-# Generated Content
-Drupal module to programmatically generate content.
+<p align="center">
+  <a href="" rel="noopener">
+  <img width=200px height=200px src="https://placehold.jp/000000/ffffff/200x200.png?text=Generated+Content&css=%7B%22border-radius%22%3A%22%20100px%22%7D" alt="Generated Content"></a>
+</p>
 
+<h1 align="center">Generated Content</h1>
+
+<div align="center">
+
+[![GitHub Issues](https://img.shields.io/github/issues/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/pulls)
 [![CircleCI](https://circleci.com/gh/AlexSkrypnyk/generated_content.svg?style=shield)](https://circleci.com/gh/AlexSkrypnyk/generated_content)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/drevops/generated_content)
-![LICENSE](https://img.shields.io/github/license/drevops/generated_content)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexSkrypnyk/generated_content)
+![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/generated_content)
+![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
+
+</div>
 
 Drupal.org module page: https://www.drupal.org/project/generated_content
 

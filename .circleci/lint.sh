@@ -6,30 +6,25 @@
 set -eu
 [ -n "${DEBUG:-}" ] && set -x
 
-#-------------------------------------------------------------------------------
-# Variables (passed from environment; provided for reference only).
-#-------------------------------------------------------------------------------
-
-# Directory where Drupal site will be built.
-BUILD_DIR="${BUILD_DIR:-build}"
-
 # Module name, taken from .info file.
-MODULE="$(basename -s .info.yml -- ./*.info.yml)"
+module="$(basename -s .info.yml -- ./*.info.yml)"
 
-#-------------------------------------------------------------------------------
+pushd "build" >/dev/null || exit 1
 
-echo "==> Lint code for module $MODULE."
-echo "  > Running PHPCS."
-build/vendor/bin/phpcs \
-  -s \
-  -p \
-  --standard=Drupal,DrupalPractice \
-  --extensions=module,php,install,inc,test,info.yml,js \
-  "${BUILD_DIR}/web/modules/${MODULE}"
+echo "==> Lint code for module $module."
+echo "  > Running PHPCS, PHPMD, TWIGCS"
+vendor/bin/phpcs
+
+echo "  > Running PHPMD"
+#vendor/bin/phpmd --exclude vendor . text phpmd.xml
+
+echo "  > Running TWIGCS"
+vendor/bin/twigcs
+
+echo "  > Running phpstan."
+vendor/bin/phpstan --memory-limit=-1
 
 echo "  > Running Drupal Rector."
-pushd "${BUILD_DIR}" >/dev/null || exit 1
-vendor/bin/rector process \
-  "web/modules/${MODULE}" \
-  --dry-run
+vendor/bin/rector --dry-run
+
 popd >/dev/null || exit 1

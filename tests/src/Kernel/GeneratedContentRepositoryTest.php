@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
@@ -14,7 +16,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
   /**
    * Test singleton instance.
    */
-  public function testSingleton() {
+  public function testSingleton(): void {
     $repository1 = GeneratedContentRepository::getInstance();
     $repository2 = GeneratedContentRepository::getInstance();
     $repository3 = $repository1;
@@ -32,7 +34,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
   /**
    * Test for addEntities() and getEntities() methods for tracked entities.
    */
-  public function testAddEntitiesGetEntitiesTracked() {
+  public function testAddEntitiesGetEntitiesTracked(): void {
     $repository = GeneratedContentRepository::getInstance();
 
     $nodes = $this->prepareNodes(5, NULL, TRUE);
@@ -50,6 +52,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     ];
 
     $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities());
+
     $this->assertSame($expected, $actual_entities);
 
     $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities('node'));
@@ -58,6 +61,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     $this->assertSame($expected['user'], $actual_entities);
 
     $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities('node', $this->nodeTypes[0]));
+
     $this->assertSame($expected['node'][$this->nodeTypes[0]], $actual_entities);
 
     // Negative tests.
@@ -69,13 +73,14 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
 
     // Cache reset.
     $actual_entities = $this->replaceEntitiesWithIds($repository->getEntities(NULL, NULL, TRUE));
+
     $this->assertSame($expected, $actual_entities);
   }
 
   /**
    * Test for addEntities() and getEntities() methods for not tracked entities.
    */
-  public function testAddEntitiesGetEntitiesNotTracked() {
+  public function testAddEntitiesGetEntitiesNotTracked(): void {
     $repository = GeneratedContentRepository::getInstance();
 
     $nodes = $this->prepareNodes(5, NULL, TRUE);
@@ -108,11 +113,13 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     // Non-tracked items are still stored in internal cache.
     $actual_entities = $repository->getEntities();
     $actual_entities = $this->replaceEntitiesWithIds($actual_entities);
+
     $this->assertSame($expected_all, $actual_entities);
 
     // Reload repository from the DB. This should refresh internal cache.
     $actual_entities = $repository->getEntities(NULL, NULL, TRUE);
     $actual_entities = $this->replaceEntitiesWithIds($actual_entities);
+
     $this->assertSame($expected_tracked, $actual_entities);
 
     $actual_entities = $repository->getEntities('node');
@@ -125,6 +132,7 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
 
     $actual_entities = $repository->getEntities('node', $this->nodeTypes[0]);
     $actual_entities = $this->replaceEntitiesWithIds($actual_entities);
+
     $this->assertSame($expected_tracked['node'][$this->nodeTypes[0]], $actual_entities);
 
     // Negative tests.

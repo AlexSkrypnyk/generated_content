@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestNodeTrait;
@@ -47,23 +50,32 @@ abstract class GeneratedContentKernelTestBase extends KernelTestBase {
    * Recursively replace entities with IDs.
    *
    * Useful to speed-up tests to avoid full object comparison.
+   *
+   * @param array<int|string, \Drupal\Core\Entity\EntityInterface[]>|\Drupal\Core\Entity\EntityInterface[] $entities
+   *   Entities.
+   *
+   * @return array<mixed>
+   *   Entity ids.
    */
-  protected function replaceEntitiesWithIds($entities) {
+  protected function replaceEntitiesWithIds(array $entities): array {
+    $entities_replaced = [];
     foreach ($entities as $k => $entity) {
-      if (is_object($entity)) {
+      if ($entity instanceof EntityInterface) {
         try {
-          $entities[$k] = $entity->id();
+          if ($entity->id()) {
+            $entities_replaced[$k] = $entity->id();
+          }
         }
         catch (\Exception $e) {
           // Leave unchanged.
         }
       }
       elseif (is_array($entity)) {
-        $entities[$k] = $this->replaceEntitiesWithIds($entity);
+        $entities_replaced[$k] = $this->replaceEntitiesWithIds($entity);
       }
     }
 
-    return $entities;
+    return $entities_replaced;
   }
 
 }

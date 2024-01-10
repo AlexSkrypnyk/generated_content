@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Traits;
 
 use Drupal\field\Entity\FieldConfig;
@@ -16,8 +18,19 @@ trait GeneratedContentTestFieldTrait {
 
   /**
    * Create an allowed values list field storage, instance and display.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Bundle.
+   * @param string $field_name
+   *   Field name.
+   * @param array<string|int> $allowed_values
+   *   Allow values.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function fieldCreateListAllowedValues($entity_type, $bundle, $field_name, $allowed_values) {
+  public function fieldCreateListAllowedValues(string $entity_type, string $bundle, string $field_name, array $allowed_values): void {
     /** @var \Drupal\field\Entity\FieldStorageConfig $field_storage_config */
     $field_storage_config = FieldStorageConfig::create([
       'field_name' => $field_name,

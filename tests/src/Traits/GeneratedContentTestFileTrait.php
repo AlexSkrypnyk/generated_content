@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Traits;
 
 use Drupal\file\Entity\File;
@@ -26,7 +28,7 @@ trait GeneratedContentTestFileTrait {
   /**
    * Test setup for file.
    */
-  public function fileSetUp() {
+  public function fileSetUp(): void {
     $this->installEntitySchema('file');
     $this->installSchema('file', 'file_usage');
     $this->installConfig('image');
@@ -38,21 +40,25 @@ trait GeneratedContentTestFileTrait {
   /**
    * Assert image width.
    */
-  public function assertImageWidth($file, $width) {
-    $this->assertSame($width, $this->imageGetInfo($file)['width']);
+  public function assertImageWidth(string $file, int $width): void {
+    $info = $this->imageGetInfo($file);
+    $actual = !empty($info) ? $info['width'] : NULL;
+    $this->assertSame($width, $actual);
   }
 
   /**
    * Assert image height.
    */
-  public function assertImageHeight($file, $height) {
-    $this->assertSame($height, $this->imageGetInfo($file)['height']);
+  public function assertImageHeight(string $file, int $height): void {
+    $info = $this->imageGetInfo($file);
+    $actual = !empty($info) ? $info['height'] : NULL;
+    $this->assertSame($height, $actual);
   }
 
   /**
    * Assert file MIME type.
    */
-  public function assertFileMimeType($file, $type) {
+  public function assertFileMimeType(string $file, string $type): void {
     /** @var \Symfony\Component\Mime\FileinfoMimeTypeGuesser $guesser */
     $guesser = $this->container->get('file.mime_type.guesser');
 
@@ -61,12 +67,20 @@ trait GeneratedContentTestFileTrait {
 
   /**
    * Get image information.
+   *
+   * @param string $file
+   *   File name.
+   *
+   * @return array{'width': int, 'height': int, 'type': int}|FALSE
+   *   Image info or False.
    */
-  protected function imageGetInfo($file) {
+  protected function imageGetInfo(string $file) {
     $this->assertFileExists($file);
 
     $info = getimagesize($file);
-
+    if (empty($info)) {
+      return FALSE;
+    }
     return [
       'width' => $info[0],
       'height' => $info[1],
@@ -76,8 +90,20 @@ trait GeneratedContentTestFileTrait {
 
   /**
    * Prepare files to be used in tests.
+   *
+   * @param int $count
+   *   Count.
+   * @param string|null $extension
+   *   Extension.
+   * @param string $type
+   *   Type.
+   *
+   * @return \Drupal\file\Entity\File[]
+   *   Files.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  protected function prepareFiles($count, $extension = NULL, $type = 'image') {
+  protected function prepareFiles(int $count, string $extension = NULL, string $type = 'image'): array {
     $files = [];
 
     $test_assets = $this->getTestFiles($type);
@@ -105,7 +131,9 @@ trait GeneratedContentTestFileTrait {
         'uri' => $test_assets[$test_asset_key]->uri,
       ]);
       $file->save();
-      $files[] = $file;
+      if ($file->id()) {
+        $files[] = $file;
+      }
     }
 
     return $files;

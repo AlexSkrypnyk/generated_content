@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content\Helpers;
 
 /**
@@ -14,9 +16,9 @@ trait GeneratedContentStaticTrait {
   /**
    * Array of static content.
    *
-   * @var string[]
+   * @var string[]|null
    */
-  protected static $staticContent;
+  protected static $staticContent = NULL;
 
   /**
    * Static content offset counter.
@@ -36,7 +38,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticSentence($count = 5) {
+  public static function staticSentence(int $count = 5): string {
     $content = '';
     do {
       $content .= ' ' . static::staticParagraphs();
@@ -46,15 +48,13 @@ trait GeneratedContentStaticTrait {
     $words = array_slice($words, 0, $count);
     $content = implode(' ', $words);
 
-    $content = rtrim($content, '.') . '.';
-
-    return $content;
+    return rtrim($content, '.') . '.';
   }
 
   /**
    * Generates a static string.
    */
-  public static function staticString($length = 32) {
+  public static function staticString(int $length = 32): string {
     $content = '';
     do {
       $content .= preg_replace('/[^a-zA-Z0-9]/', '', static::staticParagraphs());
@@ -66,7 +66,7 @@ trait GeneratedContentStaticTrait {
   /**
    * Generates a static name.
    */
-  public static function staticName($length = 16) {
+  public static function staticName(int $length = 16): string {
     return static::staticString($length);
   }
 
@@ -79,7 +79,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Abbreviation string.
    */
-  public static function staticAbbreviation($length = 2) {
+  public static function staticAbbreviation(int $length = 2): string {
     return static::staticName($length);
   }
 
@@ -89,7 +89,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticPlainParagraph() {
+  public static function staticPlainParagraph(): string {
     $content = static::staticParagraphs();
 
     return trim($content);
@@ -101,7 +101,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticHtmlParagraph() {
+  public static function staticHtmlParagraph(): string {
     return '<p>' . static::staticPlainParagraph() . '</p>';
   }
 
@@ -118,7 +118,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticHtmlHeading($words = 5, $level = 1, $prefix = '') {
+  public static function staticHtmlHeading(int $words = 5, int $level = 1, string $prefix = ''): string {
     $level = min($level, 6);
     $level = max($level, 1);
 
@@ -136,7 +136,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Static content string.
    */
-  public static function staticRichText($paragraphs = 4, $prefix = '') {
+  public static function staticRichText(int $paragraphs = 4, string $prefix = ''): string {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
       if ($i % 2) {
@@ -159,7 +159,7 @@ trait GeneratedContentStaticTrait {
    * @return string
    *   Paragraphs as a static content string.
    */
-  protected static function staticParagraphs($paragraphs = 1, $delimiter = "\n\n") {
+  protected static function staticParagraphs(int $paragraphs = 1, string $delimiter = "\n\n"): string {
     $content = static::$staticContent ?? static::staticContent();
 
     // Reset pointer once the end of the list is reached to allow
@@ -179,8 +179,11 @@ trait GeneratedContentStaticTrait {
 
   /**
    * Returns pre-defined static content.
+   *
+   * @return string[]
+   *   Static content.
    */
-  protected static function staticContent() {
+  protected static function staticContent(): array {
     return [
       'Accusamus animi deleniti doloribus libero molestiae possimus provident quo. Assumenda blanditiis qui repudiandae rerum. Deleniti excepturi harum iusto optio praesentium. Libero minus optio provident rerum temporibus tenetur voluptatibus. Doloribus eligendi necessitatibus optio praesentium. Corrupti dolores laborum maiores molestias odio officiis saepe. Deserunt nobis repellendus. Consequatur deleniti eligendi odio. Cumque deserunt dolor impedit iusto laborum nihil provident quibusdam rerum.',
       'Earum perferendis sapiente sunt. Deleniti non provident. Excepturi harum iusto maiores. Alias doloribus est perferendis praesentium vero. Blanditiis cumque dolores earum praesentium quibusdam quo reiciendis voluptas. Corrupti deserunt dolorum ducimus praesentium quidem quod reiciendis repudiandae. Animi deleniti dolores soluta. Atque consequatur dignissimos dolores fuga impedit itaque possimus tenetur. Accusamus cupiditate deleniti eos est quod quos rerum saepe.',

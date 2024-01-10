@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Traits;
 
 use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
@@ -26,7 +28,7 @@ trait GeneratedContentTestMediaTrait {
   /**
    * Test setup for media.
    */
-  public function mediaSetUp() {
+  public function mediaSetUp(): void {
     $this->fileSetUp();
 
     $this->installEntitySchema('media');
@@ -38,8 +40,22 @@ trait GeneratedContentTestMediaTrait {
 
   /**
    * Prepare medias to be used in tests.
+   *
+   * @param int $count
+   *   Count.
+   * @param string[]|null $bundles
+   *   Bundles.
+   * @param bool $single_bundle
+   *   Is single bundle.
+   *
+   * @return array<mixed>
+   *   Media grouped by bundle.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  protected function prepareMediaItems($count, $bundles = NULL, $single_bundle = FALSE) {
+  protected function prepareMediaItems(int $count, array $bundles = NULL, bool $single_bundle = FALSE): array {
     $bundles = $bundles ?? $this->mediaTypes;
 
     $files = $this->prepareFiles(2);
@@ -81,7 +97,10 @@ trait GeneratedContentTestMediaTrait {
     }
 
     if ($single_bundle) {
-      $medias = reset($medias);
+      $reset_medias = reset($medias);
+      if ($reset_medias) {
+        $medias = $reset_medias;
+      }
     }
 
     return $medias;

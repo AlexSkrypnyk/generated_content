@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
@@ -18,7 +20,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Modules to enable.
    *
-   * @var array
+   * @var string[]
    */
   protected static $modules = [
     'field',
@@ -39,7 +41,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomFile() method.
    */
-  public function testRandomFile() {
+  public function testRandomFile(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -68,7 +70,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomFiles() method.
    */
-  public function testRandomFiles() {
+  public function testRandomFiles(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -104,7 +106,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealFile() method.
    */
-  public function testRandomRealFile() {
+  public function testRandomRealFile(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -137,7 +139,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealFiles() method.
    */
-  public function testRandomRealFiles() {
+  public function testRandomRealFiles(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -185,7 +187,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticFile() method.
    */
-  public function testStaticFile() {
+  public function testStaticFile(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -222,7 +224,7 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticFiles() method.
    */
-  public function testStaticFiles() {
+  public function testStaticFiles(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 

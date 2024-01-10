@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
@@ -18,7 +20,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Modules to enable.
    *
-   * @var array
+   * @var string[]
    */
   protected static $modules = [
     'field',
@@ -40,7 +42,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomMediaItem() method.
    */
-  public function testRandomMediaItem() {
+  public function testRandomMediaItem(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -68,7 +70,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomMediaItems() method.
    */
-  public function testRandomMediaItems() {
+  public function testRandomMediaItems(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -103,7 +105,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealMediaItem() method.
    */
-  public function testRandomRealMediaItem() {
+  public function testRandomRealMediaItem(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -135,7 +137,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealMediaItems() method.
    */
-  public function testRandomRealMediaItems() {
+  public function testRandomRealMediaItems(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -182,7 +184,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticMediaItem() method.
    */
-  public function testStaticMediaItem() {
+  public function testStaticMediaItem(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -218,7 +220,7 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticMediaItems() method.
    */
-  public function testStaticMediaItems() {
+  public function testStaticMediaItems(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
