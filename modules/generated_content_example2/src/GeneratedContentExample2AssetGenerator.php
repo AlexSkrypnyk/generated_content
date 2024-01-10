@@ -21,7 +21,7 @@ class GeneratedContentExample2AssetGenerator extends GeneratedContentAssetGenera
   /**
    * {@inheritdoc}
    */
-  protected static function generatorMap() {
+  protected static function generatorMap(): array {
     $map = parent::generatorMap();
 
     $map[static::GENERATE_TYPE_RANDOM][static::ASSET_TYPE_RTF] = [
@@ -55,7 +55,7 @@ class GeneratedContentExample2AssetGenerator extends GeneratedContentAssetGenera
   /**
    * {@inheritdoc}
    */
-  protected function getAssetsDirs() {
+  protected function getAssetsDirs(): array {
     $module_path = $this->moduleExtensionList->getPath('generated_content_example2');
 
     return array_merge(parent::getAssetsDirs(), [

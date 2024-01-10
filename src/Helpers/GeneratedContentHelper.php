@@ -10,14 +10,11 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
-use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\generated_content\GeneratedContentRepository;
-use Drupal\media\Entity\Media;
+use Drupal\media\MediaInterface;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
-use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\TermInterface;
 use Drupal\user\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -80,7 +77,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * Array of static offsets used to track calls to retrieve static items.
    *
-   * @var array
+   * @var array<mixed>
    */
   protected static $staticOffsets;
 
@@ -98,6 +95,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container): GeneratedContentHelper {
+    // @phpstan-ignore-next-line
     return new static(
       GeneratedContentRepository::getInstance(),
       $container->get('generated_content.asset_generator'),
@@ -250,6 +248,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @throws \Exception
    */
   public static function staticUser(): ?UserInterface {
+    /** @var \Drupal\user\UserInterface[] $users */
     $users = static::staticEntities('user', 'user', 1);
     $user = reset($users);
 
@@ -297,7 +296,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       return $node;
     }
 
-    return  NULL;
+    return NULL;
   }
 
   /**
@@ -306,13 +305,13 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $bundle
    *   The type of the node to return. If not provided - random type will be
    *   returned.
-   * @param bool|int $count
+   * @param int|null $count
    *   Optional count of Nodes. If FALSE, 20 Nodes will be returned.
    *
    * @return \Drupal\node\NodeInterface[]
    *   Array of node entities.
    */
-  public static function randomNodes(string $bundle = NULL, $count = 5): array {
+  public static function randomNodes(string $bundle = NULL, ?int $count = 5): array {
     /** @var \Drupal\node\NodeInterface[] $nodes */
     $nodes = static::randomEntities('node', $bundle, $count);
 
@@ -326,13 +325,22 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The type of the node to return. If not provided - random type will be
    *   returned.
    *
-   * @return \Drupal\node\Entity\Node|null
+   * @return \Drupal\node\NodeInterface|null
    *   Node entity object or NULL if no entities were found.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealNode(string $bundle = NULL): ?Node {
-    $entities = static::randomRealEntities('node', $bundle, 1);
+  public static function randomRealNode(string $bundle = NULL): ?NodeInterface {
+    /** @var \Drupal\node\NodeInterface[] $nodes */
+    $nodes = static::randomRealEntities('node', $bundle, 1);
+    $node = reset($nodes);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($node) {
+      return $node;
+    }
+
+    return NULL;
   }
 
   /**
@@ -341,7 +349,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $bundle
    *   The type of the node to return. If not provided - random type will be
    *   returned.
-   * @param bool|int $count
+   * @param int|null $count
    *   Optional count of Nodes. If FALSE, 5 Nodes will be returned.
    *
    * @return \Drupal\node\NodeInterface[]
@@ -350,7 +358,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealNodes(string $bundle = NULL, $count = 5): array {
+  public static function randomRealNodes(string $bundle = NULL, ?int $count = 5): array {
     /** @var \Drupal\node\NodeInterface[] $nodes */
     $nodes = static::randomRealEntities('node', $bundle, $count);
 
@@ -430,7 +438,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $vid
    *   The vocabulary of the term to return. If not provided - term from random
    *   vocabulary will be returned.
-   * @param bool|int $count
+   * @param null|int $count
    *   Optional count of Terms. If FALSE, 20 Terms will be returned.
    *
    * @return \Drupal\taxonomy\TermInterface[]
@@ -450,13 +458,22 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The vocabulary of the term to return. If not provided - term from random
    *   vocabulary will be returned.
    *
-   * @return \Drupal\taxonomy\Entity\Term|null
+   * @return \Drupal\taxonomy\TermInterface|null
    *   Term entity object or NULL if no entities were found.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealTerm(string $vid = NULL): ?Term {
-    $entities = static::randomRealEntities('taxonomy_term', $vid, 1);
+  public static function randomRealTerm(string $vid = NULL): ?TermInterface {
+    /** @var \Drupal\taxonomy\TermInterface[] $terms */
+    $terms = static::randomRealEntities('taxonomy_term', $vid, 1);
+    $term = reset($terms);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($term) {
+      return $term;
+    }
+
+    return NULL;
   }
 
   /**
@@ -465,14 +482,20 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $vid
    *   The vocabulary of the term to return. If not provided - term from random
    *   vocabulary will be returned.
-   * @param bool|int $count
+   * @param null|int $count
    *   Optional count of Terms. If FALSE, 5 Terms will be returned.
    *
-   * @return \Drupal\taxonomy\Entity\Term[]
+   * @return \Drupal\taxonomy\TermInterface[]
    *   Array of term entities.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function randomRealTerms(string $vid = NULL, $count = 5): array {
-    return static::randomRealEntities('taxonomy_term', $vid, $count);
+    /** @var \Drupal\taxonomy\TermInterface[] $terms */
+    $terms = static::randomRealEntities('taxonomy_term', $vid, $count);
+
+    return $terms;
   }
 
   /**
@@ -482,13 +505,20 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The vocabulary of the term to return. If not provided - term from random
    *   vocabulary will be returned.
    *
-   * @return \Drupal\taxonomy\Entity\Term|null
+   * @return \Drupal\taxonomy\TermInterface|null
    *   The term object or NULL if no entities were found.
+   *
+   * @throws \Exception
    */
-  public static function staticTerm(string $vid = NULL): ?Term {
-    $entities = static::staticEntities('taxonomy_term', $vid, 1);
+  public static function staticTerm(string $vid = NULL): ?TermInterface {
+    /** @var \Drupal\taxonomy\TermInterface[] $terms */
+    $terms = static::staticEntities('taxonomy_term', $vid, 1);
+    $term = reset($terms);
+    if ($term) {
+      return $term;
+    }
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    return NULL;
   }
 
   /**
@@ -500,11 +530,16 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param int|null $count
    *   Number of terms to return. If none provided - all terms will be returned.
    *
-   * @return \Drupal\taxonomy\Entity\Term[]
+   * @return \Drupal\taxonomy\TermInterface[]
    *   Array of term objects.
+   *
+   * @throws \Exception
    */
   public static function staticTerms(string $vid = NULL, int $count = NULL): array {
-    return static::staticEntities('taxonomy_term', $vid, $count);
+    /** @var \Drupal\taxonomy\TermInterface[] $terms */
+    $terms = static::staticEntities('taxonomy_term', $vid, $count);
+
+    return $terms;
   }
 
   /**
@@ -514,13 +549,19 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The type of the media to return. If not provided - random type will be
    *   returned.
    *
-   * @return \Drupal\media\Entity\Media|null
+   * @return \Drupal\media\MediaInterface|null
    *   Media entity object or NULL if no entities were found.
    */
-  public static function randomMediaItem(string $bundle = NULL): ?Media {
-    $entities = static::randomEntities('media', $bundle, 1);
+  public static function randomMediaItem(string $bundle = NULL): ?MediaInterface {
+    /** @var \Drupal\media\MediaInterface[] $medias */
+    $medias = static::randomEntities('media', $bundle, 1);
+    $media = reset($medias);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($media) {
+      return $media;
+    }
+
+    return NULL;
   }
 
   /**
@@ -529,14 +570,17 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $bundle
    *   The type of the media to return. If not provided - random type will be
    *   returned.
-   * @param bool|int $count
+   * @param int|null $count
    *   Optional count of Medias. If FALSE, 20 Medias will be returned.
    *
-   * @return \Drupal\media\Entity\Media[]
+   * @return \Drupal\media\MediaInterface[]
    *   Array of media entities.
    */
-  public static function randomMediaItems(string $bundle = NULL, $count = 5): array {
-    return static::randomEntities('media', $bundle, $count);
+  public static function randomMediaItems(string $bundle = NULL, ?int $count = 5): array {
+    /** @var \Drupal\media\MediaInterface[] $medias */
+    $medias = static::randomEntities('media', $bundle, $count);
+
+    return $medias;
   }
 
   /**
@@ -546,13 +590,22 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The type of the media to return. If not provided - random type will be
    *   returned.
    *
-   * @return \Drupal\media\Entity\Media|null
+   * @return \Drupal\media\MediaInterface|null
    *   Media entity object or NULL if no entities were found.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealMediaItem(string $bundle = NULL): ?Media {
-    $entities = static::randomRealEntities('media', $bundle, 1);
+  public static function randomRealMediaItem(string $bundle = NULL): ?MediaInterface {
+    /** @var \Drupal\media\MediaInterface[] $medias */
+    $medias = static::randomRealEntities('media', $bundle, 1);
+    $media = reset($medias);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($media) {
+      return $media;
+    }
+
+    return NULL;
   }
 
   /**
@@ -561,14 +614,20 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $bundle
    *   The type of the media to return. If not provided - random type will be
    *   returned.
-   * @param bool|int $count
+   * @param int|null $count
    *   Optional count of Medias. If FALSE, 5 Medias will be returned.
    *
-   * @return \Drupal\media\Entity\Media[]
+   * @return \Drupal\media\MediaInterface[]
    *   Array of media entities.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealMediaItems(string $bundle = NULL, $count = 5): array {
-    return static::randomRealEntities('media', $bundle, $count);
+  public static function randomRealMediaItems(string $bundle = NULL, ?int $count = 5): array {
+    /** @var \Drupal\media\MediaInterface[] $medias */
+    $medias = static::randomRealEntities('media', $bundle, $count);
+
+    return $medias;
   }
 
   /**
@@ -578,13 +637,21 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The type of the media to return. If not provided - random type will be
    *   returned.
    *
-   * @return \Drupal\media\Entity\Media|null
+   * @return \Drupal\media\MediaInterface|null
    *   The media object or NULL if no entities were found.
+   *
+   * @throws \Exception
    */
-  public static function staticMediaItem(string $bundle = NULL): ?Media {
-    $entities = static::staticEntities('media', $bundle, 1);
+  public static function staticMediaItem(string $bundle = NULL): ?MediaInterface {
+    /** @var \Drupal\media\MediaInterface[] $medias */
+    $medias = static::staticEntities('media', $bundle, 1);
+    $media = reset($medias);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($media) {
+      return $media;
+    }
+
+    return NULL;
   }
 
   /**
@@ -597,11 +664,16 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Number of medias to return. If none provided - all medias will be
    *   returned.
    *
-   * @return \Drupal\media\Entity\Media[]
+   * @return \Drupal\media\MediaInterface[]
    *   Array of media objects.
+   *
+   * @throws \Exception
    */
   public static function staticMediaItems(string $bundle = NULL, int $count = NULL): array {
-    return static::staticEntities('media', $bundle, $count);
+    /** @var \Drupal\media\MediaInterface[] $medias */
+    $medias = static::staticEntities('media', $bundle, $count);
+
+    return $medias;
   }
 
   /**
@@ -611,13 +683,19 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The extension of the file to return. If not provided - a file with a
    *   random available extension will be returned.
    *
-   * @return \Drupal\file\Entity\File|null
+   * @return \Drupal\file\FileInterface|null
    *   File entity object or NULL if no entities were found.
    */
-  public static function randomFile(string $extension = NULL): ?File {
-    $entities = static::randomFiles($extension, 1);
+  public static function randomFile(string $extension = NULL): ?FileInterface {
+    /** @var \Drupal\file\FileInterface[] $files */
+    $files = static::randomFiles($extension, 1);
+    $file = reset($files);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($file) {
+      return $file;
+    }
+
+    return NULL;
   }
 
   /**
@@ -626,19 +704,17 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $extension
    *   The extension of the file to return. If not provided - a file with a
    *   random available extension will be returned.
-   * @param bool|int $count
+   * @param int|null $count
    *   Optional count of Files. If FALSE, 20 Files will be returned.
    *
-   * @return \Drupal\file\Entity\File[]
+   * @return \Drupal\file\FileInterface[]
    *   Array of file entities.
    */
-  public static function randomFiles(string $extension = NULL, $count = 5): array {
-    /** @var \Drupal\file\Entity\File[] $entities */
-    $entities = static::randomEntities('file');
+  public static function randomFiles(string $extension = NULL, ?int $count = 5): array {
+    /** @var \Drupal\file\FileInterface[] $files */
+    $files = static::randomEntities('file');
 
-    $entities = static::filterFilesByExtension($entities, $extension, $count);
-
-    return $entities;
+    return static::filterFilesByExtension($files, $extension, $count);
   }
 
   /**
@@ -648,13 +724,21 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The extension of the file to return. If not provided - a file with a
    *   random available extension will be returned.
    *
-   * @return \Drupal\file\Entity\File|null
+   * @return \Drupal\file\FileInterface|null
    *   File entity object or NULL if no entities were found.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealFile(string $extension = NULL): ?File {
-    $entities = static::randomRealFiles($extension, 1);
+  public static function randomRealFile(string $extension = NULL): ?FileInterface {
+    $files = static::randomRealFiles($extension, 1);
+    $file = reset($files);
 
-    return count($entities) > 0 ? reset($entities) : NULL;
+    if ($file) {
+      return $file;
+    }
+
+    return NULL;
   }
 
   /**
@@ -663,16 +747,20 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param string|null $extension
    *   The extension of the file to return. If not provided - a file with a
    *   random available extension will be returned.
-   * @param bool|int $count
+   * @param int|null $count
    *   Optional count of Files. If FALSE, 5 Files will be returned.
    *
-   * @return \Drupal\file\Entity\File[]
+   * @return \Drupal\file\FileInterface[]
    *   Array of file entities.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealFiles(string $extension = NULL, $count = 5): array {
-    $entities = static::randomRealEntities('file');
+  public static function randomRealFiles(string $extension = NULL, ?int $count = 5): array {
+    /** @var \Drupal\file\FileInterface[] $files */
+    $files = static::randomRealEntities('file');
 
-    return static::filterFilesByExtension($entities, $extension, $count);
+    return static::filterFilesByExtension($files, $extension, $count);
   }
 
   /**
@@ -682,13 +770,20 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   The extension of the file to return. If not provided - a file with a
    *   random available extension will be returned.
    *
-   * @return \Drupal\file\Entity\File|null
+   * @return \Drupal\file\FileInterface|null
    *   The file object or NULL if no entities were found.
+   *
+   * @throws \Exception
    */
-  public static function staticFile(string $extension = NULL): ?File {
-    $entities = static::staticFiles($extension, 1);
+  public static function staticFile(string $extension = NULL): ?FileInterface {
+    $files = static::staticFiles($extension, 1);
+    $file = reset($files);
 
-    return !empty($entities) ? reset($entities) : NULL;
+    if ($file) {
+      return $file;
+    }
+
+    return NULL;
   }
 
   /**
@@ -700,7 +795,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param int|null $count
    *   Number of files to return. If none provided - all files will be returned.
    *
-   * @return \Drupal\file\Entity\File[]
+   * @return \Drupal\file\FileInterface[]
    *   Array of file objects.
    *
    * @throws \Exception
@@ -709,17 +804,18 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     // Because extension is not an entity bundle, filtering files by extension
     // requires working with a full set of entities _before_ they can be
     // filtered by extension and filtered further by static index and count.
-    $entities = static::$repository->getEntities('file', 'file');
+    /** @var \Drupal\file\FileInterface[] $files */
+    $files = static::$repository->getEntities('file', 'file');
 
-    $entities = static::filterFilesByExtension($entities, $extension);
+    $files = static::filterFilesByExtension($files, $extension);
 
-    return static::filterStaticItems($entities, 'file', $extension, $count);
+    return static::filterStaticItems($files, 'file', $extension, $count);
   }
 
   /**
    * Filter files by extension.
    *
-   * @param \Drupal\file\Entity\File[] $files
+   * @param \Drupal\file\FileInterface[] $files
    *   Array of File objects.
    * @param string|null $extension
    *   Extension without a leading dot to filter by.
@@ -727,7 +823,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Optional number of items to return after filtering. If NULL - all
    *   filtered-out items will be returned.
    *
-   * @return array
+   * @return \Drupal\file\FileInterface[]
    *   Array of File objects filtered by the extension.
    */
   protected static function filterFilesByExtension(array $files, ?string $extension, int $count = NULL): array {
@@ -759,6 +855,9 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *
    * @return string|null
    *   A single allowed value.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function randomFieldAllowedValue(string $entity_type, string $bundle, string $field_name): ?string {
     $allowed_values = static::randomFieldAllowedValues($entity_type, $bundle, $field_name, 1);
@@ -779,8 +878,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Optional values count to return. If NULL - all values will be returned.
    *   If specified - this count of already randomised values will be returned.
    *
-   * @return array
+   * @return array<mixed>
    *   Array of allowed values.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function randomFieldAllowedValues(string $entity_type, string $bundle, string $field_name, int $count = NULL): array {
     $allowed_values = static::fieldAllowedValues($entity_type, $bundle, $field_name);
@@ -800,6 +902,9 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *
    * @return string|null
    *   A single allowed value.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function staticFieldAllowedValue(string $entity_type, string $bundle, string $field_name): ?string {
     $allowed_values = static::staticFieldAllowedValues($entity_type, $bundle, $field_name, 1);
@@ -820,8 +925,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *   Optional values count to return. If NULL - all values will be returned.
    *   If specified - this count of already randomised values will be returned.
    *
-   * @return array
+   * @return array<mixed>
    *   Array of allowed values.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public static function staticFieldAllowedValues(string $entity_type, string $bundle, string $field_name, int $count = NULL): array {
     $allowed_values = static::fieldAllowedValues($entity_type, $bundle, $field_name);
@@ -845,7 +953,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *
    * @param string $type
    *   File type as per GeneratedContentAssetGenerator::ASSET_TYPE_* constants.
-   * @param array $options
+   * @param array<mixed> $options
    *   Array of options to pass to the asset generator.
    * @param string $generation_type
    *   Generation type as
@@ -902,7 +1010,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @return string
    *   String with replaced tokens.
    */
-  public static function replaceTokens($string, array $replacements, callable $cb = NULL, string $beginToken = '{', string $endToken = '}'): string {
+  public static function replaceTokens(string $string, array $replacements, callable $cb = NULL, string $beginToken = '{', string $endToken = '}'): string {
     foreach ($replacements as $k => $v) {
       $token_name = $beginToken . $k . $endToken;
       if ($cb && is_callable($cb)) {
@@ -921,13 +1029,13 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *
    * @param string $vid
    *   Vocabulary machine name.
-   * @param array $tree
+   * @param array<mixed> $tree
    *   Array of tree items, where keys with array values are considered parent
    *   terms.
-   * @param bool|int $parent_tid
+   * @param bool|int|string $parent_tid
    *   Internal parameter used for recursive calls.
    *
-   * @return \Drupal\taxonomy\Entity\Term[]
+   * @return \Drupal\taxonomy\TermInterface[]
    *   Array of saved terms, keyed by term id.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -947,6 +1055,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       ]);
 
       $term->save();
+
+      if ($term->id() === NULL) {
+        continue;
+      }
+
       $terms[$term->id()] = $term;
 
       if (is_array($subtree)) {
@@ -1042,6 +1155,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
         throw new \InvalidArgumentException('Menu item contains "link" element which does not contain "uri" value');
       }
 
+      // @phpstan-ignore-next-line
       if (!is_array($leaf['link'])) {
         $leaf['link'] = ['uri' => $leaf['link']];
       }
@@ -1205,11 +1319,12 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     }
 
     $generated_entities_ids = array_filter(array_map(function ($value) {
-      return is_object($value) ? $value->id() : NULL;
+      return $value instanceof EntityInterface ? $value->id() : NULL;
     }, $generated_entities));
 
     $entities_ids = array_filter(array_map(function ($value) {
-      return is_object($value) ? $value->id() : NULL;
+      // @phpstan-ignore-next-line
+      return $value instanceof EntityInterface ? $value->id() : NULL;
     }, $entities));
 
     $non_generated_ids = array_diff($entities_ids, $generated_entities_ids);
@@ -1250,7 +1365,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * Static items returned in a predictable order based on the called argument
    * list. So, calls with and without $subtype value are tracked separately.
    *
-   * @param array $items
+   * @param array<mixed> $items
    *   Array of items to filter.
    * @param string $type
    *   Type to filter by.
@@ -1262,6 +1377,8 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *
    * @return array<mixed>
    *   Array of items.
+   *
+   * @throws \Exception
    */
   protected static function filterStaticItems(array $items, string $type, string $subtype = NULL, int $count = NULL): array {
     // Merge all items if subtype was not provided.
@@ -1328,7 +1445,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @param mixed ...$arguments
    *   A list of properties to track. First argument being the offset.
    */
-  protected static function setStaticOffset(...$arguments) {
+  protected static function setStaticOffset(...$arguments): void {
     $args = func_get_args();
     $offset = array_shift($args);
     $key = implode('__', $args);

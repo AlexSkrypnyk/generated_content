@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content;
 
 use Drupal\Component\Utility\SortArray;
@@ -21,21 +23,21 @@ class GeneratedContentRepository {
   /**
    * The repository singleton.
    *
-   * @var \Drupal\generated_content\GeneratedContentRepository
+   * @var \Drupal\generated_content\GeneratedContentRepository|null
    */
   protected static $instance = NULL;
 
   /**
    * Array of discovered information about entities.
    *
-   * @var array
+   * @var array<mixed>
    */
   protected $info = [];
 
   /**
    * The entities.
    *
-   * @var array
+   * @var array<mixed>
    */
   protected $entities = [];
 
@@ -59,10 +61,12 @@ class GeneratedContentRepository {
    * @return \Drupal\generated_content\GeneratedContentRepository
    *   The repository.
    */
-  public static function getInstance() {
+  public static function getInstance(): GeneratedContentRepository {
     if (!static::$instance) {
-      static::$instance = \Drupal::service('class_resolver')
+      /** @var \Drupal\generated_content\GeneratedContentRepository $repository */
+      $repository = \Drupal::service('class_resolver')
         ->getInstanceFromDefinition(static::class);
+      static::$instance = $repository;
     }
 
     return static::$instance;
@@ -74,7 +78,7 @@ class GeneratedContentRepository {
    * @return \Drupal\generated_content\GeneratedContentRepository
    *   A new singleton instance.
    */
-  public function reset() {
+  public function reset(): GeneratedContentRepository {
     static::$instance = NULL;
 
     return static::getInstance();
@@ -86,10 +90,10 @@ class GeneratedContentRepository {
    * @param bool $reset
    *   Flag to reset previously collected information.
    *
-   * @return array
+   * @return array<mixed>
    *   Array of information about entities.
    */
-  public function getInfo($reset = FALSE) {
+  public function getInfo(bool $reset = FALSE): array {
     if (empty($this->info) || $reset) {
       $this->info = $this->collectInfo();
     }
@@ -102,13 +106,13 @@ class GeneratedContentRepository {
    *
    * @param string $entity_type
    *   Entity type.
-   * @param null|string $bundle
+   * @param string|null $bundle
    *   Bundle.
    *
    * @return bool|mixed
    *   Array of info about an entity or FALSE if no such entity was found.
    */
-  public function findInfo($entity_type, $bundle = NULL) {
+  public function findInfo(string $entity_type, string $bundle = NULL) {
     $bundle = $bundle ?: $entity_type;
 
     foreach ($this->getInfo() as $item) {
@@ -123,7 +127,7 @@ class GeneratedContentRepository {
   /**
    * Process creation of specified entities.
    *
-   * @param array $filter
+   * @param array<mixed> $filter
    *   (optional) Multi-dimensional array of filtered items to process.
    *   The First level key is an entity type and the second is a bundle. Value
    *   is a boolean TRUE.
@@ -133,7 +137,7 @@ class GeneratedContentRepository {
    * @return int
    *   Number of created items.
    */
-  public function create(array $filter = [], $clear_caches = TRUE) {
+  public function create(array $filter = [], bool $clear_caches = TRUE): int {
     $info = $this->getInfo();
 
     $total = 0;
@@ -156,9 +160,12 @@ class GeneratedContentRepository {
 
   /**
    * Process creation of specified entities in a batch.
+   *
+   * @param array<mixed>|null $info
+   *   Info.
    */
-  public function createBatch($info = FALSE) {
-    $info = $info ? $info : $this->getInfo();
+  public function createBatch(array $info = NULL): void {
+    $info = $info ?: $this->getInfo();
     // Every info item needs to be set only once.
     GeneratedContentBatch::set('create', $info, 1);
   }
@@ -166,10 +173,10 @@ class GeneratedContentRepository {
   /**
    * Process single entity definition.
    *
-   * @param array $info
+   * @param array<mixed> $info
    *   Entity definition information.
    */
-  public function createSingle(array $info) {
+  public function createSingle(array $info): ?int {
     if (!empty($info['#file']) && file_exists($info['#file'])) {
       require_once $info['#file'];
     }
@@ -184,9 +191,12 @@ class GeneratedContentRepository {
 
   /**
    * Process removal of specified entities.
+   *
+   * @param array<mixed>|null $info
+   *   Info.
    */
-  public function remove($info = FALSE) {
-    $info = $info ? $info : $this->getInfo();
+  public function remove(array $info = NULL): void {
+    $info = $info ?: $this->getInfo();
 
     foreach ($info as $item) {
       $this->removeSingle($item);
@@ -201,16 +211,22 @@ class GeneratedContentRepository {
 
   /**
    * Remove specified generated content entities.
+   *
+   * @param array<mixed>|null $info
+   *   Info.
    */
-  public function removeBatch($info = FALSE) {
-    $info = $info ? $info : $this->getInfo();
+  public function removeBatch(array $info = NULL): void {
+    $info = $info ?: $this->getInfo();
     GeneratedContentBatch::set('remove', $info, count($info));
   }
 
   /**
    * Cleanup content.
+   *
+   * @param array<mixed> $info
+   *   Info.
    */
-  public function removeSingle($info) {
+  public function removeSingle(array $info): void {
     $this->removeTrackedEntities($info['entity_type'], $info['bundle']);
     \Drupal::messenger()->addMessage(sprintf('Removed all generated content entities "%s" in bundle "%s"', $info['entity_type'], $info['bundle']));
   }
@@ -221,14 +237,14 @@ class GeneratedContentRepository {
    * @return bool
    *   TRUE if there are no entities in the repository.
    */
-  public function isEmpty() {
+  public function isEmpty(): bool {
     return Database::getConnection()->select('generated_content')->countQuery()->execute()->fetchField() == 0;
   }
 
   /**
    * Clear all required caches.
    */
-  public function clearCaches() {
+  public function clearCaches(): void {
     $caches = [
       'data',
       'dynamic_page_cache',
@@ -246,8 +262,11 @@ class GeneratedContentRepository {
 
   /**
    * Return an array of default weights.
+   *
+   * @return array<string, int>
+   *   Default weight.
    */
-  protected function getDefaultWeights() {
+  protected function getDefaultWeights(): array {
     return [
       'user' => -100,
       'menu' => -90,
@@ -265,10 +284,10 @@ class GeneratedContentRepository {
    * wins. This is by design - we do not support cross-module content generation
    * as it involves potentially resolving weight-related dependencies issues.
    *
-   * @return array
+   * @return array<mixed>
    *   Array of information records about each entity type and bundle.
    */
-  protected function collectInfo() {
+  protected function collectInfo(): array {
     $paths = $this->collectImplementationPaths();
 
     if (empty($paths)) {
@@ -326,10 +345,10 @@ class GeneratedContentRepository {
   /**
    * Collect hook implementation paths.
    *
-   * @return array
+   * @return array<mixed>
    *   Array of paths keyed by module name.
    */
-  protected function collectImplementationPaths() {
+  protected function collectImplementationPaths(): array {
     $paths = [];
 
     /** @var \Drupal\Core\Extension\ModuleHandlerInterface $module_handler */
@@ -346,8 +365,17 @@ class GeneratedContentRepository {
 
   /**
    * Load all entities from the database.
+   *
+   * @param bool $load_entities
+   *   Load full entities or not.
+   *
+   * @return array<mixed>
+   *   Entities.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  protected function loadEntities($load_entities = TRUE) {
+  protected function loadEntities(bool $load_entities = TRUE): array {
     $result = [];
     $data = Database::getConnection()
       ->select('generated_content', 'gc')
@@ -369,7 +397,7 @@ class GeneratedContentRepository {
     foreach ($result as $entity_type_id => $bundles) {
       foreach ($bundles as $bundle_id => $entity_ids) {
         $loaded_entities = $entity_type_manager
-          ->getStorage($entity_type_id)
+          ->getStorage((string) $entity_type_id)
           ->loadMultiple($entity_ids);
         if (!empty($loaded_entities)) {
           $result[$entity_type_id][$bundle_id] = $loaded_entities;
@@ -385,14 +413,14 @@ class GeneratedContentRepository {
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
-   * @param string $entity_type
+   * @param string|null $entity_type
    *   Override entity type with a custom value.
-   * @param string $bundle
+   * @param string|null $bundle
    *   Override bundle with a custom value.
    * @param bool $tracking
    *   Whether to track the entities.
    */
-  protected function addEntity(EntityInterface $entity, $entity_type = NULL, $bundle = NULL, $tracking = TRUE) {
+  protected function addEntity(EntityInterface $entity, string $entity_type = NULL, string $bundle = NULL, bool $tracking = TRUE): void {
     $entity_type = $entity_type ?: $entity->getEntityTypeId();
     $bundle = $bundle ?: $entity->bundle();
 
@@ -405,13 +433,12 @@ class GeneratedContentRepository {
   /**
    * Add multiple generated content entities to the repository.
    *
-   * @param array $entities
+   * @param \Drupal\Core\Entity\EntityInterface[] $entities
    *   The array of entities.
    * @param bool $tracking
    *   Whether to track the entities.
    */
-  public function addEntities(array $entities, $tracking = TRUE) {
-    /** @var \Drupal\Core\Entity\EntityInterface $entity */
+  public function addEntities(array $entities, bool $tracking = TRUE): void {
     foreach ($entities as $entity) {
       $this->addEntity($entity, NULL, NULL, $tracking);
     }
@@ -422,11 +449,10 @@ class GeneratedContentRepository {
    *
    * Used to update in-memory entities without writing them to DB.
    *
-   * @param array $entities
+   * @param \Drupal\Core\Entity\EntityInterface[] $entities
    *   The array of entities.
    */
-  public function addEntitiesNoTracking(array $entities) {
-    /** @var \Drupal\Core\Entity\EntityInterface $entity */
+  public function addEntitiesNoTracking(array $entities): void {
     foreach ($entities as $entity) {
       $this->addEntity($entity, NULL, NULL, FALSE);
     }
@@ -435,17 +461,17 @@ class GeneratedContentRepository {
   /**
    * Ger generated content entities.
    *
-   * @param string $entity_type
+   * @param string|null $entity_type
    *   Entity type ID, eg. node or taxonomy_term.
-   * @param string $bundle
+   * @param string|null $bundle
    *   Bundle, eg. Page, lading_page.
    * @param bool $reset
    *   Flag to reset internal cache.
    *
-   * @return array
+   * @return array<mixed>
    *   The list of entities.
    */
-  public function getEntities($entity_type = NULL, $bundle = NULL, $reset = FALSE) {
+  public function getEntities(string $entity_type = NULL, string $bundle = NULL, bool $reset = FALSE): array {
     if (empty($this->entities) || $reset) {
       $this->entities = $this->loadEntities();
     }
@@ -475,7 +501,7 @@ class GeneratedContentRepository {
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity.
    */
-  protected function trackEntity(EntityInterface $entity) {
+  protected function trackEntity(EntityInterface $entity): void {
     try {
       $data = [
         'entity_type' => $entity->getEntityTypeId(),
@@ -495,8 +521,15 @@ class GeneratedContentRepository {
 
   /**
    * Remove all tracked entities.
+   *
+   * @param string|null $entity_type
+   *   Entity type.
+   * @param string|null $bundle
+   *   Bundle.
+   * @param string|int|null $entity_id
+   *   Entity id.
    */
-  protected function removeTrackedEntities($entity_type = NULL, $bundle = NULL, $entity_id = NULL) {
+  protected function removeTrackedEntities(string $entity_type = NULL, string $bundle = NULL, $entity_id = NULL): void {
     $bundle = $bundle ?: $entity_type;
 
     try {
