@@ -62,7 +62,7 @@ function generated_content_modules_installed($modules, $is_syncing) {
           $items = _generated_content_parse_cli_items(getenv('GENERATED_CONTENT_ITEMS'));
         }
 
-        $repository->create($items);
+        $repository->createEntities($items);
 
         \Drupal::messenger()->addMessage(t('Finished creation of generated content'));
       }

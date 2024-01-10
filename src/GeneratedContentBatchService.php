@@ -45,7 +45,7 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    */
   public function processItem($batch_id, $entity_type, $bundle, $total, $current, &$context) {
     $repository = GeneratedContentRepository::getInstance();
-    $repository->create([$entity_type => [$bundle => TRUE]]);
+    $repository->createEntities([$entity_type => [$bundle => TRUE]]);
 
     $context['message'] = strtr('Running batch "@id" for @entity_type @bundle (@current of @total).', [
       '@id' => $batch_id,

@@ -190,7 +190,6 @@ class GeneratedContentAssetGenerator {
     // the custom file extension can be defined in $options['extension'].
     if (is_null($generator)) {
       $generator = $this->getDefaultGenerator();
-      $generator_callable = is_array($generator) ? "$generator[0]::$generator[1]" : $generator;
       trigger_error(sprintf('Generator is not defined for "%s" generation of "%s" type in %s. Using default generator %s.',
         $generation_type,
         $type,
@@ -219,7 +218,7 @@ class GeneratedContentAssetGenerator {
     $file_content = file_get_contents($generated_filepath);
 
     if (!$file_content) {
-      throw new \Exception("Failed get content $generated_filepath");
+      throw new \Exception("Failed get content of file $generated_filepath");
     }
 
     return $this->fileRepository->writeData($file_content, $uri);

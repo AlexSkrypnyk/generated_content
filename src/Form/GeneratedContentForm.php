@@ -3,6 +3,7 @@
 namespace Drupal\generated_content\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
@@ -18,6 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\generated_content\Form
  */
 class GeneratedContentForm extends FormBase implements ContainerInjectionInterface {
+
+  use DependencySerializationTrait;
 
   /**
    * The generated content repository instance.

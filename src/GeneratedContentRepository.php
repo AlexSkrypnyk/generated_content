@@ -5,9 +5,18 @@ declare(strict_types = 1);
 namespace Drupal\generated_content;
 
 use Drupal\Component\Utility\SortArray;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Database;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Utility\Error;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class GeneratedContentRepository.
@@ -16,7 +25,7 @@ use Drupal\Core\Utility\Error;
  *
  * @package \Drupal\generated_content
  */
-class GeneratedContentRepository {
+class GeneratedContentRepository implements ContainerInjectionInterface {
 
   const CONTENT_DIRECTORY = 'generated_content';
 
@@ -25,21 +34,21 @@ class GeneratedContentRepository {
    *
    * @var \Drupal\generated_content\GeneratedContentRepository|null
    */
-  protected static $instance = NULL;
+  protected static ?GeneratedContentRepository $instance = NULL;
 
   /**
    * Array of discovered information about entities.
    *
    * @var array<mixed>
    */
-  protected $info = [];
+  protected array $info = [];
 
   /**
    * The entities.
    *
    * @var array<mixed>
    */
-  protected $entities = [];
+  protected array $entities = [];
 
   /**
    * Path to content directory.
@@ -49,10 +58,81 @@ class GeneratedContentRepository {
   protected $contentBasePath;
 
   /**
-   * GeneratedContentRepository constructor.
+   * Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
    */
-  public function __construct() {
+  protected MessengerInterface $messenger;
+
+  /**
+   * Module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected ModuleHandlerInterface $moduleHandler;
+
+  /**
+   * Entity type bundle info service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   */
+  protected EntityTypeBundleInfoInterface $entityTypeBundleInfo;
+
+  /**
+   * Entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * Logger channel.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
+   * Database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected Connection $database;
+
+  /**
+   * GeneratedContentRepository constructor.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function __construct(MessengerInterface $messenger,
+                              ModuleHandlerInterface $moduleHandler,
+                              EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+                              EntityTypeManagerInterface $entityTypeManager,
+                              LoggerChannelFactoryInterface $loggerChannelFactory, Connection $database) {
+    $this->messenger = $messenger;
+    $this->moduleHandler = $moduleHandler;
+    $this->entityTypeBundleInfo = $entityTypeBundleInfo;
+    $this->entityTypeManager = $entityTypeManager;
+    $this->logger = $loggerChannelFactory->get('generated_content');
+    $this->database = $database;
+
     $this->entities = $this->loadEntities();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): GeneratedContentRepository {
+    // @phpstan-ignore-next-line
+    return new static(
+      $container->get('messenger'),
+      $container->get('module_handler'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('entity_type.manager'),
+      $container->get('logger.factory'),
+      $container->get('database'),
+    );
   }
 
   /**
@@ -137,7 +217,7 @@ class GeneratedContentRepository {
    * @return int
    *   Number of created items.
    */
-  public function create(array $filter = [], bool $clear_caches = TRUE): int {
+  public function createEntities(array $filter = [], bool $clear_caches = TRUE): int {
     $info = $this->getInfo();
 
     $total = 0;
@@ -153,7 +233,7 @@ class GeneratedContentRepository {
       $this->clearCaches();
     }
 
-    \Drupal::messenger()->addMessage('Created all generated content.');
+    $this->messenger->addMessage('Created all generated content.');
 
     return $total;
   }
@@ -181,7 +261,7 @@ class GeneratedContentRepository {
       require_once $info['#file'];
     }
     $entities = $info['#callback']();
-    \Drupal::messenger()->addMessage(sprintf('Created generated content entities "%s" with bundle "%s"', $info['entity_type'], $info['bundle']));
+    $this->messenger->addMessage(sprintf('Created generated content entities "%s" with bundle "%s"', $info['entity_type'], $info['bundle']));
     $this->addEntities($entities, $info['#tracking']);
     $total = count($entities);
     unset($entities);
@@ -194,6 +274,9 @@ class GeneratedContentRepository {
    *
    * @param array<mixed>|null $info
    *   Info.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function remove(array $info = NULL): void {
     $info = $info ?: $this->getInfo();
@@ -206,7 +289,7 @@ class GeneratedContentRepository {
     $this->entities = $this->loadEntities();
 
     $this->clearCaches();
-    \Drupal::messenger()->addMessage('Removed all generated content.');
+    $this->messenger->addMessage('Removed all generated content.');
   }
 
   /**
@@ -228,7 +311,7 @@ class GeneratedContentRepository {
    */
   public function removeSingle(array $info): void {
     $this->removeTrackedEntities($info['entity_type'], $info['bundle']);
-    \Drupal::messenger()->addMessage(sprintf('Removed all generated content entities "%s" in bundle "%s"', $info['entity_type'], $info['bundle']));
+    $this->messenger->addMessage(sprintf('Removed all generated content entities "%s" in bundle "%s"', $info['entity_type'], $info['bundle']));
   }
 
   /**
@@ -254,7 +337,9 @@ class GeneratedContentRepository {
     ];
 
     foreach ($caches as $cache) {
+      // @phpstan-ignore-next-line
       if (\Drupal::hasService('cache.' . $cache)) {
+        // @phpstan-ignore-next-line
         \Drupal::cache($cache)->deleteAll();
       }
     }
@@ -296,7 +381,7 @@ class GeneratedContentRepository {
 
     $default_weights = $this->getDefaultWeights();
 
-    $info = \Drupal::service('entity_type.bundle.info')->getAllBundleInfo();
+    $info = $this->entityTypeBundleInfo->getAllBundleInfo();
     $available = [];
 
     foreach ($paths as $module_name => $path) {
@@ -350,10 +435,7 @@ class GeneratedContentRepository {
    */
   protected function collectImplementationPaths(): array {
     $paths = [];
-
-    /** @var \Drupal\Core\Extension\ModuleHandlerInterface $module_handler */
-    $module_handler = \Drupal::getContainer()->get('module_handler');
-    foreach ($module_handler->getModuleDirectories() as $name => $directory) {
+    foreach ($this->moduleHandler->getModuleDirectories() as $name => $directory) {
       $candidate_dir = $directory . DIRECTORY_SEPARATOR . self::CONTENT_DIRECTORY;
       if (file_exists($candidate_dir)) {
         $paths[$name] = $candidate_dir;
@@ -377,7 +459,7 @@ class GeneratedContentRepository {
    */
   protected function loadEntities(bool $load_entities = TRUE): array {
     $result = [];
-    $data = Database::getConnection()
+    $data = $this->database
       ->select('generated_content', 'gc')
       ->fields('gc')
       ->execute()
@@ -393,7 +475,7 @@ class GeneratedContentRepository {
     }
 
     // Traverse trough results and load entities.
-    $entity_type_manager = \Drupal::entityTypeManager();
+    $entity_type_manager = $this->entityTypeManager;
     foreach ($result as $entity_type_id => $bundles) {
       foreach ($bundles as $bundle_id => $entity_ids) {
         $loaded_entities = $entity_type_manager
@@ -514,7 +596,7 @@ class GeneratedContentRepository {
         ->execute();
     }
     catch (\Exception $exception) {
-      $logger = \Drupal::logger('generated_content');
+      $logger = $this->logger;
       Error::logException($logger, $exception);
     }
   }
@@ -555,7 +637,7 @@ class GeneratedContentRepository {
       $results = $query->fetchAll(2);
       foreach ($results as $result) {
         try {
-          $entity = \Drupal::entityTypeManager()->getStorage($result['entity_type'])
+          $entity = $this->entityTypeManager->getStorage($result['entity_type'])
             ->load($result['entity_id']);
           if ($entity) {
             $entity->delete();
@@ -563,13 +645,13 @@ class GeneratedContentRepository {
           }
         }
         catch (\Exception $exception) {
-          $logger = \Drupal::logger('generated_content');
+          $logger = $this->logger;
           Error::logException($logger, $exception);
         }
       }
     }
     catch (\Exception $exception) {
-      $logger = \Drupal::logger('generated_content');
+      $logger = $this->logger;
       Error::logException($logger, $exception);
     }
   }
