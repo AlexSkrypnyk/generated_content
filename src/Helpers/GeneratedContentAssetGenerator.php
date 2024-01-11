@@ -17,6 +17,11 @@ use Drupal\file\FileRepository;
  * The utility class for generating data.
  *
  * @package Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+ * @SuppressWarnings(PHPMD.NPathComplexity)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.ElseExpression)
  */
 class GeneratedContentAssetGenerator {
 
@@ -170,7 +175,8 @@ class GeneratedContentAssetGenerator {
 
     // Find existing files.
     if ($options['use_existing']) {
-      if ($file = $this->findFileByName($filename)) {
+      $file = $this->findFileByName($filename);
+      if ($file) {
         return $file;
       }
     }
@@ -452,7 +458,8 @@ class GeneratedContentAssetGenerator {
    */
   protected function createTempFile(string $prefix = 'generated_content_asset') {
     // Create a temp file to write to.
-    if (!$tmp_file = $this->fileSystem->tempnam('temporary://', $prefix)) {
+    $tmp_file = $this->fileSystem->tempnam('temporary://', $prefix);
+    if (!$tmp_file) {
       throw new \RuntimeException('Unable to create a temporary file to generate a random image.');
     }
 

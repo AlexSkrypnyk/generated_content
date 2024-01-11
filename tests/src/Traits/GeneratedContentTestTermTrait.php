@@ -12,6 +12,8 @@ use Drupal\taxonomy\Entity\Vocabulary;
  * Trait with term-related helpers.
  *
  * @package Drupal\generated_content\Tests
+ *
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 trait GeneratedContentTestTermTrait {
 

@@ -15,6 +15,8 @@ use Drupal\node\Entity\Node;
  * for bulk content creation.
  *
  * @package Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 trait GeneratedContentVariationTrait {
 

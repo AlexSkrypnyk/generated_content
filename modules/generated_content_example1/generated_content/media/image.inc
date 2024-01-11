@@ -30,6 +30,8 @@ function generated_content_example1_generated_content_create_media_image_trackin
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
  *
  * @phpstan-ignore-next-line
+ *
+ * @SuppressWarnings(PHPMD.ElseExpression)
  */
 function generated_content_example1_generated_content_create_media_image(): array {
   $helper = GeneratedContentHelper::getInstance();

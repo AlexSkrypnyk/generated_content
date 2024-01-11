@@ -12,6 +12,9 @@ use PHPUnit\Framework\MockObject\Stub\Stub;
  * Helper trait for tests.
  *
  * @package Drupal\generated_content\Tests
+ *
+ * @SuppressWarnings(PHPMD.ElseExpression)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 trait GeneratedContentTestMockTrait {
 

@@ -12,6 +12,9 @@ use Drupal\Component\Utility\Random;
  * Random content generators.
  *
  * @package Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 trait GeneratedContentRandomTrait {
 

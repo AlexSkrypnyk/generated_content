@@ -12,6 +12,9 @@ use Drupal\node\Entity\NodeType;
  * Trait with node-related helpers.
  *
  * @package Drupal\generated_content\Tests
+ *
+ * @SuppressWarnings(PHPMD.ElseExpression)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 trait GeneratedContentTestNodeTrait {
 

@@ -31,6 +31,8 @@ function generated_content_example2_generated_content_create_media_document_trac
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
  *
  * @phpstan-ignore-next-line
+ *
+ * @SuppressWarnings(PHPMD.ElseExpression)
  */
 function generated_content_example2_generated_content_create_media_document(): array {
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */

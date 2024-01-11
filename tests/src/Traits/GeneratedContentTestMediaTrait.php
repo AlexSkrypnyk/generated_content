@@ -12,6 +12,9 @@ use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
  * Trait with media-related helpers.
  *
  * @package Drupal\generated_content\Tests
+ *
+ * @SuppressWarnings(PHPMD.ElseExpression)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 trait GeneratedContentTestMediaTrait {
 
