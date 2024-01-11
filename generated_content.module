@@ -21,7 +21,6 @@ function generated_content_entity_delete(EntityInterface $entity): void {
     Database::getConnection()->delete('generated_content')
       ->condition('entity_type', $entity->getEntityTypeId())
       ->condition('bundle', $entity->bundle())
-      // @phpstan-ignore-next-line
       ->condition('entity_id', $entity->id())
       ->execute();
   }

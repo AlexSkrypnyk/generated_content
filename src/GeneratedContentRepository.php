@@ -638,7 +638,6 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         $query->condition('bundle', $bundle);
       }
       if ($entity_id) {
-        // @phpstan-ignore-next-line
         $query->condition('entity_id', $entity_id);
       }
 

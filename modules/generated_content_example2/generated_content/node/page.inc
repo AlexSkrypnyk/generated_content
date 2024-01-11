@@ -93,7 +93,6 @@ function _generated_content_example2_create_node_page__variation_to_fields(NodeI
   }
 
   if (!empty($variation['body']) && $node->hasField('body')) {
-    // @phpstan-ignore-next-line
     $node->body = $variation['body'];
   }
 }
