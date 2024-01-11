@@ -5,6 +5,8 @@
  * Create generated Article nodes.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Link;
 use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 use Drupal\node\Entity\Node;
@@ -12,21 +14,23 @@ use Drupal\node\Entity\Node;
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
-function generated_content_example2_generated_content_create_node_article_weight() {
+function generated_content_example2_generated_content_create_node_article_weight(): int {
   return 36;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
  */
-function generated_content_example2_generated_content_create_node_article_tracking() {
+function generated_content_example2_generated_content_create_node_article_tracking(): bool {
   return TRUE;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_example2_generated_content_create_node_article() {
+function generated_content_example2_generated_content_create_node_article(): array {
   $total_nodes_count = 10;
 
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
@@ -49,6 +53,7 @@ function generated_content_example2_generated_content_create_node_article() {
     ]);
 
     if ($variation['content']) {
+      // @phpstan-ignore-next-line
       $node->body = [
         'value' => $helper::randomRichText(),
         'format' => 'full_html',
@@ -56,9 +61,11 @@ function generated_content_example2_generated_content_create_node_article() {
     }
 
     if ($variation['tags']) {
+      // @phpstan-ignore-next-line
       $node->field_tags = $helper::randomTags($variation['tags']);
     }
 
+    // @phpstan-ignore-next-line
     $node->revision_log = $variation_info;
 
     $node->save();

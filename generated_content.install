@@ -5,12 +5,16 @@
  * Install file for Generated Content.
  */
 
+declare(strict_types = 1);
+
 use Drupal\generated_content\GeneratedContentRepository;
 
 /**
  * Implements hook_schema().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_schema() {
+function generated_content_schema(): array {
   $schema['generated_content'] = [
     'description' => 'Stores entries of generated content.',
     'fields' => [
@@ -47,7 +51,7 @@ function generated_content_schema() {
 /**
  * Implements hook_uninstall().
  */
-function generated_content_uninstall() {
+function generated_content_uninstall(): void {
   $repository = GeneratedContentRepository::getInstance();
   $repository->removeBatch();
 }

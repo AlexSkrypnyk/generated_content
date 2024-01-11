@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content_example2;
 
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
@@ -37,14 +39,14 @@ class GeneratedContentExample2AssetGenerator extends GeneratedContentAssetGenera
    *
    * @param string $type
    *   File type.
-   * @param array $options
+   * @param array<mixed> $options
    *   Array of options for this generator:
    *   - content: (string) The content of the file.
    *
    * @return string
    *   Real path to generated file.
    */
-  public function generatorContentFileRtf($type, array $options = []) {
+  public function generatorContentFileRtf(string $type, array $options = []): string {
     $options += [
       'content' => 'Placeholder RTF text',
     ];

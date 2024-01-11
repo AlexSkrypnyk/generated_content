@@ -5,6 +5,8 @@
  * Create generated images.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Link;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
@@ -13,30 +15,29 @@ use Drupal\media\Entity\Media;
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
-function generated_content_example1_generated_content_create_media_image_weight() {
+function generated_content_example1_generated_content_create_media_image_weight(): int {
   return 1;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
  */
-function generated_content_example1_generated_content_create_media_image_tracking() {
+function generated_content_example1_generated_content_create_media_image_tracking(): bool {
   return TRUE;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_example1_generated_content_create_media_image() {
-  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+function generated_content_example1_generated_content_create_media_image(): array {
   $helper = GeneratedContentHelper::getInstance();
 
   $total_media_count = 10;
 
   $entities = [];
   for ($i = 0; $i < $total_media_count; $i++) {
-    /** @var \Drupal\file\Entity\File $file */
-    $file = NULL;
     if ($i % 2) {
       $file_type = $helper::randomArrayItem([
         GeneratedContentAssetGenerator::ASSET_TYPE_JPG,

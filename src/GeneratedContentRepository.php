@@ -6,8 +6,8 @@ namespace Drupal\generated_content;
 
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Database;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -24,8 +24,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Repository class to manage generated content items.
  *
  * @package \Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 class GeneratedContentRepository implements ContainerInjectionInterface {
+
+  use DependencySerializationTrait;
 
   const CONTENT_DIRECTORY = 'generated_content';
 
@@ -49,13 +56,6 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @var array<mixed>
    */
   protected array $entities = [];
-
-  /**
-   * Path to content directory.
-   *
-   * @var string
-   */
-  protected $contentBasePath;
 
   /**
    * Messenger service.
@@ -100,6 +100,13 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   protected Connection $database;
 
   /**
+   * Container.
+   *
+   * @var \Symfony\Component\DependencyInjection\ContainerInterface
+   */
+  protected ContainerInterface $container;
+
+  /**
    * GeneratedContentRepository constructor.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -109,13 +116,16 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
                               ModuleHandlerInterface $moduleHandler,
                               EntityTypeBundleInfoInterface $entityTypeBundleInfo,
                               EntityTypeManagerInterface $entityTypeManager,
-                              LoggerChannelFactoryInterface $loggerChannelFactory, Connection $database) {
+                              LoggerChannelFactoryInterface $loggerChannelFactory,
+                              Connection $database,
+  ContainerInterface $container) {
     $this->messenger = $messenger;
     $this->moduleHandler = $moduleHandler;
     $this->entityTypeBundleInfo = $entityTypeBundleInfo;
     $this->entityTypeManager = $entityTypeManager;
     $this->logger = $loggerChannelFactory->get('generated_content');
     $this->database = $database;
+    $this->container = $container;
 
     $this->entities = $this->loadEntities();
   }
@@ -132,6 +142,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $container->get('entity_type.manager'),
       $container->get('logger.factory'),
       $container->get('database'),
+      $container,
     );
   }
 
@@ -321,7 +332,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    *   TRUE if there are no entities in the repository.
    */
   public function isEmpty(): bool {
-    return Database::getConnection()->select('generated_content')->countQuery()->execute()->fetchField() == 0;
+    return $this->database->select('generated_content')->countQuery()->execute()->fetchField() == 0;
   }
 
   /**
@@ -337,11 +348,9 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     ];
 
     foreach ($caches as $cache) {
+      $cache = $this->container->get('cache.' . $cache);
       // @phpstan-ignore-next-line
-      if (\Drupal::hasService('cache.' . $cache)) {
-        // @phpstan-ignore-next-line
-        \Drupal::cache($cache)->deleteAll();
-      }
+      $cache?->deleteAll();
     }
   }
 
@@ -590,7 +599,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         'bundle' => $entity->bundle(),
         'entity_id' => $entity->id(),
       ];
-      Database::getConnection()->merge('generated_content')
+      $this->database->merge('generated_content')
         ->keys($data)
         ->updateFields($data)
         ->execute();
@@ -615,11 +624,11 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     $bundle = $bundle ?: $entity_type;
 
     try {
-      if (!Database::getConnection()->schema()->tableExists('generated_content')) {
+      if (!$this->database->schema()->tableExists('generated_content')) {
         return;
       }
 
-      $query = Database::getConnection()->select('generated_content', 'gc')
+      $query = $this->database->select('generated_content', 'gc')
         ->fields('gc');
 
       if ($entity_type) {

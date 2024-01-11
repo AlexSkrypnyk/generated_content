@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content;
 
 /**
@@ -8,13 +10,22 @@ namespace Drupal\generated_content;
  * Batch processing for generated content items.
  *
  * @package Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
 class GeneratedContentBatch {
 
   /**
    * Process creation of all entities.
+   *
+   * @param string $op
+   *   Operation.
+   * @param array<mixed> $info_items
+   *   Info items.
+   * @param int $total
+   *   Total.
    */
-  public static function set($op, $info_items, $total) {
+  public static function set(string $op, array $info_items, int $total): void {
     $batch = [
       'title' => t('Processing generated content'),
       'operations' => [],
@@ -27,14 +38,20 @@ class GeneratedContentBatch {
         [$info_item, $total],
       ];
     }
-
     batch_set($batch);
   }
 
   /**
    * Create single item batch callback.
+   *
+   * @param array<mixed> $info_item
+   *   Info item.
+   * @param int $total
+   *   Total.
+   * @param array<mixed> $context
+   *   Context.
    */
-  public static function createSingle($info_item, $total, &$context) {
+  public static function createSingle(array $info_item, int $total, array &$context): void {
     if (!isset($context['sandbox']['count'])) {
       $context['sandbox']['count'] = 0;
       $context['results']['count'] = 0;
@@ -55,8 +72,15 @@ class GeneratedContentBatch {
 
   /**
    * Remove single item batch callback.
+   *
+   * @param array<mixed> $info_item
+   *   Info item.
+   * @param int $total
+   *   Total.
+   * @param array<mixed> $context
+   *   Context.
    */
-  public static function removeSingle($info_item, $total, &$context) {
+  public static function removeSingle(array $info_item, int $total, array &$context): void {
     if (!isset($context['sandbox']['count'])) {
       $context['sandbox']['count'] = 0;
       $context['results']['count'] = 0;
@@ -77,10 +101,18 @@ class GeneratedContentBatch {
 
   /**
    * Finish batch callback.
+   *
+   * @param bool $success
+   *   Success or not.
+   * @param array<mixed> $results
+   *   Results.
+   * @param array<mixed> $operations
+   *   Operations.
    */
-  public static function finished($success, $results, $operations) {
+  public static function finished(bool $success, array $results, array $operations): void {
     // The 'success' parameter means no fatal PHP errors were detected. All
     // other error management should be handled using 'results'.
+    $message = t('Finished with an error.');
     if ($success) {
       $repository = GeneratedContentRepository::getInstance();
       $repository->clearCaches();
@@ -90,9 +122,7 @@ class GeneratedContentBatch {
         'One item processed.', '@count items processed.'
       );
     }
-    else {
-      $message = t('Finished with an error.');
-    }
+
     \Drupal::messenger()->addMessage($message);
   }
 

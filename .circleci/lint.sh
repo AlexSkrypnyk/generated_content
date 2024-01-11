@@ -16,7 +16,7 @@ echo "  > Running PHPCS, PHPMD, TWIGCS"
 vendor/bin/phpcs
 
 echo "  > Running PHPMD"
-#vendor/bin/phpmd --exclude vendor . text phpmd.xml
+vendor/bin/phpmd --exclude vendor . text phpmd.xml
 
 echo "  > Running TWIGCS"
 vendor/bin/twigcs

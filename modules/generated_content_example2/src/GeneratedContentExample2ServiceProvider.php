@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content_example2;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -17,7 +19,7 @@ class GeneratedContentExample2ServiceProvider extends ServiceProviderBase {
   /**
    * {@inheritdoc}
    */
-  public function alter(ContainerBuilder $container) {
+  public function alter(ContainerBuilder $container): void {
     $definition = $container->getDefinition('generated_content.asset_generator');
     $definition->setClass('Drupal\generated_content_example2\GeneratedContentExample2AssetGenerator');
   }

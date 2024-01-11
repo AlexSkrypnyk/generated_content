@@ -19,6 +19,8 @@ class GeneratedContentIgnoreFilter extends ConfigFilterBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-ignore-next-line
    */
   public function filterWrite($name, array $data): array {
     if ($name === 'core.extension') {

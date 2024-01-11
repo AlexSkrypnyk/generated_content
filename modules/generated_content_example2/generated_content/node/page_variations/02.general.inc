@@ -5,12 +5,17 @@
  * Variations for Page nodes.
  */
 
+declare(strict_types = 1);
+
 use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 
 /**
  * Example of general page properties variations.
+ *
+ * @return array<mixed>
+ *   Variations.
  */
-function _generated_content_example2_create_node_page__variations__general() {
+function _generated_content_example2_create_node_page__variations__general(): array {
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
   $helper = GeneratedContentExample2Helper::getInstance();
 

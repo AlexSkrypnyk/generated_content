@@ -5,6 +5,8 @@
  * Create generated images.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Link;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\generated_content_example2\GeneratedContentExample2AssetGenerator;
@@ -14,21 +16,23 @@ use Drupal\media\Entity\Media;
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
-function generated_content_example2_generated_content_create_media_document_weight() {
+function generated_content_example2_generated_content_create_media_document_weight(): int {
   return 2;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
  */
-function generated_content_example2_generated_content_create_media_document_tracking() {
+function generated_content_example2_generated_content_create_media_document_tracking(): bool {
   return TRUE;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_example2_generated_content_create_media_document() {
+function generated_content_example2_generated_content_create_media_document(): array {
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
   $helper = GeneratedContentExample2Helper::getInstance();
 
