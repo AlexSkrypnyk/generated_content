@@ -49,7 +49,7 @@ class GeneratedContentCommands extends DrushCommands {
    * @usage drush generated-content:create-content entity_type bundle count
    */
   public function createContent(string $entity_type, string $bundle, int $total): void {
-    $this->loggerChannelFactory->get('generated_content')->info($this->t('Generate content operations started.'));
+    $this->loggerChannelFactory->get('generated_content')->info('Generate content operations started.');
 
     $batchBuilder = new BatchBuilder();
     $batch_id = 1;
@@ -79,7 +79,7 @@ class GeneratedContentCommands extends DrushCommands {
     batch_set($batchBuilder->toArray());
     drush_backend_batch_process();
 
-    $this->loggerChannelFactory->get('generated_content')->info($this->t('Batch operations finished.'));
+    $this->loggerChannelFactory->get('generated_content')->info('Batch operations finished.');
   }
 
 }

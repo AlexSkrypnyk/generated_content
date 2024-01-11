@@ -11,6 +11,7 @@ use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Utility\Error;
 use Drupal\generated_content\GeneratedContentRepository;
+use Psr\Log\LogLevel;
 
 /**
  * Implements hook_entity_delete().
@@ -20,12 +21,13 @@ function generated_content_entity_delete(EntityInterface $entity): void {
     Database::getConnection()->delete('generated_content')
       ->condition('entity_type', $entity->getEntityTypeId())
       ->condition('bundle', $entity->bundle())
+      // @phpstan-ignore-next-line
       ->condition('entity_id', $entity->id())
       ->execute();
   }
   catch (\Exception $exception) {
     $logger = \Drupal::logger('generated_content');
-    Error::logException($logger, $exception);
+    $logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
   }
 }
 

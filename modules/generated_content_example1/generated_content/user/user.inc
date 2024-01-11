@@ -15,6 +15,7 @@ use Drupal\Core\Utility\Error;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
+use Psr\Log\LogLevel;
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
@@ -71,7 +72,7 @@ function generated_content_example1_generated_content_create_user_user(): array 
         }
         catch (\Exception $exception) {
           $logger = \Drupal::logger('generated_content_example1');
-          Error::logException($logger, $exception);
+          $logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
         }
       }
     }

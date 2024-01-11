@@ -16,6 +16,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Utility\Error;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -605,8 +606,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         ->execute();
     }
     catch (\Exception $exception) {
-      $logger = $this->logger;
-      Error::logException($logger, $exception);
+      $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
     }
   }
 
@@ -638,6 +638,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         $query->condition('bundle', $bundle);
       }
       if ($entity_id) {
+        // @phpstan-ignore-next-line
         $query->condition('entity_id', $entity_id);
       }
 
@@ -654,14 +655,12 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
           }
         }
         catch (\Exception $exception) {
-          $logger = $this->logger;
-          Error::logException($logger, $exception);
+          $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
         }
       }
     }
     catch (\Exception $exception) {
-      $logger = $this->logger;
-      Error::logException($logger, $exception);
+      $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
     }
   }
 
