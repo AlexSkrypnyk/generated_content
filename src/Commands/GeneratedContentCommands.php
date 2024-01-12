@@ -49,7 +49,6 @@ class GeneratedContentCommands extends DrushCommands {
    * @usage drush generated-content:create-content entity_type bundle count
    */
   public function createContent(string $entity_type, string $bundle, int $total): void {
-
     $this->loggerChannelFactory->get('generated_content')->info('Generate content operations started.');
 
     $batchBuilder = new BatchBuilder();
