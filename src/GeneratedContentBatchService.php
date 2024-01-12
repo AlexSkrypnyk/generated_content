@@ -58,7 +58,7 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    *   Total processed.
    * @param int $current
    *   Current processed.
-   * @param array<mixed>|\DrushBatchContext $context
+   * @param mixed $context
    *   Context.
    */
   public static function processItem(int $batch_id, string $entity_type, string $bundle, int $total, int $current, &$context): void {
