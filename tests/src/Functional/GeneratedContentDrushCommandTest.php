@@ -27,7 +27,7 @@ class GeneratedContentDrushCommandTest extends GeneratedContentFunctionalTestBas
    * Test generated content drush command.
    */
   public function testGeneratedContentDrushCommand(): void {
-    $this->drush('generated-content:create-content', ['node', 'page', 3]);
+    $this->drush('generated-content:create-content', ['node', 'page', '3']);
     $output = $this->getSimplifiedErrorOutput();
     $this->assertStringContainsString('Created generated content entities "node" with bundle "page"', $output);
   }
