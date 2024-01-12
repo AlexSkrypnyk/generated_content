@@ -58,10 +58,10 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    *   Total processed.
    * @param int $current
    *   Current processed.
-   * @param array<mixed> $context
+   * @param array<mixed>|\DrushBatchContext $context
    *   Context.
    */
-  public function processItem(int $batch_id, string $entity_type, string $bundle, int $total, int $current, array &$context): void {
+  public static function processItem(int $batch_id, string $entity_type, string $bundle, int $total, int $current, &$context): void {
     $repository = GeneratedContentRepository::getInstance();
     $repository->createEntities([$entity_type => [$bundle => TRUE]]);
 
@@ -84,7 +84,7 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    * @param array<mixed> $operations
    *   Array of operations.
    */
-  public function processItemFinished(bool $success, array $results, array $operations): void {
+  public static function processItemFinished(bool $success, array $results, array $operations): void {
     if ($success) {
       $repository = GeneratedContentRepository::getInstance();
       $repository->clearCaches();
