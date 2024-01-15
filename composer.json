@@ -21,6 +21,9 @@
         "issues": "https://drupal.org/project/issues/generated_content",
         "source": "https://git.drupalcode.org/project/generated_content"
     },
+    "require": {
+        "php": ">=8.1"
+    },
     "suggest": {
         "drupal/config_filter": "Provides API to modify the configuration when it is synchronized between the database and the exported yaml files."
     }
