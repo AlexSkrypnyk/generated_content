@@ -1,0 +1,30 @@
+##
+# Configuration file for PHPStan static code checking, see https://phpstan.org .
+#
+# Note that drupal-specific rules are automatically included by phpstan/extension-installer
+# from vendor/mglaman/phpstan-drupal/extension.neon and vendor/mglaman/phpstan-drupal/rules.neon
+# @see https://github.com/mglaman/phpstan-drupal
+#
+# Paths are passed as CLI arguments.
+
+parameters:
+
+  level: 7
+
+  paths:
+    - web/modules/custom
+
+  excludePaths:
+    - vendor/*
+    - node_modules/*
+
+  drupal:
+    drupal_root: web
+
+  ignoreErrors:
+    -
+      message: "#^Parameter \\#2 \\$value of method Drupal\\\\Core\\\\Database\\\\Query\\\\Delete::condition\\(\\) expects array\\|Drupal\\\\Core\\\\Database\\\\Query\\\\SelectInterface\\|string\\|null, int\\|string\\|null given.$#"
+      reportUnmatched: false
+    -
+      message: "#^Parameter \\#2 \\$value of method Drupal\\\\Core\\\\Database\\\\Query\\\\ConditionInterface::condition\\(\\) expects array\\|Drupal\\\\Core\\\\Database\\\\Query\\\\SelectInterface\\|string\\|null, int<min, -1>\\|int<1, max>\\|string given.$#"
+      reportUnmatched: false

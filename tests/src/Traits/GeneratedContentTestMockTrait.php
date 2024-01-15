@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Traits;
+
+use PHPUnit\Framework\MockObject\Stub\Stub;
 
 /**
  * Trait GeneratedContentTestHelperTrait.
@@ -8,30 +12,35 @@ namespace Drupal\Tests\generated_content\Traits;
  * Helper trait for tests.
  *
  * @package Drupal\generated_content\Tests
+ *
+ * @SuppressWarnings(PHPMD.ElseExpression)
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 trait GeneratedContentTestMockTrait {
 
   /**
    * Call protected methods on the class.
    *
-   * @param object|string $object
+   * @param object|class-string $object
    *   Object or class name to use for a method call.
    * @param string $method
    *   Method name. Method can be static.
-   * @param array $args
+   * @param array<mixed> $args
    *   Array of arguments to pass to the method. To pass arguments by reference,
    *   pass them by reference as an element of this array.
    *
    * @return mixed
    *   Method result.
+   *
+   * @throws \ReflectionException
    */
-  protected static function callProtectedMethod($object, $method, array $args = []) {
+  protected static function callProtectedMethod($object, string $method, array $args = []) {
     $class = new \ReflectionClass(is_object($object) ? get_class($object) : $object);
-    $method = $class->getMethod($method);
-    $method->setAccessible(TRUE);
-    $object = $method->isStatic() ? NULL : $object;
+    $reflectionMethod = $class->getMethod($method);
+    $reflectionMethod->setAccessible(TRUE);
+    $object = $reflectionMethod->isStatic() || is_string($object) ? NULL : $object;
 
-    return $method->invokeArgs($object, $args);
+    return $reflectionMethod->invokeArgs($object, $args);
   }
 
   /**
@@ -44,7 +53,7 @@ trait GeneratedContentTestMockTrait {
    * @param mixed $value
    *   Value to set to the property.
    */
-  protected static function setProtectedValue($object, $property, $value) {
+  protected static function setProtectedValue(object $object, string $property, $value): void {
     $class = new \ReflectionClass(get_class($object));
     $property = $class->getProperty($property);
     $property->setAccessible(TRUE);
@@ -63,7 +72,7 @@ trait GeneratedContentTestMockTrait {
    * @return mixed
    *   Protected property value.
    */
-  protected static function getProtectedValue($object, $property) {
+  protected static function getProtectedValue(object $object, string $property) {
     $class = new \ReflectionClass(get_class($object));
     $property = $class->getProperty($property);
     $property->setAccessible(TRUE);
@@ -74,16 +83,18 @@ trait GeneratedContentTestMockTrait {
   /**
    * Helper to prepare class mock.
    *
-   * @param string $class
+   * @param class-string|object $class
    *   Class name to generate the mock.
-   * @param array $methodsMap
+   * @param array<string, mixed|\PHPUnit\Framework\MockObject\Stub\Stub> $methodsMap
    *   Optional array of methods and values, keyed by method name.
-   * @param array $args
+   * @param array<mixed> $args
    *   Optional array of constructor arguments. If omitted, a constructor will
    *   not be called.
    *
-   * @return object
+   * @return \PHPUnit\Framework\MockObject\MockObject|string
    *   Mocked class.
+   *
+   * @throws \ReflectionException
    */
   protected function prepareMock($class, array $methodsMap = [], array $args = []) {
     $methods = array_keys($methodsMap);
@@ -94,7 +105,7 @@ trait GeneratedContentTestMockTrait {
 
     if ($reflectionClass->isAbstract()) {
       $mock = $this->getMockForAbstractClass(
-        $class, $args, '', !empty($args), TRUE, TRUE, $methods
+        $class_name, $args, '', !empty($args), TRUE, TRUE, $methods
       );
     }
     else {
@@ -112,7 +123,7 @@ trait GeneratedContentTestMockTrait {
 
     foreach ($methodsMap as $method => $value) {
       // Handle callback values differently.
-      if (is_object($value) && strpos(get_class($value), 'Callback') !== FALSE) {
+      if ($value instanceof Stub && strpos(get_class($value), 'Callback') !== FALSE) {
         $mock->expects($this->any())
           ->method($method)
           ->will($value);
@@ -130,7 +141,7 @@ trait GeneratedContentTestMockTrait {
   /**
    * Check if testing framework was ran with --debug option.
    */
-  protected function isDebug() {
+  protected function isDebug(): bool {
     return in_array('--debug', $_SERVER['argv'], TRUE);
   }
 

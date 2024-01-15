@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content\Helpers;
 
 use Drupal\node\Entity\Node;
@@ -13,16 +15,21 @@ use Drupal\node\Entity\Node;
  * for bulk content creation.
  *
  * @package Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 trait GeneratedContentVariationTrait {
 
   /**
    * Generate random variation structure.
    *
-   * @return array
+   * @param array<mixed> $variation
+   *   Variation.
+   *
+   * @return array<mixed>
    *   Variation structure.
    */
-  public static function variationRandomValue($variation) {
+  public static function variationRandomValue(array $variation): array {
     foreach ($variation as $name => $value) {
       // NULL values are considered random bool.
       if (is_null($value)) {
@@ -40,8 +47,16 @@ trait GeneratedContentVariationTrait {
 
   /**
    * Format variation as a string.
+   *
+   * @param array<mixed> $variation
+   *   Variation.
+   * @param int $name_length
+   *   Name length.
+   *
+   * @return string
+   *   Variation format info.
    */
-  public static function variationFormatInfo($variation, $name_length = 3) {
+  public static function variationFormatInfo(array $variation, int $name_length = 3): string {
     $output = [];
 
     foreach ($variation as $name => $value) {
@@ -77,18 +92,18 @@ trait GeneratedContentVariationTrait {
    * @param string $callback_prefix
    *   Variations callback prefix. Used to distinguish between variations
    *   used in different generation cases.
-   * @param string $path
+   * @param string|null $path
    *   Optional path to the directory with variation files to include. If not
    *   provided, variation callbacks will be used from the currently available
    *   user-defined functions.
    *
-   * @return array
+   * @return array<mixed>
    *   Array of variations.
    *
    * @throws \Exception
    *   If $path is not a directory or not readable.
    */
-  public static function variationFetchAll($callback_prefix, $path = NULL) {
+  public static function variationFetchAll(string $callback_prefix, string $path = NULL): array {
     $variations = [];
 
     // If path was provided - include all files from it.
@@ -100,8 +115,11 @@ trait GeneratedContentVariationTrait {
 
       // Include all variation files. It is a good idea to prefix files with
       // sequential numbers to predict loading order.
-      foreach (glob($path . DIRECTORY_SEPARATOR . '*.inc') as $filename) {
-        require_once $filename;
+      $files = glob($path . DIRECTORY_SEPARATOR . '*.inc');
+      if ($files) {
+        foreach ($files as $filename) {
+          require_once $filename;
+        }
       }
     }
 
@@ -125,7 +143,7 @@ trait GeneratedContentVariationTrait {
 
     // Call post-processing callback, if exists. It is a good idea to place it
     // into common helper file that will be required first (e.g. 01.helper.inc).
-    if ($postprocess_callback && is_callable($postprocess_callback)) {
+    if (is_callable($postprocess_callback)) {
       $variations = call_user_func($postprocess_callback, $variations);
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content\Plugin\ConfigFilter;
 
 use Drupal\config_filter\Plugin\ConfigFilterBase;
@@ -17,8 +19,10 @@ class GeneratedContentIgnoreFilter extends ConfigFilterBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-ignore-next-line
    */
-  public function filterWrite($name, array $data) {
+  public function filterWrite($name, array $data): array {
     if ($name === 'core.extension') {
       $excluded_modules = ['generated_content' => 'generated_content'];
       $data['module'] = array_diff_key($data['module'], $excluded_modules);

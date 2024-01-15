@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
@@ -14,7 +16,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomSentence().
    */
-  public function testRandomSentence() {
+  public function testRandomSentence(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -37,7 +39,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomString().
    */
-  public function testRandomString() {
+  public function testRandomString(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -55,7 +57,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomName().
    */
-  public function testRandomName() {
+  public function testRandomName(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -73,7 +75,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomAbbreviation().
    */
-  public function testRandomAbbreviation() {
+  public function testRandomAbbreviation(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -91,7 +93,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomPlainParagraph().
    */
-  public function testRandomPlainParagraph() {
+  public function testRandomPlainParagraph(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -107,7 +109,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomHtmlParagraph().
    */
-  public function testRandomHtmlParagraph() {
+  public function testRandomHtmlParagraph(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -125,7 +127,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomHtmlHeading().
    */
-  public function testRandomHtmlHeading() {
+  public function testRandomHtmlHeading(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -162,7 +164,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomRichText().
    */
-  public function testRandomRichText() {
+  public function testRandomRichText(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -199,7 +201,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomEmail().
    */
-  public function testRandomEmail() {
+  public function testRandomEmail(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -219,7 +221,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomUrl().
    */
-  public function testRandomUrl() {
+  public function testRandomUrl(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -245,7 +247,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomUuid().
    */
-  public function testRandomUuid() {
+  public function testRandomUuid(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -262,7 +264,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomBool().
    */
-  public function testRandomBool() {
+  public function testRandomBool(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -279,7 +281,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomArrayItems().
    */
-  public function testRandomArrayItems() {
+  public function testRandomArrayItems(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -303,7 +305,7 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   /**
    * Test randomArrayItem().
    */
-  public function testRandomArrayItem() {
+  public function testRandomArrayItem(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 

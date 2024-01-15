@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
@@ -10,25 +12,26 @@ use Drupal\Component\Utility\Random;
  * Random content generators.
  *
  * @package Drupal\generated_content
+ *
+ * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 trait GeneratedContentRandomTrait {
 
   /**
    * Generate a random sentence.
    */
-  public static function randomSentence($min_word_count = 5, $max_word_count = 10) {
+  public static function randomSentence(int $min_word_count = 5, int $max_word_count = 10): string {
     $randomiser = new Random();
 
     $content = $randomiser->sentences(mt_rand($min_word_count, $max_word_count), TRUE);
-    $content = rtrim($content, '.') . '.';
-
-    return $content;
+    return rtrim($content, '.') . '.';
   }
 
   /**
    * Generates a random string.
    */
-  public static function randomString($length = 32) {
+  public static function randomString(int $length = 32): string {
     $randomiser = new Random();
 
     return $randomiser->string($length);
@@ -37,7 +40,7 @@ trait GeneratedContentRandomTrait {
   /**
    * Generates a name.
    */
-  public static function randomName($length = 16) {
+  public static function randomName(int $length = 16): string {
     $randomiser = new Random();
 
     return $randomiser->name($length, TRUE);
@@ -52,7 +55,7 @@ trait GeneratedContentRandomTrait {
    * @return string
    *   Abbreviation string.
    */
-  public static function randomAbbreviation($length = 2) {
+  public static function randomAbbreviation(int $length = 2): string {
     $randomiser = new Random();
 
     return $randomiser->name($length, TRUE);
@@ -61,7 +64,7 @@ trait GeneratedContentRandomTrait {
   /**
    * Generate a random plain text paragraph.
    */
-  public static function randomPlainParagraph() {
+  public static function randomPlainParagraph(): string {
     $randomiser = new Random();
 
     return str_replace(["\r", "\n"], '', $randomiser->paragraphs(1));
@@ -70,14 +73,14 @@ trait GeneratedContentRandomTrait {
   /**
    * Generate a random HTML paragraph.
    */
-  public static function randomHtmlParagraph() {
+  public static function randomHtmlParagraph(): string {
     return '<p>' . static::randomPlainParagraph() . '</p>';
   }
 
   /**
    * Generate a random HTML heading.
    */
-  public static function randomHtmlHeading($min_word_count = 5, $max_word_count = 10, $level = 1, $prefix = '') {
+  public static function randomHtmlHeading(int $min_word_count = 5, int $max_word_count = 10, int $level = 1, string $prefix = ''): string {
     if (!$level) {
       $level = mt_rand(2, 5);
     }
@@ -98,7 +101,7 @@ trait GeneratedContentRandomTrait {
    * @return string
    *   Paragraphs.
    */
-  public static function randomRichText($min_paragraph_count = 4, $max_paragraph_count = 12, $prefix = '') {
+  public static function randomRichText(int $min_paragraph_count = 4, int $max_paragraph_count = 12, string $prefix = ''): string {
     $paragraphs = [];
     $paragraph_count = mt_rand($min_paragraph_count, $max_paragraph_count);
     for ($i = 1; $i <= $paragraph_count; $i++) {
@@ -114,13 +117,13 @@ trait GeneratedContentRandomTrait {
   /**
    * Return a random email address.
    *
-   * @param string $domain
+   * @param string|null $domain
    *   Optional domain. If not provided, a random domain will be generated.
    *
    * @return string
    *   Random email address.
    */
-  public static function randomEmail($domain = NULL) {
+  public static function randomEmail(string $domain = NULL): string {
     $randomiser = new Random();
     $domain = $domain ?? $randomiser->name() . '.com';
 
@@ -130,13 +133,13 @@ trait GeneratedContentRandomTrait {
   /**
    * Generate random external URL.
    *
-   * @param string|bool $domain
+   * @param string|null $domain
    *   (optional) Domain name. Defaults to 'www.example.com'.
    *
    * @return string
    *   URL with a path.
    */
-  public static function randomUrl($domain = FALSE) {
+  public static function randomUrl(string $domain = NULL): string {
     $parts = [];
     $parts[] = 'https://';
     $parts[] = $domain ? rtrim($domain, '/') : 'www.example.com';
@@ -149,7 +152,7 @@ trait GeneratedContentRandomTrait {
   /**
    * Generate a random 36-character UUID.
    */
-  public static function randomUuid() {
+  public static function randomUuid(): string {
     $data = random_bytes(16);
     assert(strlen($data) == 16);
 
@@ -174,16 +177,25 @@ trait GeneratedContentRandomTrait {
    * @return bool
    *   Random value.
    */
-  public static function randomBool($skew = 50) {
+  public static function randomBool(int $skew = 50): bool {
     return mt_rand(0, 100) > max(min($skew, 100), 0);
   }
 
   /**
    * Return a random timestamp.
+   *
+   * @throws \Exception
    */
-  public static function randomTimestamp($from = '-1year', $to = "+1year") {
+  public static function randomTimestamp(string $from = '-1year', string $to = "+1year"): int {
     $from = strtotime($from);
+    if ($from === FALSE) {
+      throw new \Exception('From value is not valid.');
+    }
+
     $to = strtotime($to);
+    if ($to === FALSE) {
+      throw new \Exception('To value is not valid.');
+    }
 
     return mt_rand($from, $to);
   }
@@ -202,10 +214,18 @@ trait GeneratedContentRandomTrait {
    *
    * @return string
    *   Random date string with or without time.
+   *
+   * @throws \Exception
    */
-  public static function randomDate($start = 'now', $finish = 'now', $with_time = FALSE) {
+  public static function randomDate(string $start = 'now', string $finish = 'now', bool $with_time = FALSE): string {
     $start = strtotime($start);
+    if ($start === FALSE) {
+      throw new \Exception('Start value is not valid.');
+    }
     $finish = strtotime($finish);
+    if ($finish === FALSE) {
+      throw new \Exception('Finish value is not valid.');
+    }
 
     $start = min($start, $finish);
     $finish = max($start, $finish);
@@ -230,14 +250,22 @@ trait GeneratedContentRandomTrait {
    * @param string $format
    *   (optional) Date format. Defaults to 'Y-m-d'.
    *
-   * @return array
+   * @return array{'value': string, 'end_value': string}
    *   Array of values suitable for daterange field:
    *   - value: (string) Range start value.
    *   - end_value: (string) Range end value.
+   *
+   * @throws \Exception
    */
-  public static function randomDateRange($start, $finish, $format = 'Y-m-d') {
+  public static function randomDateRange(string $start, string $finish, string $format = 'Y-m-d'): array {
     $start = strtotime($start);
+    if ($start === FALSE) {
+      throw new \Exception('Start value is not valid.');
+    }
     $finish = strtotime($finish);
+    if ($finish === FALSE) {
+      throw new \Exception('Finish value is not valid.');
+    }
 
     $start = min($start, $finish);
     $finish = max($start, $finish);
@@ -253,8 +281,16 @@ trait GeneratedContentRandomTrait {
 
   /**
    * Disperse $fillers within $scope.
+   *
+   * @param array<mixed> $scope
+   *   Scope.
+   * @param array<mixed> $fillers
+   *   Filters.
+   *
+   * @return array<mixed>
+   *   Scope after filter.
    */
-  public static function randomDisperse(array $scope, array $fillers) {
+  public static function randomDisperse(array $scope, array $fillers): array {
     foreach ($fillers as $filler) {
       array_splice($scope, rand(0, count($scope)), 1, $filler);
     }
@@ -264,9 +300,17 @@ trait GeneratedContentRandomTrait {
 
   /**
    * Helper to get random array items.
+   *
+   * @param array<mixed> $haystack
+   *   Haystack.
+   * @param int $count
+   *   Count.
+   *
+   * @return array<mixed>
+   *   Random array items.
    */
-  public static function randomArrayItems($haystack, $count) {
-    if ($count == 0) {
+  public static function randomArrayItems(array $haystack, int $count): array {
+    if ($count === 0) {
       return [];
     }
 
@@ -279,8 +323,14 @@ trait GeneratedContentRandomTrait {
 
   /**
    * Helper to get a single random array item.
+   *
+   * @param array<mixed> $haystack
+   *   Haystack.
+   *
+   * @return false|mixed
+   *   Single random array item.
    */
-  public static function randomArrayItem($haystack) {
+  public static function randomArrayItem(array $haystack) {
     if (empty($haystack)) {
       return FALSE;
     }

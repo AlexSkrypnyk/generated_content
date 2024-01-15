@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -16,15 +18,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Admin form to provision generated-content items.
  *
  * @package Drupal\generated_content\Form
+ *
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  */
 class GeneratedContentForm extends FormBase implements ContainerInjectionInterface {
+
 
   /**
    * The generated content repository instance.
    *
    * @var \Drupal\generated_content\GeneratedContentRepository
    */
-  protected $repository;
+  protected GeneratedContentRepository $repository;
 
   /**
    * GeneratedContentForm constructor.
@@ -36,7 +41,8 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): GeneratedContentForm {
+    // @phpstan-ignore-next-line
     return new static(
       GeneratedContentRepository::getInstance()
     );
@@ -45,14 +51,16 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'generated_content_form';
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-ignore-next-line
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
     $info = $this->repository->getInfo();
 
     $options = [];
@@ -99,6 +107,8 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-ignore-next-line
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $results = array_filter($form_state->getValue('table'));

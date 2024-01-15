@@ -5,15 +5,18 @@
  * Main functions.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Utility\Error;
 use Drupal\generated_content\GeneratedContentRepository;
+use Psr\Log\LogLevel;
 
 /**
  * Implements hook_entity_delete().
  */
-function generated_content_entity_delete(EntityInterface $entity) {
+function generated_content_entity_delete(EntityInterface $entity): void {
   try {
     Database::getConnection()->delete('generated_content')
       ->condition('entity_type', $entity->getEntityTypeId())
@@ -23,22 +26,26 @@ function generated_content_entity_delete(EntityInterface $entity) {
   }
   catch (\Exception $exception) {
     $logger = \Drupal::logger('generated_content');
-    Error::logException($logger, $exception);
+    $logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
   }
 }
 
 /**
  * Implements hook_config_ignore_settings_alter().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_config_ignore_settings_alter(array &$settings) {
+function generated_content_config_ignore_settings_alter(array &$settings): void {
   // Exclude module from being enabled or disabled.
   $settings[] = 'core.extension:module.generated_content';
 }
 
 /**
  * Implements hook_modules_installed().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_modules_installed($modules, $is_syncing) {
+function generated_content_modules_installed($modules, $is_syncing): void {
   // Generate content when modules with hook implementations are enabled.
   if (getenv('GENERATED_CONTENT_CREATE') && !$is_syncing) {
     $repository = GeneratedContentRepository::getInstance();
@@ -62,7 +69,7 @@ function generated_content_modules_installed($modules, $is_syncing) {
           $items = _generated_content_parse_cli_items(getenv('GENERATED_CONTENT_ITEMS'));
         }
 
-        $repository->create($items);
+        $repository->createEntities($items);
 
         \Drupal::messenger()->addMessage(t('Finished creation of generated content'));
       }
@@ -76,11 +83,11 @@ function generated_content_modules_installed($modules, $is_syncing) {
  * @param string $items_string
  *   Items as a string to parse.
  *
- * @return array
+ * @return array<mixed>
  *   Multidimensional array of items to process. The first level key is an
  *   entity type and the second is a bundle. Value is a boolean TRUE.
  */
-function _generated_content_parse_cli_items($items_string) {
+function _generated_content_parse_cli_items(string $items_string): array {
   $items = [];
 
   $parsed = explode(',', $items_string);

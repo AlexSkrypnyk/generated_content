@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
@@ -17,7 +19,7 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
   /**
    * Modules to enable.
    *
-   * @var array
+   * @var string[]
    */
   protected static $modules = [
     'field',
@@ -27,8 +29,10 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
 
   /**
    * Tests the randomFieldAllowedValue() method.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function testRandomFieldAllowedValue() {
+  public function testRandomFieldAllowedValue(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -54,8 +58,10 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
 
   /**
    * Tests the randomFieldAllowedValues() method.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function testRandomFieldAllowedValues() {
+  public function testRandomFieldAllowedValues(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -101,8 +107,10 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
 
   /**
    * Tests the staticFieldAllowedValue() method.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function testStaticFieldAllowedValue() {
+  public function testStaticFieldAllowedValue(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -134,8 +142,10 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
 
   /**
    * Tests the staticFieldAllowedValues() method.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function testStaticFieldAllowedValues() {
+  public function testStaticFieldAllowedValues(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 

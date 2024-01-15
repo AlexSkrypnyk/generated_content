@@ -37,6 +37,8 @@ function hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking() {
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
+ *
+ * @SuppressWarnings(PHPMD.StaticAccess)
  */
 function hook_generated_content_create_ENTITY_TYPE_BUNDLE() {
   // Create entity type/bundle entities.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
@@ -17,7 +19,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   /**
    * Modules to enable.
    *
-   * @var array
+   * @var string[]
    */
   protected static $modules = [
     'file',
@@ -36,9 +38,24 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   /**
    * Tests generate() method with different parameters.
    *
+   * @param string $type
+   *   Type.
+   * @param array<mixed> $options
+   *   Options.
+   * @param string $generation_type
+   *   Type.
+   * @param string|null $expected_uri
+   *   Expected uri.
+   * @param string|null $expected_exception_message
+   *   Expected exception message.
+   * @param bool $expected_exception_is_notice
+   *   Expected exception is notice.
+   *
+   * @throws \Exception
+   *
    * @dataProvider dataProviderGenerate
    */
-  public function testGenerate($type, $options = [], $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, $expected_uri = NULL, $expected_exception_message = NULL, $expected_exception_is_notice = FALSE) {
+  public function testGenerate(string $type, array $options = [], string $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, string $expected_uri = NULL, string $expected_exception_message = NULL, bool $expected_exception_is_notice = FALSE): void {
     if ($expected_exception_message) {
       if ($expected_exception_is_notice) {
         set_error_handler(
@@ -65,8 +82,11 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
 
   /**
    * Data provider for testGenerate().
+   *
+   * @return array<mixed>
+   *   Test data.
    */
-  public function dataProviderGenerate() {
+  public function dataProviderGenerate(): array {
     return [
       [GeneratedContentAssetGenerator::ASSET_TYPE_TXT],
       [
@@ -189,9 +209,18 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   /**
    * Tests generate() method with all types.
    *
+   * @param string $generation_type
+   *   Generation type.
+   * @param string $type
+   *   Type.
+   * @param bool $expected_identical_content
+   *   Expected identical content.
+   *
+   * @throws \Exception
+   *
    * @dataProvider dataProviderGenerateTypes
    */
-  public function testGenerateTypes($generation_type, $type, $expected_identical_content = TRUE) {
+  public function testGenerateTypes(string $generation_type, string $type, bool $expected_identical_content = TRUE): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
     $generator = $this->container->get('generated_content.asset_generator');
 
@@ -218,8 +247,11 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
 
   /**
    * Data provider for testGenerateTypes().
+   *
+   * @return array<mixed>
+   *   Test data.
    */
-  public function dataProviderGenerateTypes() {
+  public function dataProviderGenerateTypes(): array {
     // phpcs:disable Drupal.Arrays.Array.LongLineDeclaration
     return [
       [GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, GeneratedContentAssetGenerator::ASSET_TYPE_TXT],
@@ -246,9 +278,22 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   /**
    * Tests generatorRandomImage().
    *
+   * @param string $type
+   *   Type.
+   * @param array<mixed> $options
+   *   Options.
+   * @param int $expected_width
+   *   Width.
+   * @param int $expected_height
+   *   Height.
+   * @param string $expected_mime_type
+   *   Mine type.
+   *
+   * @throws \Exception
+   *
    * @dataProvider dataProviderGeneratorRandomImage
    */
-  public function testGeneratorRandomImage($type, $options, $expected_width, $expected_height, $expected_mime_type) {
+  public function testGeneratorRandomImage(string $type, array $options, int $expected_width, int $expected_height, string $expected_mime_type): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
     $generator = $this->container->get('generated_content.asset_generator');
 
@@ -261,8 +306,11 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
 
   /**
    * Data provider for testGeneratorRandomImage().
+   *
+   * @return array<mixed>
+   *   Test data.
    */
-  public function dataProviderGeneratorRandomImage() {
+  public function dataProviderGeneratorRandomImage(): array {
     return [
       [
         GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
@@ -313,9 +361,16 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
   /**
    * Tests generatorRandomImage().
    *
+   * @param string $type
+   *   Type.
+   * @param string $expected_mime_type
+   *   Mine type.
+   *
+   * @throws \Exception
+   *
    * @dataProvider dataProviderGeneratorStaticFile
    */
-  public function testGeneratorStaticFile($type, $expected_mime_type) {
+  public function testGeneratorStaticFile(string $type, string $expected_mime_type): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
     $generator = $this->container->get('generated_content.asset_generator');
 
@@ -326,8 +381,11 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
 
   /**
    * Data provider for testGeneratorRandomImage().
+   *
+   * @return array<mixed>
+   *   Test data.
    */
-  public function dataProviderGeneratorStaticFile() {
+  public function dataProviderGeneratorStaticFile(): array {
     // phpcs:disable Drupal.Arrays.Array.LongLineDeclaration
     return [
       [GeneratedContentAssetGenerator::ASSET_TYPE_DOC, 'application/msword'],

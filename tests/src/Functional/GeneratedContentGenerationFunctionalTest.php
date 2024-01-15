@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Functional;
 
 /**
@@ -23,8 +25,11 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
 
   /**
    * Test generation and deletion of content.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \Behat\Mink\Exception\ResponseTextException
    */
-  public function testGenerateDelete() {
+  public function testGenerateDelete(): void {
     $admin = $this->createUser([], NULL, TRUE);
     $this->drupalLogin($admin);
 

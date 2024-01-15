@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content\Commands;
 
 use Drupal\Core\Batch\BatchBuilder;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drush\Commands\DrushCommands;
@@ -16,30 +17,20 @@ class GeneratedContentCommands extends DrushCommands {
   use StringTranslationTrait;
 
   /**
-   * Entity type service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  private $entityTypeManager;
-
-  /**
    * Logger service.
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
    */
-  private $loggerChannelFactory;
+  private LoggerChannelFactoryInterface $loggerChannelFactory;
 
   /**
    * Constructs a new UpdateVideosStatsController object.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   Entity type service.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerChannelFactory
    *   Logger service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, LoggerChannelFactoryInterface $loggerChannelFactory) {
+  public function __construct(LoggerChannelFactoryInterface $loggerChannelFactory) {
     parent::__construct();
-    $this->entityTypeManager = $entityTypeManager;
     $this->loggerChannelFactory = $loggerChannelFactory;
   }
 
@@ -57,8 +48,8 @@ class GeneratedContentCommands extends DrushCommands {
    *
    * @usage drush generated-content:create-content entity_type bundle count
    */
-  public function createContent($entity_type, $bundle, $total) {
-    $this->loggerChannelFactory->get('generated_content')->info($this->t('Generate content operations started.'));
+  public function createContent(string $entity_type, string $bundle, int $total): void {
+    $this->loggerChannelFactory->get('generated_content')->info('Generate content operations started.');
 
     $batchBuilder = new BatchBuilder();
     $batch_id = 1;
@@ -88,7 +79,7 @@ class GeneratedContentCommands extends DrushCommands {
     batch_set($batchBuilder->toArray());
     drush_backend_batch_process();
 
-    $this->loggerChannelFactory->get('generated_content')->info($this->t('Batch operations finished.'));
+    $this->loggerChannelFactory->get('generated_content')->info('Batch operations finished.');
   }
 
 }

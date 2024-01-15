@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\generated_content;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -9,6 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class BatchService.
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
 class GeneratedContentBatchService implements ContainerInjectionInterface {
 
@@ -19,7 +23,7 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    *
    * @var \Drupal\Core\Messenger\MessengerInterface
    */
-  protected $messenger;
+  protected MessengerInterface $messenger;
 
   /**
    * Class constructor.
@@ -34,7 +38,8 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
   /**
    * {@inheritDoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): GeneratedContentBatchService {
+    // @phpstan-ignore-next-line
     return new static(
       $container->get('messenger')
     );
@@ -42,10 +47,23 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
 
   /**
    * Batch process callback.
+   *
+   * @param int $batch_id
+   *   Batch id.
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Bundle.
+   * @param int $total
+   *   Total processed.
+   * @param int $current
+   *   Current processed.
+   * @param mixed $context
+   *   Context.
    */
-  public function processItem($batch_id, $entity_type, $bundle, $total, $current, &$context) {
+  public static function processItem(int $batch_id, string $entity_type, string $bundle, int $total, int $current, &$context): void {
     $repository = GeneratedContentRepository::getInstance();
-    $repository->create([$entity_type => [$bundle => TRUE]]);
+    $repository->createEntities([$entity_type => [$bundle => TRUE]]);
 
     $context['message'] = strtr('Running batch "@id" for @entity_type @bundle (@current of @total).', [
       '@id' => $batch_id,
@@ -61,12 +79,12 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    *
    * @param bool $success
    *   Success of the operation.
-   * @param array $results
+   * @param array<mixed> $results
    *   Array of results for post processing.
-   * @param array $operations
+   * @param array<mixed> $operations
    *   Array of operations.
    */
-  public function processItemFinished($success, array $results, array $operations) {
+  public static function processItemFinished(bool $success, array $results, array $operations): void {
     if ($success) {
       $repository = GeneratedContentRepository::getInstance();
       $repository->clearCaches();

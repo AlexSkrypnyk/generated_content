@@ -5,6 +5,8 @@
  * Create generated files.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
@@ -13,22 +15,23 @@ use Drupal\generated_content\Helpers\GeneratedContentHelper;
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
-function generated_content_example1_generated_content_create_file_file_weight() {
+function generated_content_example1_generated_content_create_file_file_weight(): int {
   return -10;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
  */
-function generated_content_example1_generated_content_create_file_file_tracking() {
+function generated_content_example1_generated_content_create_file_file_tracking(): bool {
   return TRUE;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_example1_generated_content_create_file_file() {
-  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+function generated_content_example1_generated_content_create_file_file(): array {
   $helper = GeneratedContentHelper::getInstance();
 
   $total_files_count_per_type = 10;
@@ -55,7 +58,7 @@ function generated_content_example1_generated_content_create_file_file() {
         $filename = sprintf('Demo %s %s file %s %s', $generation_type, $asset_type, $i + 1, $helper::randomName(4));
         $file = $helper->createFile($asset_type, [
           'filename' => str_replace(' ', '_', $filename),
-        ], $generation_type);
+        ], (string) $generation_type);
 
         $link_options = ['attributes' => ['target' => '_blank']];
         $helper::log(

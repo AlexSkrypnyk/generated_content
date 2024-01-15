@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
@@ -15,7 +17,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Modules to enable.
    *
-   * @var array
+   * @var string[]
    */
   protected static $modules = [
     'field',
@@ -26,7 +28,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomNode() method.
    */
-  public function testRandomNode() {
+  public function testRandomNode(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -56,7 +58,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomNodes() method.
    */
-  public function testRandomNodes() {
+  public function testRandomNodes(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -91,7 +93,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealNode() method.
    */
-  public function testRandomRealNode() {
+  public function testRandomRealNode(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -123,7 +125,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealNodes() method.
    */
-  public function testRandomRealNodes() {
+  public function testRandomRealNodes(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -176,7 +178,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticNode() method.
    */
-  public function testStaticNode() {
+  public function testStaticNode(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -219,7 +221,7 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticNodes() method.
    */
-  public function testStaticNodes() {
+  public function testStaticNodes(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 

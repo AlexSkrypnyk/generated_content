@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
@@ -14,7 +16,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticSentence().
    */
-  public function testStaticSentence() {
+  public function testStaticSentence(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -46,7 +48,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticString().
    */
-  public function testStaticString() {
+  public function testStaticString(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -78,7 +80,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticName().
    */
-  public function testStaticName() {
+  public function testStaticName(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -103,7 +105,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticAbbreviation().
    */
-  public function testStaticAbbreviation() {
+  public function testStaticAbbreviation(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -128,7 +130,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticPlainParagraph().
    */
-  public function testStaticPlainParagraph() {
+  public function testStaticPlainParagraph(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -153,7 +155,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticHtmlParagraph().
    */
-  public function testStaticHtmlParagraph() {
+  public function testStaticHtmlParagraph(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -178,7 +180,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticHtmlHeading().
    */
-  public function testStaticHtmlHeading() {
+  public function testStaticHtmlHeading(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -227,7 +229,7 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
   /**
    * Test staticRichText().
    */
-  public function testStaticRichText() {
+  public function testStaticRichText(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
@@ -249,8 +251,13 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
 
   /**
    * Set expected static content.
+   *
+   * @param object $helper
+   *   Help object.
+   * @param mixed $lines
+   *   Output returned.
    */
-  protected function setExpectedStaticContent($helper, $lines) {
+  protected function setExpectedStaticContent(object $helper, $lines): void {
     $this->setProtectedValue($helper, 'staticContent', $lines);
   }
 

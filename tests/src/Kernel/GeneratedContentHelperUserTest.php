@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\GeneratedContentRepository;
@@ -15,7 +17,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomUser() method.
    */
-  public function testRandomUser() {
+  public function testRandomUser(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -35,7 +37,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomUsers() method.
    */
-  public function testRandomUsers() {
+  public function testRandomUsers(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -62,7 +64,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealUser() method.
    */
-  public function testRandomRealUser() {
+  public function testRandomRealUser(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -89,7 +91,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the randomRealUsers() method.
    */
-  public function testRandomRealUsers() {
+  public function testRandomRealUsers(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -119,7 +121,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticUser() method.
    */
-  public function testStaticUser() {
+  public function testStaticUser(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
@@ -145,7 +147,7 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
   /**
    * Tests the staticUsers() method.
    */
-  public function testStaticUsers() {
+  public function testStaticUsers(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 

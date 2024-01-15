@@ -5,27 +5,32 @@
  * Create generated Page nodes.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Core\Link;
 use Drupal\generated_content_example2\GeneratedContentExample2Helper;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
  */
-function generated_content_example2_generated_content_create_node_page_weight() {
+function generated_content_example2_generated_content_create_node_page_weight(): int {
   return 35;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
  */
-function generated_content_example2_generated_content_create_node_page_tracking() {
+function generated_content_example2_generated_content_create_node_page_tracking(): bool {
   return TRUE;
 }
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
+ *
+ * @phpstan-ignore-next-line
  */
-function generated_content_example2_generated_content_create_node_page() {
+function generated_content_example2_generated_content_create_node_page(): array {
   $nodes = [];
 
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
@@ -37,10 +42,10 @@ function generated_content_example2_generated_content_create_node_page() {
   );
 
   foreach ($variations as $i => $variation) {
-    /** @var \Drupal\node\Entity\Node $node */
     $node = $helper::variationCreateNode('page', $variation, $i, '_generated_content_example2_create_node_page__variation_to_fields');
 
     $variation_info = $helper::variationFormatInfo($variation);
+    // @phpstan-ignore-next-line
     $node->revision_log = $variation_info;
 
     $node->save();
@@ -61,8 +66,13 @@ function generated_content_example2_generated_content_create_node_page() {
 
 /**
  * Processor to convert variation values to 'page' node fields.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   Node.
+ * @param array<mixed> $variation
+ *   Variation.
  */
-function _generated_content_example2_create_node_page__variation_to_fields($node, $variation) {
+function _generated_content_example2_create_node_page__variation_to_fields(NodeInterface $node, array $variation): void {
   /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
   $helper = GeneratedContentExample2Helper::getInstance();
 
@@ -83,6 +93,6 @@ function _generated_content_example2_create_node_page__variation_to_fields($node
   }
 
   if (!empty($variation['body']) && $node->hasField('body')) {
-    $node->body = $variation['body'];
+    $node->set('body', $variation['body']);
   }
 }
