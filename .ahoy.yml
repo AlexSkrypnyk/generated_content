@@ -1,8 +1,5 @@
-#
 # Ahoy configuration file.
 # http://www.ahoycli.com/
-#
-# Provides development experience shortcuts.
 ---
 ahoyapi: v2
 
@@ -10,12 +7,42 @@ commands:
 
   build:
     usage: Build or rebuild the project.
-    cmd: ./.circleci/build.sh
+    cmd: |
+      ahoy build-codebase
+      ahoy start-server
+      ahoy provision
+
+  build-codebase:
+    usage: Build the codebase.
+    cmd: ./.devtools/build-codebase.sh
+
+  start-server:
+    usage: Start built-in PHP-server.
+    cmd: ./.devtools/start-server.sh
+
+  provision:
+    usage: Provision a website.
+    cmd: ./.devtools/provision.sh
 
   lint:
     usage: Lint code.
-    cmd: ./.circleci/lint.sh
+    cmd: |
+      pushd "build" >/dev/null || exit 1
+      vendor/bin/phpcs
+      vendor/bin/phpstan --memory-limit=-1
+      vendor/bin/rector --clear-cache --dry-run
+      vendor/bin/phpmd . text phpmd.xml
+      vendor/bin/twigcs
+      popd >/dev/null || exit 1
+
+  lint-fix:
+    usage: Fix coding standards.
+    cmd: |
+      pushd "build" >/dev/null || exit 1
+      vendor/bin/rector --clear-cache
+      vendor/bin/phpcbf
+      popd >/dev/null || exit 1
 
   test:
     usage: Run all tests.
-    cmd: ./.circleci/test.sh
+    cmd: ./.devtools/test.sh
