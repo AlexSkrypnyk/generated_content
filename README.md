@@ -14,6 +14,8 @@
 ![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/generated_content)
 ![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
 
+![Drupal 9](https://img.shields.io/badge/Drupal-9-blue.svg) ![Drupal 10](https://img.shields.io/badge/Drupal-10-blue.svg)
+
 </div>
 
 Drupal.org module page: https://www.drupal.org/project/generated_content
