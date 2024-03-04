@@ -5,7 +5,7 @@
  * Variations for Page nodes.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 

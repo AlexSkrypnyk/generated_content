@@ -5,7 +5,7 @@
  * Helpers for variations for Page nodes.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /**
  * Variations post-process callback.

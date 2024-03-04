@@ -5,7 +5,7 @@
  * Create generated Tags terms.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /**
  * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().

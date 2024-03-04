@@ -5,7 +5,7 @@
  * Install file for Generated Content.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\generated_content\GeneratedContentRepository;
 

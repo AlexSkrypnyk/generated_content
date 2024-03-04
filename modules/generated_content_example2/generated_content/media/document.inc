@@ -5,7 +5,7 @@
  * Create generated images.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\Core\Link;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
