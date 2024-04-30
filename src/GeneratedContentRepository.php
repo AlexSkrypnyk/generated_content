@@ -113,13 +113,15 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function __construct(MessengerInterface $messenger,
-                              ModuleHandlerInterface $moduleHandler,
-                              EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-                              EntityTypeManagerInterface $entityTypeManager,
-                              LoggerChannelFactoryInterface $loggerChannelFactory,
-                              Connection $database,
-  ContainerInterface $container) {
+  public function __construct(
+    MessengerInterface $messenger,
+    ModuleHandlerInterface $moduleHandler,
+    EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+    EntityTypeManagerInterface $entityTypeManager,
+    LoggerChannelFactoryInterface $loggerChannelFactory,
+    Connection $database,
+    ContainerInterface $container,
+  ) {
     $this->messenger = $messenger;
     $this->moduleHandler = $moduleHandler;
     $this->entityTypeBundleInfo = $entityTypeBundleInfo;
@@ -348,10 +350,15 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       'render',
     ];
 
-    foreach ($caches as $cache) {
-      $cache = $this->container->get('cache.' . $cache);
-      // @phpstan-ignore-next-line
-      $cache?->deleteAll();
+    foreach ($caches as $cache_id) {
+      try {
+        /** @var \Drupal\Core\Cache\CacheBackendInterface $cache */
+        $cache = $this->container->get('cache.' . $cache_id);
+        $cache->deleteAll();
+      }
+      catch (\Exception $exception) {
+        // Noop.
+      }
     }
   }
 
