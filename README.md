@@ -30,11 +30,11 @@ Drupal.org module page: https://www.drupal.org/project/generated_content
 
     As a Drupal developer
     I want to control what is put into generated content
-    So that I could have control over what is being generated
+    So that I have control over what is being generated
 
     As a Drupal developer
     I want to have a list of pre-generated pages with URLs
-    So that I could use then for Visual Regression testing during site releases
+    So that I can use them for Visual Regression testing during site releases
 
 ## Installation
 
@@ -67,6 +67,24 @@ Drupal.org module page: https://www.drupal.org/project/generated_content
 See test [example module 1](modules/generated_content_example1) and [test example module 2](modules/generated_content_example2) for extensive examples.
 
 See [`generated_content.api.php`](generated_content.api.php) for API of callbacks system.
+
+## Difference with Devel Generate
+
+Devel Generate and Generated Content are two different tools for creating
+content in Drupal. Devel Generate is mainly used for generating random dummy
+content, users, and taxonomy terms for testing and development. It allows you to
+specify how many and what types of entities to create, but the content is
+random.
+
+On the other hand, Generated Content is for creating specific sets of content
+based on predefined settings. It is useful for ensuring the same content is
+produced each time, which is helpful for tasks like Visual Regression testing
+where consistency is key. Unlike Devel Generate, which is more about quick,
+random content, Generated Content is about having control and reproducibility
+for structured content setups.
+
+Generated Content does not provide any generators itself, but it allows you to
+create your own generators and provides a harness to run them.
 
 ## Example to generate Tags
 
@@ -181,7 +199,7 @@ the provided scripts.
 
 ### Build
 
-Run `.devtools/build-codebase.sh` (or `ahoy build-codebase`
+Run `.devtools/build.sh` (or `ahoy build`
 if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to start inbuilt PHP
 server locally and run the same commands as in CI, plus installing a site and
 your extension automatically.
