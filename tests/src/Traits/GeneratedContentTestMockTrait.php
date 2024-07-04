@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Traits;
 
-use PHPUnit\Framework\MockObject\Stub\Stub;
-
 /**
  * Trait GeneratedContentTestHelperTrait.
  *
@@ -78,64 +76,6 @@ trait GeneratedContentTestMockTrait {
     $property->setAccessible(TRUE);
 
     return $property->getValue($class);
-  }
-
-  /**
-   * Helper to prepare class mock.
-   *
-   * @param class-string|object $class
-   *   Class name to generate the mock.
-   * @param array<string, mixed|\PHPUnit\Framework\MockObject\Stub\Stub> $methodsMap
-   *   Optional array of methods and values, keyed by method name.
-   * @param array<mixed> $args
-   *   Optional array of constructor arguments. If omitted, a constructor will
-   *   not be called.
-   *
-   * @return \PHPUnit\Framework\MockObject\MockObject|string
-   *   Mocked class.
-   *
-   * @throws \ReflectionException
-   */
-  protected function prepareMock($class, array $methodsMap = [], array $args = []) {
-    $methods = array_keys($methodsMap);
-
-    $reflectionClass = new \ReflectionClass($class);
-
-    $class_name = is_object($class) ? get_class($class) : $class;
-
-    if ($reflectionClass->isAbstract()) {
-      $mock = $this->getMockForAbstractClass(
-        $class_name, $args, '', !empty($args), TRUE, TRUE, $methods
-      );
-    }
-    else {
-      $mock = $this->getMockBuilder($class_name);
-      if (!empty($args)) {
-        $mock = $mock->enableOriginalConstructor()
-          ->setConstructorArgs($args);
-      }
-      else {
-        $mock = $mock->disableOriginalConstructor();
-      }
-      $mock = $mock->onlyMethods($methods)
-        ->getMock();
-    }
-
-    foreach ($methodsMap as $method => $value) {
-      // Handle callback values differently.
-      if ($value instanceof Stub && strpos(get_class($value), 'Callback') !== FALSE) {
-        $mock->expects($this->any())
-          ->method($method)
-          ->will($value);
-      }
-      else {
-        $mock->expects($this->any())
-          ->method($method)
-          ->willReturn($value);
-      }
-    }
-
-    return $mock;
   }
 
   /**
