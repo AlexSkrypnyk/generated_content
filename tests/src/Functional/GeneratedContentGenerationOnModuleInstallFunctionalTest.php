@@ -19,8 +19,8 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
   /**
    * Test generation when modules are enabled.
    *
-   * @param string[] $modules
-   *   Modules.
+   * @param array<string[]> $modules_batches
+   *   A list of module batches to install.
    * @param string[] $env_vars
    *   Env vars.
    * @param int[] $expected_count
@@ -29,13 +29,19 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
    * @throws \Drupal\Core\Entity\EntityStorageException
    *
    * @dataProvider dataProviderGenerateOnModuleInstall
+   * @group wip1
    */
-  public function testGenerateOnModuleInstall(array $modules, array $env_vars, array $expected_count): void {
+  public function testGenerateOnModuleInstall(array $modules_batches, array $env_vars, array $expected_count): void {
     foreach ($env_vars as $env_var) {
       putenv($env_var);
     }
 
-    $this->container->get('module_installer')->install($modules, TRUE);
+    // Deliberately install modules in batches to assert that the content is
+    // generated not only when modules installed in bulk but also when
+    // installed one by one.
+    foreach ($modules_batches as $modules) {
+      $this->container->get('module_installer')->install($modules);
+    }
 
     $admin = $this->createUser([], NULL, TRUE);
     if (!$admin instanceof AccountInterface) {
@@ -60,8 +66,11 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
       // None from installed modules.
       [
         [
-          'generated_content_example1',
-          'generated_content_example2',
+          [
+            'generated_content',
+            'generated_content_example1',
+            'generated_content_example2',
+          ],
         ],
         [],
         [0, 0, 0, 0, 0, 0, 0],
@@ -70,8 +79,28 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
       // All from all installed modules.
       [
         [
-          'generated_content_example1',
-          'generated_content_example2',
+          [
+            'generated_content',
+            'generated_content_example1',
+            'generated_content_example2',
+          ],
+        ],
+        [
+          'GENERATED_CONTENT_CREATE=1',
+        ],
+        [0, 70, 10, 10, 10, 3, 10],
+      ],
+
+      // All from all installed modules, but examples installed first.
+      [
+        [
+          [
+            'generated_content_example1',
+            'generated_content_example2',
+          ],
+          [
+            'generated_content',
+          ],
         ],
         [
           'GENERATED_CONTENT_CREATE=1',
@@ -82,7 +111,10 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
       // All from only installed modules.
       [
         [
-          'generated_content_example2',
+          [
+            'generated_content',
+            'generated_content_example2',
+          ],
         ],
         [
           'GENERATED_CONTENT_CREATE=1',
@@ -93,8 +125,11 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
       // Selected from all installed modules.
       [
         [
-          'generated_content_example1',
-          'generated_content_example2',
+          [
+            'generated_content',
+            'generated_content_example1',
+            'generated_content_example2',
+          ],
         ],
         [
           'GENERATED_CONTENT_CREATE=1',
@@ -106,7 +141,10 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
       // Selected from only installed modules.
       [
         [
-          'generated_content_example2',
+          [
+            'generated_content',
+            'generated_content_example2',
+          ],
         ],
         [
           'GENERATED_CONTENT_CREATE=1',

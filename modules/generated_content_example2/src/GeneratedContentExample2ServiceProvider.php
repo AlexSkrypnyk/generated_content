@@ -20,8 +20,10 @@ class GeneratedContentExample2ServiceProvider extends ServiceProviderBase {
    * {@inheritdoc}
    */
   public function alter(ContainerBuilder $container): void {
-    $definition = $container->getDefinition('generated_content.asset_generator');
-    $definition->setClass('Drupal\generated_content_example2\GeneratedContentExample2AssetGenerator');
+    if ($container->hasDefinition('generated_content.asset_generator')) {
+      $definition = $container->getDefinition('generated_content.asset_generator');
+      $definition->setClass('Drupal\generated_content_example2\GeneratedContentExample2AssetGenerator');
+    }
   }
 
 }

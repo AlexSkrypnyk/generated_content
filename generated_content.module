@@ -55,6 +55,9 @@ function generated_content_modules_installed($modules, $is_syncing): void {
       return $v['#module'];
     }, $info);
 
+    $generated_content_modules[] = 'generated_content';
+    $generated_content_modules = array_unique($generated_content_modules);
+
     if (array_intersect($modules, $generated_content_modules)) {
       // Create generated content only if the repository is empty. This allows
       // to avoid duplication of generated content on every run of the
