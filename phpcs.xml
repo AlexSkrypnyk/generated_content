@@ -18,10 +18,6 @@
     <!-- Lint code against platform version specified in composer.json key "config.platform.php". -->
     <config name="testVersion" value="8.2"/>
 
-    <!-- Exclude CircleCI config files. -->
-    <exclude-pattern>circle\.yml</exclude-pattern>
-    <exclude-pattern>\.circle\/config\.yml</exclude-pattern>
-
     <!-- Exclude front-end assets. -->
     <exclude-pattern>.*\/node_modules\/.*</exclude-pattern>
     <exclude-pattern>*\.min\.*</exclude-pattern>

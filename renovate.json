@@ -1,12 +1,9 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
     "automerge": true,
     "dependencyDashboard": true,
-    "extends": [
-        "config:base"
-    ],
     "ignorePaths": [
         ".circleci/config.yml",
-        ".github/workflows/test-php.yml"
+        ".github/workflows/test.yml"
     ]
 }

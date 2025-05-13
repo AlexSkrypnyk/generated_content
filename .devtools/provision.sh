@@ -54,7 +54,10 @@ fi
 db_file="/tmp/site_${extension}.sqlite"
 
 info "Installing Drupal into SQLite database ${db_file}."
-drush sql:drop -y || true >/dev/null
+db_status=$(drush status --field=db-status)
+if [ "${db_status}" = "Connected" ]; then
+  drush sql:drop -y || true >/dev/null
+fi
 drush site-install "${DRUPAL_PROFILE}" -y --db-url="sqlite://localhost/${db_file}" --account-name=admin install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL
 
 pass "Drupal installed."
@@ -90,8 +93,12 @@ echo "Site URL:            http://${WEBSERVER_HOST}:${WEBSERVER_PORT}"
 echo -n "One-time login link: "
 drush -l "http://${WEBSERVER_HOST}:${WEBSERVER_PORT}" uli --no-browser
 echo
-echo "> Available commands:"
-echo "  ahoy build  # Rebuild"
-echo "  ahoy lint   # Check coding standards"
-echo "  ahoy test   # Run tests"
+if [ -f ".ahoy.yml" ]; then
+  # shellcheck disable=SC2016
+  echo 'Run `ahoy` to see available commands.'
+fi
+if [ -f "Makefile" ]; then
+  # shellcheck disable=SC2016
+  echo 'Run `make` to see available commands.'
+fi
 echo
