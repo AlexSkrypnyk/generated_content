@@ -24,7 +24,7 @@ class GeneratedContentExample2Helper extends GeneratedContentHelper {
    * @return \Drupal\taxonomy\TermInterface[]
    *   Terms.
    */
-  public static function randomTags(int $count = NULL): array {
+  public static function randomTags(?int $count = NULL): array {
     return static::randomTerms('tags', $count);
   }
 

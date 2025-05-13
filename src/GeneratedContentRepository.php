@@ -206,7 +206,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @return bool|mixed
    *   Array of info about an entity or FALSE if no such entity was found.
    */
-  public function findInfo(string $entity_type, string $bundle = NULL) {
+  public function findInfo(string $entity_type, ?string $bundle = NULL) {
     $bundle = $bundle ?: $entity_type;
 
     foreach ($this->getInfo() as $item) {
@@ -258,7 +258,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @param array<mixed>|null $info
    *   Info.
    */
-  public function createBatch(array $info = NULL): void {
+  public function createBatch(?array $info = NULL): void {
     $info = $info ?: $this->getInfo();
     // Every info item needs to be set only once.
     GeneratedContentBatch::set('create', $info, 1);
@@ -292,7 +292,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function remove(array $info = NULL): void {
+  public function remove(?array $info = NULL): void {
     $info = $info ?: $this->getInfo();
 
     foreach ($info as $item) {
@@ -312,7 +312,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @param array<mixed>|null $info
    *   Info.
    */
-  public function removeBatch(array $info = NULL): void {
+  public function removeBatch(?array $info = NULL): void {
     $info = $info ?: $this->getInfo();
     GeneratedContentBatch::set('remove', $info, count($info));
   }
@@ -519,7 +519,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @param bool $tracking
    *   Whether to track the entities.
    */
-  protected function addEntity(EntityInterface $entity, string $entity_type = NULL, string $bundle = NULL, bool $tracking = TRUE): void {
+  protected function addEntity(EntityInterface $entity, ?string $entity_type = NULL, ?string $bundle = NULL, bool $tracking = TRUE): void {
     $entity_type = $entity_type ?: $entity->getEntityTypeId();
     $bundle = $bundle ?: $entity->bundle();
 
@@ -570,7 +570,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @return array<mixed>
    *   The list of entities.
    */
-  public function getEntities(string $entity_type = NULL, string $bundle = NULL, bool $reset = FALSE): array {
+  public function getEntities(?string $entity_type = NULL, ?string $bundle = NULL, bool $reset = FALSE): array {
     if (empty($this->entities) || $reset) {
       $this->entities = $this->loadEntities();
     }
@@ -627,7 +627,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @param string|int|null $entity_id
    *   Entity id.
    */
-  protected function removeTrackedEntities(string $entity_type = NULL, string $bundle = NULL, $entity_id = NULL): void {
+  protected function removeTrackedEntities(?string $entity_type = NULL, ?string $bundle = NULL, $entity_id = NULL): void {
     $bundle = $bundle ?: $entity_type;
 
     try {

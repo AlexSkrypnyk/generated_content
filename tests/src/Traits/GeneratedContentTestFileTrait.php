@@ -103,7 +103,7 @@ trait GeneratedContentTestFileTrait {
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  protected function prepareFiles(int $count, string $extension = NULL, string $type = 'image'): array {
+  protected function prepareFiles(int $count, ?string $extension = NULL, string $type = 'image'): array {
     $files = [];
 
     $test_assets = $this->getTestFiles($type);
