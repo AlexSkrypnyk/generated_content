@@ -217,13 +217,11 @@ cd build
 vendor/bin/phpcs
 vendor/bin/phpstan
 vendor/bin/rector --clear-cache --dry-run
-vendor/bin/phpmd . text phpmd.xml
 vendor/bin/twig-cs-fixer
 ```
 
 - PHPCS config: [`phpcs.xml`](phpcs.xml)
 - PHPStan config: [`phpstan.neon`](phpstan.neon)
-- PHPMD config: [`phpmd.xml`](phpmd.xml)
 - Rector config: [`rector.php`](rector.php)
 - Twig CS Fixer config: [`.twig-cs-fixer.php`](.twig-cs-fixer.php)
 - Patches can be applied to the dependencies: add a patch to the

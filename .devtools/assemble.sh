@@ -21,14 +21,12 @@ set -eu
 # Variables (passed from environment; provided for reference only).
 #-------------------------------------------------------------------------------
 
-# Drupal core version to use. If not provided - the latest stable version will be used.
-# Must be coupled with DRUPAL_PROJECT_SHA below.
-DRUPAL_VERSION="${DRUPAL_VERSION:-10}"
+# Drupal core version to use.
+DRUPAL_VERSION="${DRUPAL_VERSION:-11}"
 
 # Commit SHA of the drupal-project to install custom core version. If not
-# provided - the latest version will be used.
-# Must be coupled with DRUPAL_VERSION above.
-DRUPAL_PROJECT_SHA="${DRUPAL_PROJECT_SHA:-10.x}"
+# provided - will be calculated from `$DRUPAL_VERSION` above.
+DRUPAL_PROJECT_SHA="${DRUPAL_PROJECT_SHA:-}"
 
 # Repository for "drupal-composer/drupal-project" project.
 # May be overwritten to use forked repos that may have not been accepted
@@ -51,19 +49,33 @@ echo "         🏗️ ASSEMBLE           "
 echo "==============================="
 echo
 
+# Validate required variables.
+if [ -z "${DRUPAL_VERSION}" ]; then
+  fail "ERROR: DRUPAL_VERSION is not set."
+  exit 1
+fi
+
+if [ -z "${DRUPAL_PROJECT_REPO}" ]; then
+  fail "ERROR: DRUPAL_PROJECT_REPO is not set."
+  exit 1
+fi
+
 # Make sure Composer doesn't run out of memory.
 export COMPOSER_MEMORY_LIMIT=-1
 
 info "Validate tools."
-! command -v git >/dev/null && echo "ERROR: Git is required for this script to run." && exit 1
-! command -v php >/dev/null && echo "ERROR: PHP is required for this script to run." && exit 1
-! command -v composer >/dev/null && echo "ERROR: Composer (https://getcomposer.org/) is required for this script to run." && exit 1
-! command -v jq >/dev/null && echo "ERROR: jq (https://stedolan.github.io/jq/) is required for this script to run." && exit 1
+! command -v git >/dev/null && fail "ERROR: Git is required for this script to run." && exit 1
+! command -v php >/dev/null && fail "ERROR: PHP is required for this script to run." && exit 1
+! command -v composer >/dev/null && fail "ERROR: Composer (https://getcomposer.org/) is required for this script to run." && exit 1
+! command -v jq >/dev/null && fail "ERROR: jq (https://stedolan.github.io/jq/) is required for this script to run." && exit 1
 pass "Tools are valid."
+
+# Set the sed options based on the OS.
+sed_opts=(-i) && [ "$(uname)" == "Darwin" ] && sed_opts=(-i '')
 
 # Extension name, taken from the .info file.
 extension="$(basename -s .info.yml -- ./*.info.yml)"
-[ "${extension}" == "*" ] && echo "ERROR: No .info.yml file found." && exit 1
+[ "${extension}" == "*" ] && fail "ERROR: No .info.yml file found." && exit 1
 
 # Extension type.
 type=$(grep -q "type: theme" "${extension}.info.yml" && echo "themes" || echo "modules")
@@ -80,26 +92,35 @@ if [ -d "build" ]; then
 fi
 
 info "Creating Drupal codebase."
-# Allow installing custom version of Drupal core from drupal-composer/drupal-project,
-# but only coupled with drupal-project SHA (required to get correct dependencies).
-if [ -n "${DRUPAL_VERSION:-}" ] && [ -n "${DRUPAL_PROJECT_SHA:-}" ]; then
-  note "Initialising Drupal site from the scaffold repo ${DRUPAL_PROJECT_REPO} commit ${DRUPAL_PROJECT_SHA}."
 
-  # Clone Drupal core at the specific commit SHA.
-  git clone -n "${DRUPAL_PROJECT_REPO}" "build"
-  git --git-dir="build/.git" --work-tree="build" checkout "${DRUPAL_PROJECT_SHA}"
-  rm -rf "build/.git" >/dev/null
+drupal_version_major="$(echo "${DRUPAL_VERSION}" | cut -d '.' -f 1 | cut -d '@' -f 1)"
+drupal_version_stability="$(echo "${DRUPAL_VERSION}" | sed -n 's/.*@\(.*\)/\1/p')"
+drupal_version_stability="${drupal_version_stability:-stable}"
 
-  note "Pin Drupal to a specific version ${DRUPAL_VERSION}."
-  sed_opts=(-i) && [ "$(uname)" == "Darwin" ] && sed_opts=(-i '')
-  sed "${sed_opts[@]}" 's|\(.*"drupal\/core"\): "\(.*\)",.*|\1: '"\"$DRUPAL_VERSION\",|" "build/composer.json"
-  cat "build/composer.json"
-else
-  note "Initialising Drupal site from the latest scaffold."
-  # There are no releases in "drupal-composer/drupal-project", so have to use "@dev".
-  composer create-project drupal-composer/drupal-project:@dev "build" --no-interaction --no-install
+DRUPAL_PROJECT_SHA="${DRUPAL_PROJECT_SHA:-"${drupal_version_major}.x"}"
+
+note "Initialising Drupal ${DRUPAL_VERSION} site from the scaffold repo ${DRUPAL_PROJECT_REPO} ref ${DRUPAL_PROJECT_SHA}."
+
+# Clone Drupal project at the specific commit SHA.
+git clone -n "${DRUPAL_PROJECT_REPO}" "build"
+git --git-dir="build/.git" --work-tree="build" checkout "${DRUPAL_PROJECT_SHA}"
+rm -rf "build/.git" >/dev/null
+
+note "Pinning Drupal to a specific version ${DRUPAL_VERSION}."
+sed "${sed_opts[@]}" 's|\(.*"drupal\/core.*"\): "\(.*\)",.*|\1: '"\"~$DRUPAL_VERSION\",|" "build/composer.json"
+grep '"drupal/core-.*": "' "build/composer.json"
+
+note "Updating stability to ${drupal_version_stability}."
+# Do not rely on the values coming from the scaffold and always set them.
+sed "${sed_opts[@]}" 's|\(.*"minimum-stability"\): "\(.*\)",.*|\1: '"\"${drupal_version_stability}\",|" "build/composer.json"
+grep 'minimum-stability' "build/composer.json"
+
+drupal_version_prefer_stable="true"
+if [ "${drupal_version_stability}" != "stable" ]; then
+  drupal_version_prefer_stable="false"
 fi
-pass "Drupal codebase created."
+sed "${sed_opts[@]}" 's|\(.*"prefer-stable"\): \(.*\),.*|\1: '${drupal_version_prefer_stable}',|' "build/composer.json"
+grep 'prefer-stable' "build/composer.json"
 
 info "Merging configuration from composer.dev.json."
 php -r "echo json_encode(array_replace_recursive(json_decode(file_get_contents('composer.dev.json'), true),json_decode(file_get_contents('build/composer.json'), true)),JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);" >"build/composer2.json" && mv -f "build/composer2.json" "build/composer.json"
@@ -141,14 +162,31 @@ for composer_suggest in $composer_suggests; do
 done
 pass "Suggested dependencies installed."
 
+# Some versions of Drupal enforce maximum verbosity for errors by default. This
+# leads to functional tests failing due to deprecation notices showing up in
+# the page output, which is then interpreted as a test failure by PHPUnit.
+# To address this, we inject the error_reporting() without deprecations into
+# the index.php and default.settings.php file used by the system under test.
+# But we do this only if the deprecations helper is set to `disable` which means
+# to ignore deprecation notices.
+# @see https://www.drupal.org/project/drupal/issues/1267246
+if [ "${SYMFONY_DEPRECATIONS_HELPER-}" == "disabled" ]; then
+  info "Disabling deprecation notices in functional tests."
+  echo "error_reporting(E_ALL & ~E_DEPRECATED);" >>build/web/sites/default/default.settings.php
+  sed "${sed_opts[@]}" 's/^<?php/<?php error_reporting(E_ALL \& ~E_DEPRECATED);/' build/web/index.php
+  # shellcheck disable=SC2016
+  sed "${sed_opts[@]}" 's/string $request_data = null, array $controls = null/string $request_data, array $controls/' build/vendor/symfony/polyfill-php83/bootstrap.php || true
+  pass "Deprecation notices disabled."
+fi
+
 # If front-end dependencies are used in the project, package-lock.json is
 # expected to be committed to the repository.
 if [ -f "package-lock.json" ]; then
   info "Installing front-end dependencies."
-  if [ -f ".nvmrc" ]; then nvm use; fi
+  if [ -f ".nvmrc" ]; then nvm use || true; fi
   if [ ! -d "node_modules" ]; then npm ci; fi
 
-  echo "> Building front-end dependencies."
+  note "Building front-end dependencies."
   if [ ! -f ".skip_npm_build" ]; then npm run build; fi
   pass "Front-end dependencies installed."
 fi
@@ -156,7 +194,8 @@ fi
 info "Copying tools configuration files."
 # Not every tool correctly resolves the path to the configuration file if it is
 # symlinked, so we copy them instead.
-cp phpcs.xml phpstan.neon phpmd.xml rector.php .twig-cs-fixer.php phpunit.xml "build/"
+cp phpcs.xml phpstan.neon rector.php .twig-cs-fixer.php phpunit.xml "build/"
+[ -f "phpunit.d${drupal_version_major}.xml" ] && cp "phpunit.d${drupal_version_major}.xml" "build/phpunit.xml"
 pass "Tools configuration files copied."
 
 info "Symlinking extension's code."
@@ -170,6 +209,6 @@ echo "    🏗 ASSEMBLE COMPLETE ✅   "
 echo "==============================="
 echo
 echo "> Next steps:"
-echo "  .devtools/start.sh # Start the webserver"
+echo "  .devtools/start.sh        # Start the webserver"
 echo "  .devtools/provision.sh    # Provision the website"
 echo

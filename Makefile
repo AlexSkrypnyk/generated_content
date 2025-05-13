@@ -55,7 +55,6 @@ lint:
 	vendor/bin/phpcs && \
 	vendor/bin/phpstan && \
 	vendor/bin/rector --clear-cache --dry-run && \
-	vendor/bin/phpmd . text phpmd.xml && \
 	vendor/bin/twig-cs-fixer && \
 	popd >/dev/null || exit 1
 

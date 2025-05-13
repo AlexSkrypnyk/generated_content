@@ -19,9 +19,6 @@ parameters:
     - vendor/*
     - node_modules/*
 
-  drupal:
-    drupal_root: web
-
   ignoreErrors:
     -
       message: "#^Parameter \\#2 \\$value of method Drupal\\\\Core\\\\Database\\\\Query\\\\Delete::condition\\(\\) expects array\\|Drupal\\\\Core\\\\Database\\\\Query\\\\SelectInterface\\|string\\|null, int\\|string\\|null given.$#"
@@ -39,5 +36,5 @@ parameters:
         - web/modules/custom/*
         - web/themes/custom/*
       reportUnmatched: false
-  
+
   reportUnmatchedIgnoredErrors: false
