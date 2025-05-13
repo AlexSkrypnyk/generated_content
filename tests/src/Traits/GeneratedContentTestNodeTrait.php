@@ -62,7 +62,7 @@ trait GeneratedContentTestNodeTrait {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  protected function prepareNodes(int $count, array $bundles = NULL, bool $single_bundle = FALSE): array {
+  protected function prepareNodes(int $count, ?array $bundles = NULL, bool $single_bundle = FALSE): array {
     $bundles = $bundles ?? $this->nodeTypes;
     $nodes = [];
     foreach ($bundles as $bundle) {

@@ -484,7 +484,7 @@ class GeneratedContentAssetGenerator {
    * @throws \Exception
    *   If an asset with a requested type is not available.
    */
-  public function getAssets(string $extension = NULL): array {
+  public function getAssets(?string $extension = NULL): array {
     if ($extension) {
       if (empty($this->assets[$extension])) {
         throw new \Exception(sprintf('Assets of type %s do not exist.', $extension));

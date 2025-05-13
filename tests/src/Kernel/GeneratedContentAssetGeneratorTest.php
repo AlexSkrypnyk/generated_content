@@ -55,7 +55,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
    *
    * @dataProvider dataProviderGenerate
    */
-  public function testGenerate(string $type, array $options = [], string $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, string $expected_uri = NULL, string $expected_exception_message = NULL, bool $expected_exception_is_notice = FALSE): void {
+  public function testGenerate(string $type, array $options = [], string $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, ?string $expected_uri = NULL, ?string $expected_exception_message = NULL, bool $expected_exception_is_notice = FALSE): void {
     if ($expected_exception_message) {
       if ($expected_exception_is_notice) {
         set_error_handler(

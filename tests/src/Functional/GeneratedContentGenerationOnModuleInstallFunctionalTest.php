@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Functional;
 
+use Drupal\Core\Session\AccountInterface;
+
 /**
  * Class GeneratedContentGenerationOnModuleInstallFunctionalTest.
  *
@@ -36,6 +38,10 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
     $this->container->get('module_installer')->install($modules, TRUE);
 
     $admin = $this->createUser([], NULL, TRUE);
+    if (!$admin instanceof AccountInterface) {
+      throw new \RuntimeException('Admin user creation failed.');
+    }
+
     $this->drupalLogin($admin);
 
     $this->drupalGet('/admin/config/development/generated-content');

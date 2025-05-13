@@ -123,7 +123,7 @@ trait GeneratedContentRandomTrait {
    * @return string
    *   Random email address.
    */
-  public static function randomEmail(string $domain = NULL): string {
+  public static function randomEmail(?string $domain = NULL): string {
     $randomiser = new Random();
     $domain = $domain ?? $randomiser->name() . '.com';
 
@@ -139,7 +139,7 @@ trait GeneratedContentRandomTrait {
    * @return string
    *   URL with a path.
    */
-  public static function randomUrl(string $domain = NULL): string {
+  public static function randomUrl(?string $domain = NULL): string {
     $parts = [];
     $parts[] = 'https://';
     $parts[] = $domain ? rtrim($domain, '/') : 'www.example.com';

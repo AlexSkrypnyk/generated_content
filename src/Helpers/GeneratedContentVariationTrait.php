@@ -103,7 +103,7 @@ trait GeneratedContentVariationTrait {
    * @throws \Exception
    *   If $path is not a directory or not readable.
    */
-  public static function variationFetchAll(string $callback_prefix, string $path = NULL): array {
+  public static function variationFetchAll(string $callback_prefix, ?string $path = NULL): array {
     $variations = [];
 
     // If path was provided - include all files from it.
@@ -166,7 +166,7 @@ trait GeneratedContentVariationTrait {
    * @return \Drupal\Core\Entity\EntityInterface|\Drupal\node\Entity\Node
    *   Created unsaved node object.
    */
-  public static function variationCreateNode($bundle, $variation, $variation_idx, callable $postprocess_callback = NULL) {
+  public static function variationCreateNode($bundle, $variation, $variation_idx, ?callable $postprocess_callback = NULL) {
     $node = Node::create([
       'type' => $bundle,
       'title' => 'Node title from variation',

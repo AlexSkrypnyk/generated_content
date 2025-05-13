@@ -58,7 +58,7 @@ trait GeneratedContentTestTermTrait {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  protected function prepareTerms(int $count, array $vids = NULL, bool $single_vid = FALSE): array {
+  protected function prepareTerms(int $count, ?array $vids = NULL, bool $single_vid = FALSE): array {
     $vids = $vids ?? $this->vids;
     $terms = [];
     foreach ($vids as $vid) {
