@@ -9,7 +9,7 @@
 
 [![GitHub Issues](https://img.shields.io/github/issues/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/pulls)
-[![CircleCI](https://circleci.com/gh/AlexSkrypnyk/generated_content.svg?style=shield)](https://circleci.com/gh/AlexSkrypnyk/generated_content)
+[![Test](https://github.com/AlexSkrypnyk/generated_content/actions/workflows/test.yml/badge.svg)](https://github.com/AlexSkrypnyk/generated_content/actions/workflows/test.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexSkrypnyk/generated_content)
 ![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/generated_content)
 ![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
