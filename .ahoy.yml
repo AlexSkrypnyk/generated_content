@@ -15,19 +15,19 @@ commands:
 
   assemble:
     usage: Assemble a codebase using project code and all required dependencies.
-    cmd: ./.devtools/assemble.sh
+    cmd: ./.devtools/assemble
 
   start:
     usage: Start development environment.
-    cmd: ./.devtools/start.sh
+    cmd: ./.devtools/start
 
   stop:
     usage: Stop development environment.
-    cmd: ./.devtools/stop.sh
+    cmd: ./.devtools/stop
 
   provision:
     usage: Provision application within assembled codebase.
-    cmd: ./.devtools/provision.sh
+    cmd: ./.devtools/provision
 
   drush:
     usage: Run Drush command.
@@ -45,6 +45,7 @@ commands:
       vendor/bin/phpstan
       vendor/bin/rector --clear-cache --dry-run
       vendor/bin/twig-cs-fixer
+      [ ! -d node_modules ] || npm run lint
       popd >/dev/null || exit 1
 
   lint-fix:
@@ -54,6 +55,7 @@ commands:
       vendor/bin/rector --clear-cache
       vendor/bin/phpcbf
       vendor/bin/twig-cs-fixer --no-cache --fix
+      [ ! -d node_modules ] || npm run lint-fix
       popd >/dev/null || exit 1
 
   test:

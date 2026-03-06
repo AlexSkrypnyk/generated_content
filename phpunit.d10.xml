@@ -108,6 +108,7 @@
             <directory>web/themes/custom/*/tests</directory>
             <file>web/modules/custom/generated_content/rector.php</file>
             <file>web/themes/custom/generated_content/rector.php</file>
+            <directory>**/node_modules/**</directory>
         </exclude>
 
         <report>

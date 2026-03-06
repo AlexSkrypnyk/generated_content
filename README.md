@@ -10,15 +10,20 @@
 [![GitHub Issues](https://img.shields.io/github/issues/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/pulls)
 [![Test](https://github.com/AlexSkrypnyk/generated_content/actions/workflows/test.yml/badge.svg)](https://github.com/AlexSkrypnyk/generated_content/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/AlexSkrypnyk/generated_content/graph/badge.svg)](https://codecov.io/gh/AlexSkrypnyk/generated_content)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexSkrypnyk/generated_content)
 ![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/generated_content)
 ![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
 
-![Drupal 9](https://img.shields.io/badge/Drupal-9-blue.svg)
+![PHP 8.2](https://img.shields.io/badge/PHP-8.2-777BB4.svg)
+![PHP 8.3](https://img.shields.io/badge/PHP-8.3-777BB4.svg)
+![PHP 8.4](https://img.shields.io/badge/PHP-8.4-777BB4.svg)
 ![Drupal 10](https://img.shields.io/badge/Drupal-10-009CDE.svg)
 ![Drupal 11](https://img.shields.io/badge/Drupal-11-006AA9.svg)
 
 </div>
+
+---
 
 Drupal.org module page: https://www.drupal.org/project/generated_content
 
@@ -194,48 +199,135 @@ known aliases in 2 environments and report differences, if any.
 
 ## Local development
 
-Provided that you have PHP installed locally, you can develop an extension using
-the provided scripts.
+1. Install PHP with SQLite support and Composer
+3. Clone this repository
+4. Run `ahoy build`
 
-### Build
+## Building website
 
-Run `.devtools/build.sh` (or `ahoy build`
-if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to start inbuilt PHP
-server locally and run the same commands as in CI, plus installing a site and
-your extension automatically.
+`ahoy build` assembles the codebase, starts the PHP server
+and provisions the Drupal website with this extension enabled. These operations
+are executed using scripts within [`.devtools`](.devtools) directory. CI uses
+the same scripts to build and test this extension.
 
-### Code linting
+The resulting codebase is then placed in the `build` directory. The extension
+files are symlinked into the Drupal site structure.
 
-Run tools individually (or `ahoy lint` to run all tools
-if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to lint your code
-according to
-the [Drupal coding standards](https://www.drupal.org/docs/develop/standards).
-
+The `build` command is a wrapper for more granular commands:
+```bash
+ahoy assemble     # Assemble the codebase
+ahoy start        # Start the PHP server
+ahoy provision    # Provision the Drupal website
 ```
+
+The `provision` command is useful for re-installing the Drupal website without
+re-assembling the codebase.
+
+### Drupal versions
+
+The Drupal version used for the codebase assembly is determined by the
+`DRUPAL_VERSION` variable and defaults to the latest stable version.
+
+You can specify a different version by setting the `DRUPAL_VERSION` environment
+variable before running the `ahoy build` command:
+
+```bash
+DRUPAL_VERSION=11 ahoy build        # Drupal 11
+DRUPAL_VERSION=11@alpha ahoy build  # Drupal 11 alpha
+DRUPAL_VERSION=10@beta ahoy build   # Drupal 10 beta
+DRUPAL_VERSION=11.1 ahoy build      # Drupal 11.1
+```
+
+The `minimum-stability` setting in the `composer.json` file is
+automatically adjusted to match the specified Drupal version's stability.
+
+### Using Drupal project fork
+
+If you want to use a custom fork of `drupal-composer/drupal-project`, set the
+`DRUPAL_PROJECT_REPO` environment variable before running the `ahoy build`
+command:
+
+```bash
+DRUPAL_PROJECT_REPO=https://github.com/me/drupal-project-fork.git ahoy build
+```
+
+### Patching dependencies
+
+To apply patches to the dependencies, add a patch to the `patches` section of
+`composer.json`. Local patches are be sourced from the `patches` directory.
+
+### Providing `GITHUB_TOKEN`
+
+To overcome GitHub API rate limits, you may provide a `GITHUB_TOKEN` environment
+variable with a personal access token.
+
+### Provisioning the website
+
+The `provision` command installs the Drupal website from the `standard`
+profile with the extension (and any `suggest`'ed extensions) enabled. The
+profile can be changed by setting the `DRUPAL_PROFILE` environment variable.
+
+The website will be available at http://localhost:8000. The hostname and port
+can be changed by setting the `WEBSERVER_HOST` and `WEBSERVER_PORT` environment
+variables.
+
+An SQLite database is created in `/tmp/site_generated_content.sqlite` file.
+You can browse the contents of the created SQLite database using
+[DB Browser for SQLite](https://sqlitebrowser.org/).
+
+A one-time login link will be printed to the console.
+
+## Coding standards
+
+The `ahoy lint` command checks the codebase using multiple tools:
+- PHP code standards checking against `Drupal` and `DrupalPractice` standards.
+- PHP code static analysis with PHPStan.
+- PHP deprecated code analysis and auto-fixing with Drupal Rector.
+- Twig code analysis with Twig CS Fixer.
+- JavaScript code analysis with ESLint.
+- CSS code analysis with Stylelint.
+
+The configuration files for these tools are located in the root of the codebase.
+
+### Fixing coding standards issues
+
+To fix coding standards issues automatically, run `ahoy lint-fix`. This runs
+the same tools as `lint` command but with the `--fix` option (for the tools
+that support it).
+
+## Testing
+
+The `ahoy test` command runs the PHPUnit tests for this extension.
+
+The tests are located in the `tests/src` directory. The `phpunit.xml` file
+configures PHPUnit to run the tests. It uses Drupal core's bootstrap file
+`core/tests/bootstrap.php` to bootstrap the Drupal environment before running
+the tests.
+
+The `test` command is a wrapper for multiple test commands:
+```bash
+ahoy test-unit        # Run Unit tests
+ahoy test-kernel      # Run Kernel tests
+ahoy test-functional  # Run Functional tests
+```
+
+### Running specific tests
+
+You can run specific tests by passing a path to the test file or PHPUnit CLI
+option (`--filter`, `--group`, etc.) to the `ahoy test` command:
+
+```bash
+ahoy test-unit tests/src/Unit/MyUnitTest.php
+ahoy test-unit -- --group=wip
+```
+
+You may also run tests using the `phpunit` command directly:
+
+```bash
 cd build
-
-vendor/bin/phpcs
-vendor/bin/phpstan
-vendor/bin/rector --clear-cache --dry-run
-vendor/bin/twig-cs-fixer
+php -d pcov.directory=.. vendor/bin/phpunit tests/src/Unit/MyUnitTest.php
+php -d pcov.directory=.. vendor/bin/phpunit --group=wip
 ```
 
-- PHPCS config: [`phpcs.xml`](phpcs.xml)
-- PHPStan config: [`phpstan.neon`](phpstan.neon)
-- Rector config: [`rector.php`](rector.php)
-- Twig CS Fixer config: [`.twig-cs-fixer.php`](.twig-cs-fixer.php)
-- Patches can be applied to the dependencies: add a patch to the
-    `patches` section of `composer.json`. Local patches will be sourced from
-    the `patches` directory.
-
-### Tests
-
-Run tests individually with `cd build && ./vendor/bin/phpunit` (or `ahoy test`
-if [Ahoy](https://github.com/ahoy-cli/ahoy) is installed) to run all test for
-your extension.
-
-### Browsing SQLite database
-
-To browse the contents of created SQLite database
-(located at `/tmp/site_[EXTENSION_NAME].sqlite`),
-use [DB Browser for SQLite](https://sqlitebrowser.org/).
+---
+_This repository was created using the [Drupal Extension Scaffold](https://github.com/AlexSkrypnyk/drupal_extension_scaffold) project template_
