@@ -18,14 +18,9 @@ parameters:
   excludePaths:
     - vendor/*
     - node_modules/*
+    - ../*/node_modules/*
 
   ignoreErrors:
-    -
-      message: "#^Parameter \\#2 \\$value of method Drupal\\\\Core\\\\Database\\\\Query\\\\Delete::condition\\(\\) expects array\\|Drupal\\\\Core\\\\Database\\\\Query\\\\SelectInterface\\|string\\|null, int\\|string\\|null given.$#"
-      reportUnmatched: false
-    -
-      message: "#^Parameter \\#2 \\$value of method Drupal\\\\Core\\\\Database\\\\Query\\\\ConditionInterface::condition\\(\\) expects array\\|Drupal\\\\Core\\\\Database\\\\Query\\\\SelectInterface\\|string\\|null, int<min, -1>\\|int<1, max>\\|string given.$#"
-      reportUnmatched: false
     -
       # Hook implementations do not provide docblocks for parameters, so there
       # is no way to provide this information.
