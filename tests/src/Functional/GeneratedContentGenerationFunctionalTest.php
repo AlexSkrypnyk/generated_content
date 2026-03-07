@@ -52,7 +52,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
       'table[node__page]' => TRUE,
       'table[node__article]' => TRUE,
     ];
-    $this->submitForm($edit, 'Generate');
+    $this->submitForm($edit, '▶ Generate');
     $this->assertInfoTableItems(0, 70, 10, 10, 10, 3, 10);
 
     $this->assertSession()->pageTextContains('Created an account generated_content_editor_1@example.com');
@@ -157,7 +157,7 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
       'table[node__page]' => TRUE,
       'table[node__article]' => TRUE,
     ];
-    $this->submitForm($edit, 'Delete');
+    $this->submitForm($edit, '✖ Delete');
     $this->assertInfoTableItems(0, 0, 0, 0, 0, 0, 0);
 
     $this->assertSession()->pageTextContains('Removed all generated content entities "user" in bundle "user"');
@@ -168,6 +168,77 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
     $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "page"');
     $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "article"');
     $this->assertSession()->pageTextContains('7 items processed.');
+  }
+
+  /**
+   * Test regeneration of content.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \Behat\Mink\Exception\ResponseTextException
+   */
+  public function testRegenerate(): void {
+    $admin = $this->createUser([], NULL, TRUE);
+    if (!$admin instanceof AccountInterface) {
+      throw new \RuntimeException('Admin user creation failed.');
+    }
+
+    $this->drupalLogin($admin);
+
+    $this->drupalGet('/admin/config/development/generated-content');
+
+    $edit = [
+      'table[taxonomy_term__tags]' => TRUE,
+      'table[node__page]' => TRUE,
+    ];
+    $this->submitForm($edit, '▶ Generate');
+    $this->assertInfoTableItems(0, 0, 0, 0, 10, 3, 0);
+
+    // Regenerate the same items.
+    $edit = [
+      'table[taxonomy_term__tags]' => TRUE,
+      'table[node__page]' => TRUE,
+    ];
+    $this->submitForm($edit, '⟳ Regenerate');
+    $this->assertInfoTableItems(0, 0, 0, 0, 10, 3, 0);
+
+    $this->assertSession()->pageTextContains('Removed all generated content entities "taxonomy_term" in bundle "tags"');
+    $this->assertSession()->pageTextContains('Removed all generated content entities "node" in bundle "page"');
+    $this->assertSession()->pageTextContains('Created generated content entities "taxonomy_term" with bundle "tags"');
+    $this->assertSession()->pageTextContains('Created generated content entities "node" with bundle "page"');
+  }
+
+  /**
+   * Test that buttons process all items when nothing is selected.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \Behat\Mink\Exception\ResponseTextException
+   */
+  public function testNoSelectionProcessesAll(): void {
+    $admin = $this->createUser([], NULL, TRUE);
+    if (!$admin instanceof AccountInterface) {
+      throw new \RuntimeException('Admin user creation failed.');
+    }
+
+    $this->drupalLogin($admin);
+
+    $this->drupalGet('/admin/config/development/generated-content');
+    $this->assertInfoTableItems(0, 0, 0, 0, 0, 0, 0);
+
+    // Generate with no selection should process all items.
+    $this->submitForm([], '▶ Generate');
+    $this->assertInfoTableItems(0, 70, 10, 10, 10, 3, 10);
+
+    // Delete with no selection should process all items.
+    $this->submitForm([], '✖ Delete');
+    $this->assertInfoTableItems(0, 0, 0, 0, 0, 0, 0);
+
+    // Regenerate with no selection should process all items.
+    // First generate content to have something to regenerate.
+    $this->submitForm([], '▶ Generate');
+    $this->assertInfoTableItems(0, 70, 10, 10, 10, 3, 10);
+
+    $this->submitForm([], '⟳ Regenerate');
+    $this->assertInfoTableItems(0, 70, 10, 10, 10, 3, 10);
   }
 
 }
