@@ -47,8 +47,9 @@ Drupal.org module page: https://www.drupal.org/project/generated_content
 
 ## How it works
 
-1. The module provides callbacks system to generate content entities within a
-   code of a custom module sitting in `generated_content/{entity_type}/{entity_bundle}.inc`.
+1. The module uses Drupal's plugin system to discover content generators.
+   Each generator is a PHP class with a `#[GeneratedContent]` attribute in
+   your module's `src/Plugin/GeneratedContent/` directory.
 2. The module provides a helper (singleton) class to generate random and static
    content. It also supports extending this class in your custom module to
    enhance with your site-specific generation helpers.
@@ -71,7 +72,8 @@ Drupal.org module page: https://www.drupal.org/project/generated_content
 
 See test [example module 1](modules/generated_content_example1) and [test example module 2](modules/generated_content_example2) for extensive examples.
 
-See [`generated_content.api.php`](generated_content.api.php) for API of callbacks system.
+The module supports `hook_generated_content_plugin_alter()` to alter plugin
+definitions at runtime.
 
 ## Difference with Devel Generate
 
@@ -94,69 +96,47 @@ create your own generators and provides a harness to run them.
 ## Example to generate Tags
 
 ```php
-
 <?php
 
-/**
- * @file
- * Create generated Tags terms.
- */
+declare(strict_types=1);
+
+namespace Drupal\my_module\Plugin\GeneratedContent;
 
 use Drupal\Core\Link;
-use Drupal\generated_content\Helpers\GeneratedContentHelper;
+use Drupal\generated_content\Attribute\GeneratedContent;
+use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginBase;
 use Drupal\taxonomy\Entity\Term;
 
-/**
- * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_weight().
- */
-function generated_content_example2_generated_content_create_taxonomy_term_tags_weight() {
-  return 12;
-}
+#[GeneratedContent(id: 'my_module_taxonomy_term_tags', entity_type: 'taxonomy_term', bundle: 'tags', weight: 12)]
+class TaxonomyTermTags extends GeneratedContentPluginBase {
 
-/**
- * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE_tracking().
- */
-function generated_content_example2_generated_content_create_taxonomy_term_tags_tracking() {
-  return TRUE;
-}
+  public function generate(): array {
+    $total_terms_count = 10;
 
-/**
- * Implements hook_generated_content_create_ENTITY_TYPE_BUNDLE().
- */
-function generated_content_example2_generated_content_create_taxonomy_term_tags() {
-  // Total number of terms to create.
-  $total_terms_count = 10;
+    $terms = [];
 
-  /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
-  $helper = GeneratedContentHelper::getInstance();
+    for ($i = 0; $i < $total_terms_count; $i++) {
+      $term = Term::create([
+        'vid' => 'tags',
+        'name' => 'Generated term ' . ($i + 1),
+      ]);
 
-  $terms = [];
+      $term->save();
 
-  for ($i = 0; $i < $total_terms_count; $i++) {
-    // Create a term instance.
-    $term = Term::create([
-      'vid' => 'tags',
-      'name' => 'Generated term ' . ($i + 1),
-    ]);
+      $terms[] = $term;
 
-    // Save term instance.
-    $term->save();
+      $this->helper::log(
+        'Created "%s" term "%s" [ID: %s] %s',
+        $term->bundle(),
+        $term->toLink()->toString(),
+        $term->id(),
+        Link::createFromRoute('Edit', 'entity.taxonomy_term.edit_form', ['taxonomy_term' => $term->id()])->toString()
+      );
+    }
 
-    // Track saved term instance to return.
-    $terms[] = $term;
-
-    // Log creation of this entity.
-    $helper::log(
-      'Created "%s" term "%s" [ID: %s] %s',
-      $term->bundle(),
-      $term->toLink()->toString(),
-      $term->id(),
-      Link::createFromRoute('Edit', 'entity.taxonomy_term.edit_form', ['taxonomy_term' => $term->id()])->toString()
-    );
+    return $terms;
   }
 
-  // Return created term instances.
-  return $terms;
 }
 ```
 
@@ -176,7 +156,7 @@ provides:
 
 See example of class extension: [`modules/generated_content_example2/src/GeneratedContentExample2Helper.php`](modules/generated_content_example2/src/GeneratedContentExample2Helper.php)
 
-See example of class usage: [`modules/generated_content_example2/generated_content/node/article.inc`](modules/generated_content_example2/generated_content/node/article.inc)
+See example of class usage: [`modules/generated_content_example2/src/Plugin/GeneratedContent/NodeArticle.php`](modules/generated_content_example2/src/Plugin/GeneratedContent/NodeArticle.php)
 
 ## Random vs Static content
 

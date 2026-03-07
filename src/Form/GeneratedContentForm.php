@@ -87,7 +87,7 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
       '#type' => 'tableselect',
       '#header' => $header,
       '#options' => $options,
-      '#empty' => $this->t('No generated content implementations found. To get started, create a <code>generated_content/{entity_type}/{bundle}.inc</code> file in your module and implement a <code>hook_generated_content_create_{entity_type}_{bundle}()</code> callback. See <code>generated_content.api.php</code> for examples.'),
+      '#empty' => $this->t('No generated content implementations found. To get started, create a plugin class in <code>src/Plugin/GeneratedContent/</code> in your module using the <code>#[GeneratedContent]</code> attribute.'),
     ];
 
     if (!empty($options)) {

@@ -9,9 +9,8 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginManager;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Messenger\MessengerInterface;
@@ -34,8 +33,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class GeneratedContentRepository implements ContainerInjectionInterface {
 
   use DependencySerializationTrait;
-
-  const CONTENT_DIRECTORY = 'generated_content';
 
   /**
    * The repository singleton instances keyed by class name.
@@ -66,20 +63,6 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   protected MessengerInterface $messenger;
 
   /**
-   * Module handler service.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected ModuleHandlerInterface $moduleHandler;
-
-  /**
-   * Entity type bundle info service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
-   */
-  protected EntityTypeBundleInfoInterface $entityTypeBundleInfo;
-
-  /**
    * Entity type manager service.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -108,6 +91,13 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   protected ContainerInterface $container;
 
   /**
+   * Plugin manager.
+   *
+   * @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginManager
+   */
+  protected GeneratedContentPluginManager $pluginManager;
+
+  /**
    * GeneratedContentRepository constructor.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -115,20 +105,18 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    */
   public function __construct(
     MessengerInterface $messenger,
-    ModuleHandlerInterface $moduleHandler,
-    EntityTypeBundleInfoInterface $entityTypeBundleInfo,
     EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelFactoryInterface $loggerChannelFactory,
     Connection $database,
     ContainerInterface $container,
+    GeneratedContentPluginManager $plugin_manager,
   ) {
     $this->messenger = $messenger;
-    $this->moduleHandler = $moduleHandler;
-    $this->entityTypeBundleInfo = $entityTypeBundleInfo;
     $this->entityTypeManager = $entityTypeManager;
     $this->logger = $loggerChannelFactory->get('generated_content');
     $this->database = $database;
     $this->container = $container;
+    $this->pluginManager = $plugin_manager;
 
     $this->entities = $this->loadEntities();
   }
@@ -140,12 +128,11 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     // @phpstan-ignore new.static
     return new static(
       $container->get('messenger'),
-      $container->get('module_handler'),
-      $container->get('entity_type.bundle.info'),
       $container->get('entity_type.manager'),
       $container->get('logger.factory'),
       $container->get('database'),
       $container,
+      $container->get('plugin.manager.generated_content'),
     );
   }
 
@@ -272,10 +259,9 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    *   Entity definition information.
    */
   public function createSingle(array $info): ?int {
-    if (!empty($info['#file']) && file_exists($info['#file'])) {
-      require_once $info['#file'];
-    }
-    $entities = $info['#callback']();
+    /** @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginInterface $plugin */
+    $plugin = $this->pluginManager->createInstance($info['#plugin_id']);
+    $entities = $plugin->generate();
     $this->messenger->addMessage(sprintf('Created generated content entities "%s" with bundle "%s"', $info['entity_type'], $info['bundle']));
     $this->addEntities($entities, $info['#tracking']);
     $total = count($entities);
@@ -375,103 +361,32 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   }
 
   /**
-   * Return an array of default weights.
-   *
-   * @return array<string, int>
-   *   Default weight.
-   */
-  protected function getDefaultWeights(): array {
-    return [
-      'user' => -100,
-      'menu' => -90,
-      'taxonomy_term' => -80,
-      'media' => -50,
-      'node' => 0,
-      'block_content' => -10,
-    ];
-  }
-
-  /**
    * Collect information about entities to process.
-   *
-   * If multiple modules implement the same hook - the last implementation
-   * wins. This is by design - we do not support cross-module content generation
-   * as it involves potentially resolving weight-related dependencies issues.
    *
    * @return array<mixed>
    *   Array of information records about each entity type and bundle.
    */
   protected function collectInfo(): array {
-    $paths = $this->collectImplementationPaths();
-
-    if (empty($paths)) {
-      return [];
-    }
-
-    $default_weights = $this->getDefaultWeights();
-
-    $info = $this->entityTypeBundleInfo->getAllBundleInfo();
+    $definitions = $this->pluginManager->getDefinitions();
     $available = [];
 
-    foreach ($paths as $module_name => $path) {
-      foreach ($info as $entity_type => $bundles) {
-        foreach (array_keys($bundles) as $bundle) {
-          $inc = $path . '/' . $entity_type . '/' . $bundle . '.inc';
-
-          if (!file_exists($inc)) {
-            continue;
-          }
-          require_once $inc;
-
-          $func = $module_name . '_generated_content_create_' . $entity_type . '_' . $bundle;
-
-          if (function_exists($func)) {
-            $key = $entity_type . '__' . $bundle;
-            $available[$key] = [
-              'entity_type' => $entity_type,
-              'bundle' => $bundle,
-              '#callback' => $func,
-              '#tracking' => TRUE,
-              '#weight' => $default_weights[$entity_type] ?? 0,
-              '#file' => $inc,
-              '#module' => $module_name,
-            ];
-
-            $weight_function = $module_name . '_generated_content_create_' . $entity_type . '_' . $bundle . '_weight';
-            if (function_exists($weight_function)) {
-              $available[$key]['#weight'] = $weight_function();
-            }
-
-            $tracking_function = $module_name . '_generated_content_create_' . $entity_type . '_' . $bundle . '_tracking';
-            if (function_exists($tracking_function)) {
-              $available[$key]['#tracking'] = $tracking_function();
-            }
-          }
-        }
-      }
+    foreach ($definitions as $id => $definition) {
+      $entity_type = $definition['entity_type'];
+      $bundle = $definition['bundle'];
+      $key = $entity_type . '__' . $bundle;
+      $available[$key] = [
+        'entity_type' => $entity_type,
+        'bundle' => $bundle,
+        '#plugin_id' => $id,
+        '#tracking' => $definition['tracking'] ?? TRUE,
+        '#weight' => $definition['weight'] ?? 0,
+        '#module' => $definition['provider'],
+      ];
     }
 
     uasort($available, [SortArray::class, 'sortByWeightProperty']);
 
     return $available;
-  }
-
-  /**
-   * Collect hook implementation paths.
-   *
-   * @return array<mixed>
-   *   Array of paths keyed by module name.
-   */
-  protected function collectImplementationPaths(): array {
-    $paths = [];
-    foreach ($this->moduleHandler->getModuleDirectories() as $name => $directory) {
-      $candidate_dir = $directory . DIRECTORY_SEPARATOR . self::CONTENT_DIRECTORY;
-      if (file_exists($candidate_dir)) {
-        $paths[$name] = $candidate_dir;
-      }
-    }
-
-    return $paths;
   }
 
   /**
