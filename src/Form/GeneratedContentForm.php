@@ -87,20 +87,33 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
       '#type' => 'tableselect',
       '#header' => $header,
       '#options' => $options,
-      '#empty' => $this->t('No generated content implementations found. Please refer to <code>generated_content.api.php</code>.'),
+      '#empty' => $this->t('No generated content implementations found. To get started, create a <code>generated_content/{entity_type}/{bundle}.inc</code> file in your module and implement a <code>hook_generated_content_create_{entity_type}_{bundle}()</code> callback. See <code>generated_content.api.php</code> for examples.'),
     ];
 
-    $form['generate'] = [
-      '#type' => 'submit',
-      '#name' => 'generate',
-      '#value' => $this->t('Generate'),
-    ];
+    if (!empty($options)) {
+      $form['actions_description'] = [
+        '#type' => 'markup',
+        '#markup' => '<p>' . $this->t('Select items to process or leave empty to process all items.') . '</p>',
+      ];
 
-    $form['delete'] = [
-      '#type' => 'submit',
-      '#name' => 'delete',
-      '#value' => $this->t('Delete'),
-    ];
+      $form['generate'] = [
+        '#type' => 'submit',
+        '#name' => 'generate',
+        '#value' => $this->t('▶ Generate'),
+      ];
+
+      $form['delete'] = [
+        '#type' => 'submit',
+        '#name' => 'delete',
+        '#value' => $this->t('✖ Delete'),
+      ];
+
+      $form['regenerate'] = [
+        '#type' => 'submit',
+        '#name' => 'regenerate',
+        '#value' => $this->t('⟳ Regenerate'),
+      ];
+    }
 
     return $form;
   }
@@ -133,6 +146,9 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
     }
     elseif ($button_name === 'delete') {
       $this->repository->removeBatch($info);
+    }
+    elseif ($button_name === 'regenerate') {
+      $this->repository->regenerateBatch($info);
     }
   }
 

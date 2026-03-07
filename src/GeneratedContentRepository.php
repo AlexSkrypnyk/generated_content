@@ -318,6 +318,17 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   }
 
   /**
+   * Process regeneration of specified entities in a batch.
+   *
+   * @param array<mixed>|null $info
+   *   Info.
+   */
+  public function regenerateBatch(?array $info = NULL): void {
+    $info = $info ?: $this->getInfo();
+    GeneratedContentBatch::set('regenerate', $info, 1);
+  }
+
+  /**
    * Cleanup content.
    *
    * @param array<mixed> $info
