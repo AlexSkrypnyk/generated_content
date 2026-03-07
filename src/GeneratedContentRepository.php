@@ -38,11 +38,11 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   const CONTENT_DIRECTORY = 'generated_content';
 
   /**
-   * The repository singleton.
+   * The repository singleton instances keyed by class name.
    *
-   * @var \Drupal\generated_content\GeneratedContentRepository|null
+   * @var array<string, \Drupal\generated_content\GeneratedContentRepository>
    */
-  protected static ?GeneratedContentRepository $instance = NULL;
+  protected static array $instances = [];
 
   /**
    * Array of discovered information about entities.
@@ -136,8 +136,8 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container): GeneratedContentRepository {
-    // @phpstan-ignore-next-line
+  public static function create(ContainerInterface $container): static {
+    // @phpstan-ignore new.static
     return new static(
       $container->get('messenger'),
       $container->get('module_handler'),
@@ -152,28 +152,29 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   /**
    * Get the repository instance.
    *
-   * @return \Drupal\generated_content\GeneratedContentRepository
+   * @return static
    *   The repository.
    */
-  public static function getInstance(): GeneratedContentRepository {
-    if (!static::$instance) {
-      /** @var \Drupal\generated_content\GeneratedContentRepository $repository */
-      $repository = \Drupal::service('class_resolver')
+  public static function getInstance(): static {
+    if (empty(self::$instances[static::class])) {
+      /** @var static $instance */
+      $instance = \Drupal::service('class_resolver')
         ->getInstanceFromDefinition(static::class);
-      static::$instance = $repository;
+      self::$instances[static::class] = $instance;
     }
 
-    return static::$instance;
+    /** @var static */
+    return self::$instances[static::class];
   }
 
   /**
    * Reset singleton instance.
    *
-   * @return \Drupal\generated_content\GeneratedContentRepository
+   * @return static
    *   A new singleton instance.
    */
-  public function reset(): GeneratedContentRepository {
-    static::$instance = NULL;
+  public function reset(): static {
+    self::$instances = [];
 
     return static::getInstance();
   }

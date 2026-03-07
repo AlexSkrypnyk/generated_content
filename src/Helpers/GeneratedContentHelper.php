@@ -105,8 +105,8 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container): GeneratedContentHelper {
-    // @phpstan-ignore-next-line
+  public static function create(ContainerInterface $container): static {
+    // @phpstan-ignore new.static
     return new static(
       GeneratedContentRepository::getInstance(),
       $container->get('generated_content.asset_generator'),
@@ -118,26 +118,28 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * Get singleton instance of one of the descendant classes.
    *
-   * @return \Drupal\generated_content\Helpers\GeneratedContentHelper
+   * @return static
    *   Helper class instance.
    */
-  public static function getInstance(): GeneratedContentHelper {
+  public static function getInstance(): static {
     if (empty(self::$instances[static::class])) {
-      // @phpstan-ignore-next-line
-      self::$instances[static::class] = \Drupal::service('class_resolver')
+      /** @var static $instance */
+      $instance = \Drupal::service('class_resolver')
         ->getInstanceFromDefinition(static::class);
+      self::$instances[static::class] = $instance;
     }
-    // @phpstan-ignore-next-line
+
+    /** @var static */
     return self::$instances[static::class];
   }
 
   /**
    * Reset singleton instance.
    *
-   * @return \Drupal\generated_content\Helpers\GeneratedContentHelper
+   * @return static
    *   A new singleton instance.
    */
-  public function reset(): GeneratedContentHelper {
+  public function reset(): static {
     static::$instances = [];
     static::$staticOffset = 0;
     static::$staticOffsets = [];
