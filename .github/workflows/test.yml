@@ -12,7 +12,60 @@ on:
       - 1.x
       - 2.x
 
+permissions:
+  contents: read
+
 jobs:
+  lint:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        with:
+          php-version: 8.5
+          extensions: gd, sqlite, pdo_sqlite
+
+      - name: Assemble the codebase
+        run: .devtools/assemble
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint code with PHPCS
+        working-directory: build
+        run: vendor/bin/phpcs
+        continue-on-error: ${{ vars.CI_PHPCS_IGNORE_FAILURE == '1' }}
+
+      - name: Lint code with PHPStan
+        working-directory: build
+        run: vendor/bin/phpstan
+        continue-on-error: ${{ vars.CI_PHPSTAN_IGNORE_FAILURE == '1' }}
+
+      - name: Lint code with Rector
+        working-directory: build
+        run: vendor/bin/rector --clear-cache --dry-run
+        continue-on-error: ${{ vars.CI_RECTOR_IGNORE_FAILURE == '1' }}
+
+      - name: Lint code with Twig CS Fixer
+        working-directory: build
+        run: vendor/bin/twig-cs-fixer
+        continue-on-error: ${{ vars.CI_TWIGCSFIXER_IGNORE_FAILURE == '1' }}
+
+      - name: Lint module code with NodeJS linters
+        if: ${{ hashFiles('build/node_modules/.package-lock.json') != '' }}
+        working-directory: build
+        run: npm run lint
+        continue-on-error: ${{ vars.CI_NODEJS_LINT_IGNORE_FAILURE == '1' }}
+
   test:
     runs-on: ubuntu-24.04
 
@@ -58,6 +111,7 @@ jobs:
           - name: test-php-8.4-d10-canary
             php-version: 8.4
             drupal-version: 10.4@beta
+            stability: canary
 
           - name: test-php-8.3-d11-legacy
             php-version: 8.3
@@ -70,6 +124,7 @@ jobs:
           - name: test-php-8.3-d11-canary
             php-version: 8.3
             drupal-version: 11@beta
+            stability: canary
 
           - name: test-php-8.4-d11-legacy
             php-version: 8.4
@@ -82,6 +137,26 @@ jobs:
           - name: test-php-8.4-d11-canary
             php-version: 8.4
             drupal-version: 11@beta
+            stability: canary
+
+          - name: test-php-8.5-d11-legacy
+            php-version: 8.5
+            drupal-version: 11.3 # Lowest Drupal version that supports PHP 8.5.
+
+          - name: test-php-8.5-d11-stable
+            php-version: 8.5
+            drupal-version: 11.3
+
+          - name: test-php-8.5-d11-canary
+            php-version: 8.5
+            drupal-version: 11@beta
+            stability: canary
+
+    services:
+      chrome:
+        image: selenium/standalone-chromium:latest@sha256:8c5a8629c96104c0d73df94c6437af9ab9059c4e16aa32e35b330b7d77defe0b
+        ports:
+          - 4444:4444
 
     name: ${{ matrix.name }}
 
@@ -115,11 +190,11 @@ jobs:
           coverage: pcov
 
       # Disable Symfony deprecations helper for PHP 8.4+ until minor
-      # versions of Drupal 10 and 11 fully support PHP 8.4.
+      # versions of Drupal 10 and 11 fully support newer PHP versions.
       # @see https://www.drupal.org/project/drupal/issues/1267246
-      - name: Update SYMFONY_DEPRECATIONS_HELPER for PHP 8.4
+      - name: Update SYMFONY_DEPRECATIONS_HELPER for PHP 8.4+
         run: |
-          if [ "$(php -r 'echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;')" == "84" ]; then
+          if [ "$(php -r 'echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;')" -ge "84" ]; then
             echo "SYMFONY_DEPRECATIONS_HELPER=disabled" >> "$GITHUB_ENV"
           fi
 
@@ -130,35 +205,17 @@ jobs:
 
       - name: Start built-in PHP server
         run: .devtools/start
+        env:
+          WEBSERVER_HOST: 0.0.0.0
 
       - name: Provision site
         run: .devtools/provision
 
-      - name: Lint code with PHPCS
-        working-directory: build
-        run: vendor/bin/phpcs
-        continue-on-error: ${{ vars.CI_PHPCS_IGNORE_FAILURE == '1' }}
-
-      - name: Lint code with PHPStan
-        working-directory: build
-        run: vendor/bin/phpstan
-        continue-on-error: ${{ vars.CI_PHPSTAN_IGNORE_FAILURE == '1' || endsWith(matrix.name, 'canary') }}
-
-      - name: Lint code with Rector
-        working-directory: build
-        run: vendor/bin/rector --clear-cache --dry-run
-        continue-on-error: ${{ vars.CI_RECTOR_IGNORE_FAILURE == '1' }}
-
-      - name: Lint code with Twig CS Fixer
-        working-directory: build
-        run: vendor/bin/twig-cs-fixer
-        continue-on-error: ${{ vars.CI_TWIGCSFIXER_IGNORE_FAILURE == '1' }}
-
-      - name: Lint module code with NodeJS linters
+      - name: Run JS tests
         if: ${{ hashFiles('build/node_modules/.package-lock.json') != '' }}
         working-directory: build
-        run: npm run lint
-        continue-on-error: ${{ vars.CI_NODEJS_LINT_IGNORE_FAILURE == '1' }}
+        run: npm test
+        continue-on-error: ${{ vars.CI_NODEJS_TEST_IGNORE_FAILURE == '1' }}
 
       - name: Run tests
         working-directory: build
@@ -184,7 +241,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
         if: ${{ env.CODECOV_TOKEN != '' }}
         with:
           files: ./.logs/coverage/phpunit/cobertura.xml
