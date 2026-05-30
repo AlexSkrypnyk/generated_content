@@ -34,10 +34,10 @@ trait GeneratedContentTestMockTrait {
    */
   protected static function callProtectedMethod($object, string $method, array $args = []) {
     $class = new \ReflectionClass(is_object($object) ? get_class($object) : $object);
-    $reflectionMethod = $class->getMethod($method);
-    $object = $reflectionMethod->isStatic() || is_string($object) ? NULL : $object;
+    $reflection_method = $class->getMethod($method);
+    $object = $reflection_method->isStatic() || is_string($object) ? NULL : $object;
 
-    return $reflectionMethod->invokeArgs($object, $args);
+    return $reflection_method->invokeArgs($object, $args);
   }
 
   /**
