@@ -470,14 +470,14 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
   }
 
   /**
-   * Test randomDisperse() places every filler into the resulting array.
+   * Test randomDisperse() exercises both splice paths.
    *
    * Implementation uses array_splice($scope, rand(0, count($scope)),
    * 1, $filler) - when rand() returns count($scope) the splice
-   * appends (no removal), otherwise it replaces one element. So the
-   * final size is non-deterministic in [count(scope),
-   * count(scope) + count(fillers)]. We assert the bounds and that
-   * every filler is present.
+   * appends; otherwise it replaces an element. Either path can
+   * overwrite a filler that an earlier iteration just placed, so we
+   * cannot assert that every filler survives in the final array.
+   * We assert size bounds and presence of at least one filler.
    */
   public function testRandomDisperse(): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
@@ -490,8 +490,22 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
 
     $this->assertGreaterThanOrEqual(count($scope), count($result));
     $this->assertLessThanOrEqual(count($scope) + count($fillers), count($result));
-    $this->assertContains('X', $result);
-    $this->assertContains('Y', $result);
+    $this->assertNotEmpty(array_intersect($fillers, $result));
+  }
+
+  /**
+   * Test randomDisperse() with a single filler always places it.
+   *
+   * One iteration cannot overwrite itself, so the single filler is
+   * always present in the result.
+   */
+  public function testRandomDisperseSingleFiller(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $result = $helper::randomDisperse(['a', 'b', 'c'], ['Z']);
+
+    $this->assertContains('Z', $result);
   }
 
   /**
