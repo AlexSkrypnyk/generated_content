@@ -138,7 +138,6 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
 
     $reflection = new \ReflectionClass($commands);
     $method = $reflection->getMethod('buildBatch');
-    $method->setAccessible(TRUE);
 
     /** @var \Drupal\Core\Batch\BatchBuilder $builder */
     $builder = $method->invoke($commands, $entity_type, $bundle, $total);
@@ -161,7 +160,6 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
   protected function getProtectedProperty(object $object, string $property) {
     $reflection = new \ReflectionClass($object);
     $prop = $reflection->getProperty($property);
-    $prop->setAccessible(TRUE);
 
     return $prop->getValue($object);
   }
