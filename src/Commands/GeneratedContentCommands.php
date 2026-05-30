@@ -51,6 +51,33 @@ class GeneratedContentCommands extends DrushCommands {
   public function createContent(string $entity_type, string $bundle, int $total): void {
     $this->loggerChannelFactory->get('generated_content')->info('Generate content operations started.');
 
+    $batch_builder = $this->buildBatch($entity_type, $bundle, $total);
+
+    batch_set($batch_builder->toArray());
+    drush_backend_batch_process();
+
+    $this->loggerChannelFactory->get('generated_content')->info('Batch operations finished.');
+  }
+
+  /**
+   * Build the BatchBuilder for a create-content run.
+   *
+   * Chunks the total into 50-item operations, each dispatched to
+   * GeneratedContentBatchService::processItem. Extracted from
+   * createContent() so it can be unit-tested without invoking the
+   * global batch_set() / drush_backend_batch_process() functions.
+   *
+   * @param string $entity_type
+   *   Entity type.
+   * @param string $bundle
+   *   Entity bundle.
+   * @param int $total
+   *   Number of items to create.
+   *
+   * @return \Drupal\Core\Batch\BatchBuilder
+   *   Configured batch builder.
+   */
+  protected function buildBatch(string $entity_type, string $bundle, int $total): BatchBuilder {
     $batch_builder = new BatchBuilder();
     $batch_id = 1;
 
@@ -66,7 +93,7 @@ class GeneratedContentCommands extends DrushCommands {
       $batch_id++;
     }
 
-    $batch_builder
+    return $batch_builder
       ->setTitle($this->t('Creating generated content for @entity_type @bundle (@total items in @batches batches)', [
         '@entity_type' => $entity_type,
         '@bundle' => $bundle,
@@ -75,11 +102,6 @@ class GeneratedContentCommands extends DrushCommands {
       ]))
       ->setFinishCallback('\Drupal\generated_content\GeneratedContentBatchService::processItemFinished')
       ->setErrorMessage($this->t('Batch has encountered an error'));
-
-    batch_set($batch_builder->toArray());
-    drush_backend_batch_process();
-
-    $this->loggerChannelFactory->get('generated_content')->info('Batch operations finished.');
   }
 
 }

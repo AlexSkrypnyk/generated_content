@@ -322,4 +322,204 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
     $this->assertTrue(in_array($value, $array));
   }
 
+  /**
+   * Test randomArrayItem() with an empty haystack.
+   */
+  public function testRandomArrayItemEmpty(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->assertFalse($helper::randomArrayItem([]));
+  }
+
+  /**
+   * Test randomArrayItems() with zero count.
+   */
+  public function testRandomArrayItemsZero(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->assertSame([], $helper::randomArrayItems(['a', 'b', 'c'], 0));
+  }
+
+  /**
+   * Test randomTimestamp() default and explicit ranges.
+   */
+  public function testRandomTimestamp(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $default = $helper::randomTimestamp();
+    $now = time();
+    $one_year = 60 * 60 * 24 * 366;
+    $this->assertGreaterThanOrEqual($now - $one_year, $default);
+    $this->assertLessThanOrEqual($now + $one_year, $default);
+
+    $explicit = $helper::randomTimestamp('-1day', '+1day');
+    $this->assertGreaterThanOrEqual($now - 60 * 60 * 24 - 1, $explicit);
+    $this->assertLessThanOrEqual($now + 60 * 60 * 24 + 1, $explicit);
+  }
+
+  /**
+   * Test randomTimestamp() rejects invalid "from".
+   */
+  public function testRandomTimestampInvalidFrom(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('From value is not valid.');
+    $helper::randomTimestamp('not-a-date');
+  }
+
+  /**
+   * Test randomTimestamp() rejects invalid "to".
+   */
+  public function testRandomTimestampInvalidTo(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('To value is not valid.');
+    $helper::randomTimestamp('-1year', 'also-not-a-date');
+  }
+
+  /**
+   * Test randomDate() default behaviour and explicit format.
+   */
+  public function testRandomDate(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $date = $helper::randomDate();
+    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $date);
+
+    $date_with_time = $helper::randomDate('now', 'now', TRUE);
+    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00$/', $date_with_time);
+
+    $explicit_range = $helper::randomDate('2020-01-01', '2020-12-31');
+    $this->assertGreaterThanOrEqual('2020-01-01', $explicit_range);
+    $this->assertLessThanOrEqual('2020-12-31', $explicit_range);
+  }
+
+  /**
+   * Test randomDate() rejects invalid "start".
+   */
+  public function testRandomDateInvalidStart(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Start value is not valid.');
+    $helper::randomDate('garbage', 'now');
+  }
+
+  /**
+   * Test randomDate() rejects invalid "finish".
+   */
+  public function testRandomDateInvalidFinish(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Finish value is not valid.');
+    $helper::randomDate('now', 'garbage');
+  }
+
+  /**
+   * Test randomDateRange() default format and value/end_value ordering.
+   */
+  public function testRandomDateRange(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $range = $helper::randomDateRange('2020-01-01', '2020-12-31');
+    $this->assertArrayHasKey('value', $range);
+    $this->assertArrayHasKey('end_value', $range);
+    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $range['value']);
+    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', $range['end_value']);
+    $this->assertLessThanOrEqual($range['end_value'], $range['value']);
+
+    $custom = $helper::randomDateRange('2020-01-01', '2020-12-31', 'Y');
+    $this->assertSame('2020', $custom['value']);
+    $this->assertSame('2020', $custom['end_value']);
+  }
+
+  /**
+   * Test randomDateRange() rejects invalid "start".
+   */
+  public function testRandomDateRangeInvalidStart(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Start value is not valid.');
+    $helper::randomDateRange('garbage', '2020-12-31');
+  }
+
+  /**
+   * Test randomDateRange() rejects invalid "finish".
+   */
+  public function testRandomDateRangeInvalidFinish(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Finish value is not valid.');
+    $helper::randomDateRange('2020-01-01', 'garbage');
+  }
+
+  /**
+   * Test randomDisperse() places every filler into the resulting array.
+   *
+   * Implementation uses array_splice($scope, rand(0, count($scope)),
+   * 1, $filler) - when rand() returns count($scope) the splice
+   * appends (no removal), otherwise it replaces one element. So the
+   * final size is non-deterministic in [count(scope),
+   * count(scope) + count(fillers)]. We assert the bounds and that
+   * every filler is present.
+   */
+  public function testRandomDisperse(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $scope = ['a', 'b', 'c', 'd'];
+    $fillers = ['X', 'Y'];
+
+    $result = $helper::randomDisperse($scope, $fillers);
+
+    $this->assertGreaterThanOrEqual(count($scope), count($result));
+    $this->assertLessThanOrEqual(count($scope) + count($fillers), count($result));
+    $this->assertContains('X', $result);
+    $this->assertContains('Y', $result);
+  }
+
+  /**
+   * Test randomDisperse() with empty fillers leaves the scope unchanged.
+   */
+  public function testRandomDisperseEmptyFillers(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $scope = ['a', 'b', 'c'];
+    $this->assertSame($scope, $helper::randomDisperse($scope, []));
+  }
+
+  /**
+   * Test randomBool() with default skew returns booleans.
+   */
+  public function testRandomBoolDistribution(): void {
+    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
+    $helper = GeneratedContentHelper::getInstance();
+
+    $values = [];
+    for ($i = 0; $i < 50; $i++) {
+      $values[] = $helper::randomBool();
+    }
+
+    foreach ($values as $value) {
+      $this->assertIsBool($value);
+    }
+  }
+
 }
