@@ -1009,8 +1009,9 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    *
    * @param string $string
    *   String to process.
-   * @param array<string, string> $replacements
+   * @param array<string, mixed> $replacements
    *   Array of replacements with keys as tokens and values as replacements.
+   *   Non-scalar values are silently skipped.
    * @param callable|null $cb
    *   Optional callback to process values before replacement. The callback
    *   receives a value as it was passed in $replacements and must return
