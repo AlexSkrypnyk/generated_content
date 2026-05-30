@@ -51,31 +51,25 @@ function generated_content_modules_installed($modules, $is_syncing): void {
     $repository = GeneratedContentRepository::getInstance();
     $info = $repository->getInfo();
 
-    $generated_content_modules = array_map(function ($v) {
-      return $v['#module'];
-    }, $info);
+    $generated_content_modules = array_map(fn(array $v) => $v['#module'], $info);
 
     $generated_content_modules[] = 'generated_content';
     $generated_content_modules = array_unique($generated_content_modules);
 
-    if (array_intersect($modules, $generated_content_modules)) {
-      // Create generated content only if the repository is empty. This allows
-      // to avoid duplication of generated content on every run of the
-      // persistent operations.
-      if ($repository->isEmpty()) {
-        \Drupal::messenger()->addMessage(t('Started creation of generated content from modules: @modules.', [
-          '@modules' => implode(', ', $generated_content_modules),
-        ]));
-
-        $items = [];
-        if (getenv('GENERATED_CONTENT_ITEMS')) {
-          $items = _generated_content_parse_cli_items(getenv('GENERATED_CONTENT_ITEMS'));
-        }
-
-        $repository->createEntities($items);
-
-        \Drupal::messenger()->addMessage(t('Finished creation of generated content'));
+    // Create generated content only if the repository is empty. This allows
+    // to avoid duplication of generated content on every run of the
+    // persistent operations.
+    if (array_intersect($modules, $generated_content_modules) && $repository->isEmpty()) {
+      \Drupal::messenger()->addMessage(t('Started creation of generated content from modules: @modules.', [
+        '@modules' => implode(', ', $generated_content_modules),
+      ]));
+      $items = [];
+      $items_env = getenv('GENERATED_CONTENT_ITEMS');
+      if (is_string($items_env) && $items_env !== '') {
+        $items = _generated_content_parse_cli_items($items_env);
       }
+      $repository->createEntities($items);
+      \Drupal::messenger()->addMessage(t('Finished creation of generated content'));
     }
   }
 }
@@ -96,7 +90,7 @@ function _generated_content_parse_cli_items(string $items_string): array {
   $parsed = explode(',', $items_string);
   foreach ($parsed as $item) {
     $parts = array_values(array_filter(explode('-', trim($item))));
-    if (count($parts) == 2) {
+    if (count($parts) === 2) {
       $items[$parts[0]][$parts[1]] = TRUE;
     }
   }

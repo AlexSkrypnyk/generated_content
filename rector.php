@@ -41,6 +41,10 @@ use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return RectorConfig::configure()
+  ->withPaths([
+    'web/modules/custom',
+    'web/themes/custom',
+  ])
   ->withSkip([
     // Specific rules to skip based on project coding standards.
     CatchExceptionNameMatchingTypeRector::class,
@@ -80,12 +84,12 @@ return RectorConfig::configure()
   ->withPhpSets(php82: TRUE)
   // Code quality improvement sets.
   ->withPreparedSets(
+    deadCode: TRUE,
     codeQuality: TRUE,
     codingStyle: TRUE,
-    deadCode: TRUE,
-    naming: TRUE,
-    privatization: TRUE,
     typeDeclarations: TRUE,
+    privatization: TRUE,
+    naming: TRUE,
   )
   // Drupal-specific deprecation fixes.
   ->withSets([

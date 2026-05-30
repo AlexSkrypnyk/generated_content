@@ -302,10 +302,12 @@ class GeneratedContentAssetGenerator {
   /**
    * Default generator for any undefined types.
    *
-   * @return callable
-   *   Callable generator.
+   * @return array{0: class-string<static>, 1: string}
+   *   Method reference as [class, method] tuple. The target is an instance
+   *   method invoked via $this in the caller (not a true static callable),
+   *   so the return type is declared as a tuple rather than 'callable'.
    */
-  protected static function getDefaultGenerator() {
+  protected static function getDefaultGenerator(): array {
     return [static::class, 'generatorContentFile'];
   }
 
