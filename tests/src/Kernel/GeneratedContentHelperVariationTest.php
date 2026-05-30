@@ -179,6 +179,7 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
 
     $node = $helper::variationCreateNode($this->nodeTypes[0], ['status' => FALSE], 0);
 
+    $this->assertInstanceOf(NodeInterface::class, $node);
     $this->assertFalse($node->isPublished());
   }
 
@@ -202,6 +203,7 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
     $variation = ['status' => TRUE, 'foo' => 'bar'];
     $node = $helper::variationCreateNode($this->nodeTypes[0], $variation, 7, $callback);
 
+    $this->assertInstanceOf(NodeInterface::class, $node);
     $this->assertSame('post-processed', $node->getTitle());
     $this->assertSame($this->nodeTypes[0], $captured['bundle']);
     $this->assertSame($variation, $captured['variation']);

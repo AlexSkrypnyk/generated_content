@@ -87,7 +87,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
       [$callback, $args] = $operation;
       $this->assertSame('\Drupal\generated_content\GeneratedContentBatchService::processItem', $callback);
 
-      [$batch_id, $entity_type, $bundle, $total, $count] = $args;
+      [$batch_id, $entity_type, $bundle, $total] = $args;
       $this->assertSame($index + 1, $batch_id);
       $this->assertSame('user', $entity_type);
       $this->assertSame('user', $bundle);

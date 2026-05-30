@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\generated_content\Kernel;
 
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
+use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginBase;
 use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 
 /**
@@ -68,11 +69,13 @@ class GeneratedContentPluginBaseTest extends GeneratedContentKernelTestBase {
     // example1 user plugin declares weight: -100.
     $with_explicit = $this->container->get('plugin.manager.generated_content')
       ->createInstance('example1_user_user');
+    $this->assertInstanceOf(GeneratedContentPluginBase::class, $with_explicit);
     $this->assertSame(-100, $with_explicit->getWeight());
 
     // example2 node page plugin declares weight: 35.
     $other_weight = $this->container->get('plugin.manager.generated_content')
       ->createInstance('example2_node_page');
+    $this->assertInstanceOf(GeneratedContentPluginBase::class, $other_weight);
     $this->assertSame(35, $other_weight->getWeight());
   }
 
@@ -83,11 +86,13 @@ class GeneratedContentPluginBaseTest extends GeneratedContentKernelTestBase {
     // example1 user plugin declares tracking: FALSE.
     $no_tracking = $this->container->get('plugin.manager.generated_content')
       ->createInstance('example1_user_user');
+    $this->assertInstanceOf(GeneratedContentPluginBase::class, $no_tracking);
     $this->assertFalse($no_tracking->getTracking());
 
     // example1 tags plugin does not declare tracking - defaults to TRUE.
     $defaults_to_true = $this->container->get('plugin.manager.generated_content')
       ->createInstance('example1_taxonomy_term_tags');
+    $this->assertInstanceOf(GeneratedContentPluginBase::class, $defaults_to_true);
     $this->assertTrue($defaults_to_true->getTracking());
   }
 
@@ -98,6 +103,7 @@ class GeneratedContentPluginBaseTest extends GeneratedContentKernelTestBase {
     $plugin = $this->container->get('plugin.manager.generated_content')
       ->createInstance('example2_node_article');
 
+    $this->assertInstanceOf(GeneratedContentPluginBase::class, $plugin);
     $this->assertSame('node', $plugin->getEntityType());
     $this->assertSame('article', $plugin->getBundle());
   }

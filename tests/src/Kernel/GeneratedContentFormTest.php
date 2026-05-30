@@ -111,7 +111,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    * @param string $expected_method
    *   Repository method that must be invoked.
    *
-   * @dataProvider dataProviderSubmitForm
+   * @dataProvider dataProviderSubmitFormDispatch
    */
   public function testSubmitFormDispatch(string $button, string $expected_method): void {
     $info_item = [
@@ -146,7 +146,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    * @return array<string, array<string>>
    *   Provider data.
    */
-  public static function dataProviderSubmitForm(): array {
+  public static function dataProviderSubmitFormDispatch(): array {
     return [
       'generate button calls createBatch' => ['generate', 'createBatch'],
       'delete button calls removeBatch' => ['delete', 'removeBatch'],
