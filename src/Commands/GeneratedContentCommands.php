@@ -51,12 +51,12 @@ class GeneratedContentCommands extends DrushCommands {
   public function createContent(string $entity_type, string $bundle, int $total): void {
     $this->loggerChannelFactory->get('generated_content')->info('Generate content operations started.');
 
-    $batchBuilder = new BatchBuilder();
+    $batch_builder = new BatchBuilder();
     $batch_id = 1;
 
     for ($count = 0; $count < $total;) {
       $count += 50;
-      $batchBuilder->addOperation('\Drupal\generated_content\GeneratedContentBatchService::processItem', [
+      $batch_builder->addOperation('\Drupal\generated_content\GeneratedContentBatchService::processItem', [
         $batch_id,
         $entity_type,
         $bundle,
@@ -66,7 +66,7 @@ class GeneratedContentCommands extends DrushCommands {
       $batch_id++;
     }
 
-    $batchBuilder
+    $batch_builder
       ->setTitle($this->t('Creating generated content for @entity_type @bundle (@total items in @batches batches)', [
         '@entity_type' => $entity_type,
         '@bundle' => $bundle,
@@ -76,7 +76,7 @@ class GeneratedContentCommands extends DrushCommands {
       ->setFinishCallback('\Drupal\generated_content\GeneratedContentBatchService::processItemFinished')
       ->setErrorMessage($this->t('Batch has encountered an error'));
 
-    batch_set($batchBuilder->toArray());
+    batch_set($batch_builder->toArray());
     drush_backend_batch_process();
 
     $this->loggerChannelFactory->get('generated_content')->info('Batch operations finished.');
