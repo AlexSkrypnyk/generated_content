@@ -17,23 +17,23 @@
     "jsdoc"
   ],
   "globals": {
+    "_": true,
+    "Backbone": true,
+    "bodyScrollLock": true,
+    "CKEditor5": true,
+    "Cookies": true,
     "Drupal": true,
     "drupalSettings": true,
     "drupalTranslations": true,
-    "jQuery": true,
-    "_": true,
-    "Cookies": true,
-    "Backbone": true,
+    "FloatingUIDOM": true,
     "htmx": true,
+    "jQuery": true,
     "loadjs": true,
+    "once": true,
     "Shepherd": true,
     "Sortable": true,
-    "once": true,
-    "CKEditor5": true,
     "tabbable": true,
-    "transliterate": true,
-    "bodyScrollLock": true,
-    "FloatingUIDOM": true
+    "transliterate": true
   },
   "rules": {
     "prettier/prettier": "error",
@@ -61,6 +61,18 @@
     "operator-linebreak": ["error", "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
     "yml/indent": ["error", 2]
   },
+  "overrides": [
+    {
+      "files": ["*.test.js"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "no-eval": "off",
+        "max-nested-callbacks": ["warn", 5]
+      }
+    }
+  ],
   "settings": {
     "jsdoc": {
       "tagNamePreference": {

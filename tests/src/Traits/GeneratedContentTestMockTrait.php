@@ -35,7 +35,6 @@ trait GeneratedContentTestMockTrait {
   protected static function callProtectedMethod($object, string $method, array $args = []) {
     $class = new \ReflectionClass(is_object($object) ? get_class($object) : $object);
     $reflectionMethod = $class->getMethod($method);
-    $reflectionMethod->setAccessible(TRUE);
     $object = $reflectionMethod->isStatic() || is_string($object) ? NULL : $object;
 
     return $reflectionMethod->invokeArgs($object, $args);
@@ -54,7 +53,6 @@ trait GeneratedContentTestMockTrait {
   protected static function setProtectedValue(object $object, string $property, $value): void {
     $class = new \ReflectionClass(get_class($object));
     $property = $class->getProperty($property);
-    $property->setAccessible(TRUE);
 
     $property->setValue($object, $value);
   }
@@ -73,7 +71,6 @@ trait GeneratedContentTestMockTrait {
   protected static function getProtectedValue(object $object, string $property) {
     $class = new \ReflectionClass(get_class($object));
     $property = $class->getProperty($property);
-    $property->setAccessible(TRUE);
 
     return $property->getValue($class);
   }

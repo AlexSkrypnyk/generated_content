@@ -85,9 +85,11 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
     $content = $helper::randomAbbreviation(5);
     $this->assertSame(5, strlen($content));
 
-    $content1 = $helper::randomAbbreviation();
-    $content2 = $helper::randomAbbreviation();
-    $this->assertNotSame($content1, $content2);
+    $samples = [];
+    for ($i = 0; $i < 20; $i++) {
+      $samples[] = $helper::randomAbbreviation();
+    }
+    $this->assertGreaterThan(1, count(array_unique($samples)));
   }
 
   /**

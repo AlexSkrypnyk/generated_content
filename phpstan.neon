@@ -31,5 +31,22 @@ parameters:
         - web/modules/custom/*
         - web/themes/custom/*
       reportUnmatched: false
+    -
+      # @SuppressWarnings(PHPMD.*) is valid PHPMD annotation syntax that
+      # PHPStan's PHPDoc parser does not recognise.
+      message: '#PHPDoc tag @SuppressWarnings has invalid value#'
+      paths:
+        - web/modules/custom/*
+        - web/themes/custom/*
+    -
+      # Defensive runtime assertions on values whose static type is already
+      # known. The redundancy is intentional - it guards against unexpected
+      # input at runtime.
+      messages:
+        - '#Call to method PHPUnit\\Framework\\Assert::assert\w+\(\) with .* will always evaluate to true#'
+        - '#Call to function is_callable\(\) with .* will always evaluate to true#'
+      paths:
+        - web/modules/custom/*
+        - web/themes/custom/*
 
   reportUnmatchedIgnoredErrors: false
