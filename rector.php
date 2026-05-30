@@ -41,10 +41,6 @@ use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return RectorConfig::configure()
-  ->withPaths([
-    'web/modules/custom',
-    'web/themes/custom',
-  ])
   ->withSkip([
     // Specific rules to skip based on project coding standards.
     CatchExceptionNameMatchingTypeRector::class,
@@ -84,12 +80,12 @@ return RectorConfig::configure()
   ->withPhpSets(php82: TRUE)
   // Code quality improvement sets.
   ->withPreparedSets(
-    deadCode: TRUE,
     codeQuality: TRUE,
     codingStyle: TRUE,
-    typeDeclarations: TRUE,
-    privatization: TRUE,
+    deadCode: TRUE,
     naming: TRUE,
+    privatization: TRUE,
+    typeDeclarations: TRUE,
   )
   // Drupal-specific deprecation fixes.
   ->withSets([
@@ -102,14 +98,14 @@ return RectorConfig::configure()
   ])
   // Configure Drupal autoloading.
   ->withAutoloadPaths((function (): array {
-    $drupalFinder = new DrupalFinderComposerRuntime();
-    $drupalRoot = $drupalFinder->getDrupalRoot();
+    $drupal_finder = new DrupalFinderComposerRuntime();
+    $drupal_root = $drupal_finder->getDrupalRoot();
 
     return [
-      $drupalRoot . '/core',
-      $drupalRoot . '/modules',
-      $drupalRoot . '/themes',
-      $drupalRoot . '/profiles',
+      $drupal_root . '/core',
+      $drupal_root . '/modules',
+      $drupal_root . '/themes',
+      $drupal_root . '/profiles',
     ];
   })())
   // Drupal file extensions.
