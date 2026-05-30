@@ -111,6 +111,35 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
     $this->assertStringContainsString('node', (string) $array['title']);
     $this->assertStringContainsString('article', (string) $array['title']);
     $this->assertStringContainsString('10', (string) $array['title']);
+    // Total of 10 chunks into a single 50-item batch.
+    $this->assertStringContainsString('1 batches', (string) $array['title']);
+  }
+
+  /**
+   * Tests that the @batches placeholder matches the actual operation count.
+   *
+   * @param int $total
+   *   Total items.
+   * @param int $expected_batches
+   *   Expected batch count reported in the title.
+   *
+   * @dataProvider dataProviderBuildBatchTitleBatchCount
+   */
+  public function testBuildBatchTitleBatchCount(int $total, int $expected_batches): void {
+    $array = $this->callBuildBatch('node', 'page', $total);
+
+    $this->assertCount($expected_batches, $array['operations']);
+    $this->assertStringContainsString(sprintf('%d batches', $expected_batches), (string) $array['title']);
+  }
+
+  /**
+   * Data provider for testBuildBatchTitleBatchCount().
+   *
+   * @return array<string, array<int>>
+   *   Provider data.
+   */
+  public static function dataProviderBuildBatchTitleBatchCount(): array {
+    return self::dataProviderBuildBatchOperationCount();
   }
 
   /**

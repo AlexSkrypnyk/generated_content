@@ -98,7 +98,7 @@ class GeneratedContentCommands extends DrushCommands {
         '@entity_type' => $entity_type,
         '@bundle' => $bundle,
         '@total' => $total,
-        '@batches' => $batch_id,
+        '@batches' => $batch_id - 1,
       ]))
       ->setFinishCallback('\Drupal\generated_content\GeneratedContentBatchService::processItemFinished')
       ->setErrorMessage($this->t('Batch has encountered an error'));
