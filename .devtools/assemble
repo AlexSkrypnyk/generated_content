@@ -209,15 +209,7 @@ TASK('Copying tools configuration files.');
 // Not every tool correctly resolves the path to the configuration file if it is
 // symlinked, so we copy them instead.
 $tool_files = [
-  '.eslintignore',
-  '.eslintrc.json',
-  '.prettierignore',
-  '.prettierrc.json',
-  '.stylelintrc.js',
   '.twig-cs-fixer.php',
-  'jest.config.js',
-  'package-lock.json',
-  'package.json',
   'phpcs.xml',
   'phpstan.neon',
   'phpunit.xml',
@@ -254,21 +246,6 @@ foreach (glob($cwd . '/*') ?: [] as $item) {
   }
 }
 PASS("Extension's code symlinked.");
-
-// Install front-end dependencies and run the build in the build directory.
-// The extension's source files are available via symlink at this point.
-// Add a .skip_npm_build file to the project root to skip this step, which
-// will also disable JS/CSS linting (ESLint, Stylelint, Prettier).
-if (file_exists($build_dir . '/package-lock.json') && !file_exists('.skip_npm_build')) {
-  TASK('Processing front-end dependencies.');
-
-  $cmd = file_exists('.nvmrc') ? 'nvm use && ' : '';
-  $cmd .= is_dir($build_dir . '/node_modules') ? '' : 'npm --prefix ' . $build_dir . ' ci && ';
-  $cmd .= 'npm --prefix ' . $build_dir . ' run build';
-  passthru_or_fail($cmd);
-
-  PASS('Front-end dependencies processed.');
-}
 
 echo PHP_EOL;
 echo '===============================' . PHP_EOL;
