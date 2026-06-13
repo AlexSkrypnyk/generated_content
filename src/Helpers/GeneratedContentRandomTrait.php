@@ -81,7 +81,7 @@ trait GeneratedContentRandomTrait {
    * Generate a random HTML heading.
    */
   public static function randomHtmlHeading(int $min_word_count = 5, int $max_word_count = 10, int $level = 1, string $prefix = ''): string {
-    if (!$level) {
+    if ($level === 0) {
       $level = mt_rand(2, 5);
     }
 
@@ -105,8 +105,8 @@ trait GeneratedContentRandomTrait {
     $paragraphs = [];
     $paragraph_count = mt_rand($min_paragraph_count, $max_paragraph_count);
     for ($i = 1; $i <= $paragraph_count; $i++) {
-      if ($i % 2) {
-        $paragraphs[] = static::randomHtmlHeading(5, 10, $i == 1 ? 2 : rand(2, 4), $prefix);
+      if ($i % 2 !== 0) {
+        $paragraphs[] = static::randomHtmlHeading(5, 10, $i === 1 ? 2 : random_int(2, 4), $prefix);
       }
       $paragraphs[] = static::randomHtmlParagraph();
     }
@@ -125,7 +125,7 @@ trait GeneratedContentRandomTrait {
    */
   public static function randomEmail(?string $domain = NULL): string {
     $randomiser = new Random();
-    $domain = $domain ?? $randomiser->name() . '.com';
+    $domain ??= $randomiser->name() . '.com';
 
     return $randomiser->name() . '@' . $domain;
   }
@@ -154,7 +154,7 @@ trait GeneratedContentRandomTrait {
    */
   public static function randomUuid(): string {
     $data = random_bytes(16);
-    assert(strlen($data) == 16);
+    assert(strlen($data) === 16);
 
     // Set version to 0100.
     $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
@@ -235,7 +235,7 @@ trait GeneratedContentRandomTrait {
       $format .= '\TH:i:00';
     }
 
-    $timestamp = rand($start, $finish);
+    $timestamp = random_int($start, $finish);
 
     return date($format, $timestamp);
   }
@@ -270,8 +270,8 @@ trait GeneratedContentRandomTrait {
     $start = min($start, $finish);
     $finish = max($start, $finish);
 
-    $start = rand($start, $finish - 1);
-    $finish = rand($start + 1, $finish);
+    $start = random_int($start, $finish - 1);
+    $finish = random_int($start + 1, $finish);
 
     return [
       'value' => date($format, $start),
@@ -292,7 +292,7 @@ trait GeneratedContentRandomTrait {
    */
   public static function randomDisperse(array $scope, array $fillers): array {
     foreach ($fillers as $filler) {
-      array_splice($scope, rand(0, count($scope)), 1, $filler);
+      array_splice($scope, random_int(0, count($scope)), 1, $filler);
     }
 
     return $scope;

@@ -18,7 +18,7 @@ trait GeneratedContentStaticTrait {
    *
    * @var string[]|null
    */
-  protected static $staticContent = NULL;
+  protected static $staticContent;
 
   /**
    * Static content offset counter.
@@ -139,8 +139,8 @@ trait GeneratedContentStaticTrait {
   public static function staticRichText(int $paragraphs = 4, string $prefix = ''): string {
     $content = [];
     for ($i = 1; $i <= $paragraphs; $i++) {
-      if ($i % 2) {
-        $content[] = static::staticHtmlHeading(5, $i == 1 ? 2 : 3, $prefix);
+      if ($i % 2 !== 0) {
+        $content[] = static::staticHtmlHeading(5, $i === 1 ? 2 : 3, $prefix);
       }
       $content[] = static::staticHtmlParagraph();
     }

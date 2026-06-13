@@ -59,7 +59,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
     if ($expected_exception_message) {
       if ($expected_exception_is_notice) {
         set_error_handler(
-          static function ($errno, $errstr) {
+          static function ($errno, $errstr): void {
             restore_error_handler();
             throw new \Exception($errstr, $errno);
           },
@@ -160,7 +160,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
         ],
         GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC,
         'public://generated_content2/testfile.log',
-        'Generator is not defined for "static" generation of "txt" type in Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorMap(). Using default generator Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorContentFile().',
+        'Generator is not defined for "static" generation of "txt" type in ' . GeneratedContentAssetGenerator::class . '::generatorMap(). Using default generator ' . GeneratedContentAssetGenerator::class . '::generatorContentFile().',
         TRUE,
       ],
       [
@@ -172,7 +172,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
         ],
         GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM,
         'public://generated_content2/testfile.log',
-        'Generator is not defined for "random" generation of "docx" type in Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorMap(). Using default generator Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorContentFile().',
+        'Generator is not defined for "random" generation of "docx" type in ' . GeneratedContentAssetGenerator::class . '::generatorMap(). Using default generator ' . GeneratedContentAssetGenerator::class . '::generatorContentFile().',
         TRUE,
       ],
 
@@ -186,7 +186,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
         ],
         GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM,
         'public://generated_content2/testfile.log',
-        'Generator is not defined for "random" generation of "custom" type in Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorMap(). Using default generator Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorContentFile().',
+        'Generator is not defined for "random" generation of "custom" type in ' . GeneratedContentAssetGenerator::class . '::generatorMap(). Using default generator ' . GeneratedContentAssetGenerator::class . '::generatorContentFile().',
         TRUE,
       ],
 
@@ -200,7 +200,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
         ],
         'custom_generation',
         'public://generated_content2/testfile.log',
-        'Generator is not defined for "custom_generation" generation of "custom" type in Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorMap(). Using default generator Drupal\generated_content\Helpers\GeneratedContentAssetGenerator::generatorContentFile().',
+        'Generator is not defined for "custom_generation" generation of "custom" type in ' . GeneratedContentAssetGenerator::class . '::generatorMap(). Using default generator ' . GeneratedContentAssetGenerator::class . '::generatorContentFile().',
         TRUE,
       ],
     ];

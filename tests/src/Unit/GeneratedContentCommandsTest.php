@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Unit;
 
+use Drupal\generated_content\GeneratedContentBatchService;
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
@@ -85,7 +86,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
 
     foreach ($array['operations'] as $index => $operation) {
       [$callback, $args] = $operation;
-      $this->assertSame('\Drupal\generated_content\GeneratedContentBatchService::processItem', $callback);
+      $this->assertSame(GeneratedContentBatchService::class . '::processItem', $callback);
 
       [$batch_id, $entity_type, $bundle, $total] = $args;
       $this->assertSame($index + 1, $batch_id);
@@ -105,7 +106,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
   public function testBuildBatchCallbacksAndMessages(): void {
     $array = $this->callBuildBatch('node', 'article', 10);
 
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatchService::processItemFinished', $array['finished']);
+    $this->assertSame(GeneratedContentBatchService::class . '::processItemFinished', $array['finished']);
     $this->assertNotEmpty((string) $array['error_message']);
     $this->assertNotEmpty((string) $array['title']);
     $this->assertStringContainsString('node', (string) $array['title']);
@@ -160,9 +161,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
     $commands = new GeneratedContentCommands($logger_factory);
 
     $translation = $this->createMock(TranslationInterface::class);
-    $translation->method('translateString')->willReturnCallback(static function ($translatable) {
-      return (string) $translatable->getUntranslatedString();
-    });
+    $translation->method('translateString')->willReturnCallback(static fn($translatable): string => (string) $translatable->getUntranslatedString());
     $commands->setStringTranslation($translation);
 
     $reflection = new \ReflectionClass($commands);
@@ -186,7 +185,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
    * @return mixed
    *   The property value.
    */
-  protected function getProtectedProperty(object $object, string $property) {
+  protected function getProtectedProperty(object $object, string $property): mixed {
     $reflection = new \ReflectionClass($object);
     $prop = $reflection->getProperty($property);
 

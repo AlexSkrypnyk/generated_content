@@ -61,7 +61,7 @@ class GeneratedContentExample2AssetGenerator extends GeneratedContentAssetGenera
     $module_path = $this->moduleExtensionList->getPath('generated_content_example2');
 
     return array_merge(parent::getAssetsDirs(), [
-      $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR),
+      $module_path . DIRECTORY_SEPARATOR . rtrim((string) static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR),
     ]);
   }
 

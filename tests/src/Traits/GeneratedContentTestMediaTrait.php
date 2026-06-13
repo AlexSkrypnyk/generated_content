@@ -59,7 +59,7 @@ trait GeneratedContentTestMediaTrait {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function prepareMediaItems(int $count, ?array $bundles = NULL, bool $single_bundle = FALSE): array {
-    $bundles = $bundles ?? $this->mediaTypes;
+    $bundles ??= $this->mediaTypes;
 
     $files = $this->prepareFiles(2);
 

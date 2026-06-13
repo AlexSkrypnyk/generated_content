@@ -52,7 +52,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
 
     $this->drupalGet('/admin/config/development/generated-content');
 
-    call_user_func_array([$this, 'assertInfoTableItems'], $expected_count);
+    $this->assertInfoTableItems(...$expected_count);
   }
 
   /**

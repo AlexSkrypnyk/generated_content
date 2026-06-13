@@ -18,7 +18,7 @@ use Drupal\node\NodeInterface;
   entity_type: 'node',
   bundle: 'page',
   weight: 35,
-  helper: \Drupal\generated_content_example2\GeneratedContentExample2Helper::class,
+  helper: GeneratedContentExample2Helper::class,
 )]
 class NodePage extends GeneratedContentPluginBase {
 
@@ -31,7 +31,7 @@ class NodePage extends GeneratedContentPluginBase {
     $variations = static::postProcessVariations(static::variations());
 
     foreach ($variations as $i => $variation) {
-      $node = $this->helper::variationCreateNode('page', $variation, $i, [$this, 'variationToFields']);
+      $node = $this->helper::variationCreateNode('page', $variation, $i, $this->variationToFields(...));
 
       $variation_info = $this->helper::variationFormatInfo($variation);
       // @phpstan-ignore-next-line
@@ -60,7 +60,6 @@ class NodePage extends GeneratedContentPluginBase {
    *   Variations.
    */
   public static function variations(): array {
-    /** @var \Drupal\generated_content_example2\GeneratedContentExample2Helper $helper */
     $helper = GeneratedContentExample2Helper::getInstance();
 
     return [
@@ -104,9 +103,7 @@ class NodePage extends GeneratedContentPluginBase {
     }
 
     if (!empty($variation['alias'])) {
-      $variation['alias'] = $this->helper::replaceTokens($variation['alias'], $variation, function ($value) {
-        return is_string($value) ? preg_replace('[^a-zA-Z0-9-]', '-', $value) : $value;
-      });
+      $variation['alias'] = $this->helper::replaceTokens($variation['alias'], $variation, fn($value) => is_string($value) ? preg_replace('[^a-zA-Z0-9-]', '-', $value) : $value);
 
       $node->set('path', [
         'pathauto' => FALSE,

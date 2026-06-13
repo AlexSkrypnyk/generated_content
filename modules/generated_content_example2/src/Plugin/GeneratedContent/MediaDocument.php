@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\generated_content_example2\Plugin\GeneratedContent;
 
+use Drupal\generated_content_example2\GeneratedContentExample2Helper;
+use Drupal\file\FileInterface;
 use Drupal\Core\Link;
 use Drupal\generated_content\Attribute\GeneratedContent;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
@@ -16,7 +18,7 @@ use Drupal\media\Entity\Media;
  *
  * @SuppressWarnings(PHPMD.ElseExpression)
  */
-#[GeneratedContent(id: 'example2_media_document', entity_type: 'media', bundle: 'document', weight: 2, helper: \Drupal\generated_content_example2\GeneratedContentExample2Helper::class)]
+#[GeneratedContent(id: 'example2_media_document', entity_type: 'media', bundle: 'document', weight: 2, helper: GeneratedContentExample2Helper::class)]
 class MediaDocument extends GeneratedContentPluginBase {
 
   /**
@@ -29,7 +31,7 @@ class MediaDocument extends GeneratedContentPluginBase {
     for ($i = 0; $i < $total_media_count; $i++) {
       $name = sprintf('Demo random Document media %s %s', $i + 1, $this->helper::randomName());
       $file = NULL;
-      if ($i % 2) {
+      if ($i % 2 !== 0) {
         $file_type = $this->helper::randomArrayItem([
           GeneratedContentAssetGenerator::ASSET_TYPE_PDF,
           GeneratedContentAssetGenerator::ASSET_TYPE_DOCX,
@@ -45,7 +47,7 @@ class MediaDocument extends GeneratedContentPluginBase {
         ]);
       }
 
-      if (!$file) {
+      if (!$file instanceof FileInterface) {
         continue;
       }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\generated_content\Commands;
 
+use Drupal\generated_content\GeneratedContentBatchService;
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -17,21 +18,18 @@ class GeneratedContentCommands extends DrushCommands {
   use StringTranslationTrait;
 
   /**
-   * Logger service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
-   */
-  private LoggerChannelFactoryInterface $loggerChannelFactory;
-
-  /**
    * Constructs a new UpdateVideosStatsController object.
    *
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerChannelFactory
    *   Logger service.
    */
-  public function __construct(LoggerChannelFactoryInterface $loggerChannelFactory) {
+  public function __construct(
+    /**
+     * Logger service.
+     */
+    private LoggerChannelFactoryInterface $loggerChannelFactory,
+  ) {
     parent::__construct();
-    $this->loggerChannelFactory = $loggerChannelFactory;
   }
 
   /**
@@ -83,7 +81,7 @@ class GeneratedContentCommands extends DrushCommands {
 
     for ($count = 0; $count < $total;) {
       $count += 50;
-      $batch_builder->addOperation('\Drupal\generated_content\GeneratedContentBatchService::processItem', [
+      $batch_builder->addOperation(GeneratedContentBatchService::class . '::processItem', [
         $batch_id,
         $entity_type,
         $bundle,
@@ -100,7 +98,7 @@ class GeneratedContentCommands extends DrushCommands {
         '@total' => $total,
         '@batches' => $batch_id - 1,
       ]))
-      ->setFinishCallback('\Drupal\generated_content\GeneratedContentBatchService::processItemFinished')
+      ->setFinishCallback(GeneratedContentBatchService::class . '::processItemFinished')
       ->setErrorMessage($this->t('Batch has encountered an error'));
   }
 

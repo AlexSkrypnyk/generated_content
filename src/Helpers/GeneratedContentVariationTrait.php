@@ -127,9 +127,7 @@ trait GeneratedContentVariationTrait {
     $postprocess_callback = $callback_prefix . 'post_process';
     $functions = get_defined_functions();
     $functions = $functions['user'];
-    $callbacks = array_filter($functions, function ($value) use ($callback_prefix, $postprocess_callback) {
-      return strpos($value, $callback_prefix) === 0 && $value != $postprocess_callback;
-    });
+    $callbacks = array_filter($functions, fn($value): bool => str_starts_with((string) $value, $callback_prefix) && $value != $postprocess_callback);
 
     // Collect variations from callbacks.
     foreach ($callbacks as $function) {
@@ -155,7 +153,7 @@ trait GeneratedContentVariationTrait {
    *
    * @param string $bundle
    *   Node bundle.
-   * @param mixed $variation
+   * @param array<mixed> $variation
    *   Variation value.
    * @param int $variation_idx
    *   Variation index.
@@ -166,7 +164,7 @@ trait GeneratedContentVariationTrait {
    * @return \Drupal\Core\Entity\EntityInterface|\Drupal\node\Entity\Node
    *   Created unsaved node object.
    */
-  public static function variationCreateNode($bundle, $variation, $variation_idx, ?callable $postprocess_callback = NULL) {
+  public static function variationCreateNode($bundle, array $variation, $variation_idx, ?callable $postprocess_callback = NULL) {
     $node = Node::create([
       'type' => $bundle,
       'title' => 'Node title from variation',

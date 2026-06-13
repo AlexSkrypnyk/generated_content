@@ -17,7 +17,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticSentence().
    */
   public function testStaticSentence(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11 word12 word13 word14 word15',
@@ -49,7 +48,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticString().
    */
   public function testStaticString(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11, word12, word13, word14, word15',
@@ -81,7 +79,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticName().
    */
   public function testStaticName(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11, word12, word13, word14, word15',
@@ -106,7 +103,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticAbbreviation().
    */
   public function testStaticAbbreviation(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11, word12, word13, word14, word15',
@@ -131,7 +127,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticPlainParagraph().
    */
   public function testStaticPlainParagraph(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11 word12 word13 word14 word15',
@@ -156,7 +151,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticHtmlParagraph().
    */
   public function testStaticHtmlParagraph(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11 word12 word13 word14 word15',
@@ -181,7 +175,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticHtmlHeading().
    */
   public function testStaticHtmlHeading(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11 word12 word13 word14 word15',
@@ -230,7 +223,6 @@ class GeneratedContentHelperStaticTest extends GeneratedContentKernelTestBase {
    * Test staticRichText().
    */
   public function testStaticRichText(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
     $this->setExpectedStaticContent($helper, [
       'word11 word12 word13 word14 word15',

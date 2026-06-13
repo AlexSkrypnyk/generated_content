@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use Drupal\generated_content\GeneratedContentBatch;
 use Drupal\generated_content\GeneratedContentRepository;
 
 /**
@@ -39,7 +40,7 @@ class GeneratedContentRepositoryBatchTest extends GeneratedContentKernelTestBase
     $set = $this->lastBatchSet();
     $this->assertCount(2, $set['operations']);
     foreach ($set['operations'] as $op) {
-      $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::createSingle', $op[0]);
+      $this->assertSame(GeneratedContentBatch::class . '::createSingle', $op[0]);
     }
   }
 
@@ -60,7 +61,7 @@ class GeneratedContentRepositoryBatchTest extends GeneratedContentKernelTestBase
 
     $set = $this->lastBatchSet();
     $this->assertCount(1, $set['operations']);
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::removeSingle', $set['operations'][0][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::removeSingle', $set['operations'][0][0]);
   }
 
   /**
@@ -81,8 +82,8 @@ class GeneratedContentRepositoryBatchTest extends GeneratedContentKernelTestBase
     $set = $this->lastBatchSet();
     // One info item with regenerate -> one remove + one create.
     $this->assertCount(2, $set['operations']);
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::removeSingle', $set['operations'][0][0]);
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::createSingle', $set['operations'][1][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::removeSingle', $set['operations'][0][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::createSingle', $set['operations'][1][0]);
   }
 
   /**
@@ -175,7 +176,7 @@ class GeneratedContentRepositoryBatchTest extends GeneratedContentKernelTestBase
 
     $repository->remove($info_items);
 
-    $messages = array_map('strval', $messenger->messagesByType('status'));
+    $messages = array_map(strval(...), $messenger->messagesByType('status'));
     $combined = implode("\n", $messages);
     $this->assertStringContainsString('Removed all generated content', $combined);
   }

@@ -23,19 +23,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class GeneratedContentForm extends FormBase implements ContainerInjectionInterface {
 
-
-  /**
-   * The generated content repository instance.
-   *
-   * @var \Drupal\generated_content\GeneratedContentRepository
-   */
-  protected GeneratedContentRepository $repository;
-
   /**
    * GeneratedContentForm constructor.
    */
-  public function __construct(GeneratedContentRepository $repository) {
-    $this->repository = $repository;
+  public function __construct(
+    /**
+     * The generated content repository instance.
+     */
+    protected GeneratedContentRepository $repository,
+  ) {
   }
 
   /**
@@ -123,7 +119,7 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
    *
    * @phpstan-ignore-next-line
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $results = array_filter($form_state->getValue('table'));
 
     $info = $this->repository->getInfo();
@@ -132,7 +128,7 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
 
     $info = [];
     foreach ($results as $result) {
-      [$entity_type, $bundle] = explode('__', $result);
+      [$entity_type, $bundle] = explode('__', (string) $result);
       $item_info = $this->repository->findInfo($entity_type, $bundle);
       if ($item_info) {
         $info[] = $item_info;

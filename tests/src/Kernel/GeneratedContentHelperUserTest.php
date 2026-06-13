@@ -18,7 +18,6 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
    * Tests the randomUser() method.
    */
   public function testRandomUser(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -38,7 +37,6 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
    * Tests the randomUsers() method.
    */
   public function testRandomUsers(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -65,7 +63,6 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealUser() method.
    */
   public function testRandomRealUser(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -92,7 +89,6 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealUsers() method.
    */
   public function testRandomRealUsers(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -122,7 +118,6 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
    * Tests the staticUser() method.
    */
   public function testStaticUser(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -148,7 +143,6 @@ class GeneratedContentHelperUserTest extends GeneratedContentKernelTestBase {
    * Tests the staticUsers() method.
    */
   public function testStaticUsers(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not

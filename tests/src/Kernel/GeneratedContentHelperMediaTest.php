@@ -43,7 +43,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * Tests the randomMediaItem() method.
    */
   public function testRandomMediaItem(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_media = $helper::randomMediaItem();
@@ -71,7 +70,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * Tests the randomMediaItems() method.
    */
   public function testRandomMediaItems(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_medias = $helper::randomMediaItems();
@@ -106,7 +104,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealMediaItem() method.
    */
   public function testRandomRealMediaItem(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -138,7 +135,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealMediaItems() method.
    */
   public function testRandomRealMediaItems(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -185,7 +181,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * Tests the staticMediaItem() method.
    */
   public function testStaticMediaItem(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -221,7 +216,6 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
    * Tests the staticMediaItems() method.
    */
   public function testStaticMediaItems(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -248,31 +242,21 @@ class GeneratedContentHelperMediaTest extends GeneratedContentKernelTestBase {
     $helper->reset();
 
     $actual_medias = $helper::staticMediaItems($this->mediaTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), [$ids[0]]);
     $actual_medias = $helper::staticMediaItems($this->mediaTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge([$ids[1]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), [$ids[1]]);
     $actual_medias = $helper::staticMediaItems($this->mediaTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge([$ids[2]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), [$ids[2]]);
     $actual_medias = $helper::staticMediaItems($this->mediaTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), [$ids[0]]);
 
     $helper->reset();
 
     $actual_medias = $helper::staticMediaItems($this->mediaTypes[0], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge([
-      $ids[0],
-      $ids[1],
-      $ids[2],
-      $ids[0],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), [$ids[0], $ids[1], $ids[2], $ids[0]]);
 
     $actual_medias = $helper::staticMediaItems($this->mediaTypes[1], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge([
-      $ids[3],
-      $ids[4],
-      $ids[5],
-      $ids[3],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), [$ids[3], $ids[4], $ids[5], $ids[3]]);
 
     $actual_medias = $helper::staticMediaItems(NULL, 7);
     $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_medias)), array_merge($ids, [$ids[0]]));

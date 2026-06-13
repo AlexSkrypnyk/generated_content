@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\generated_content_example2\Plugin\GeneratedContent;
 
+use Drupal\generated_content_example2\GeneratedContentExample2Helper;
 use Drupal\Core\Link;
 use Drupal\generated_content\Attribute\GeneratedContent;
 use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginBase;
@@ -12,7 +13,7 @@ use Drupal\node\Entity\Node;
 /**
  * Generates article node entities.
  */
-#[GeneratedContent(id: 'example2_node_article', entity_type: 'node', bundle: 'article', weight: 36, helper: \Drupal\generated_content_example2\GeneratedContentExample2Helper::class)]
+#[GeneratedContent(id: 'example2_node_article', entity_type: 'node', bundle: 'article', weight: 36, helper: GeneratedContentExample2Helper::class)]
 class NodeArticle extends GeneratedContentPluginBase {
 
   /**

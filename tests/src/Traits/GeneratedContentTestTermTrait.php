@@ -59,7 +59,7 @@ trait GeneratedContentTestTermTrait {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function prepareTerms(int $count, ?array $vids = NULL, bool $single_vid = FALSE): array {
-    $vids = $vids ?? $this->vids;
+    $vids ??= $this->vids;
     $terms = [];
     foreach ($vids as $vid) {
       for ($i = 0; $i < $count; $i++) {
