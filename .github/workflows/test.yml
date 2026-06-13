@@ -19,9 +19,14 @@ jobs:
   lint:
     runs-on: ubuntu-24.04
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
 
       - name: Cache Composer dependencies
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
@@ -60,88 +65,39 @@ jobs:
         run: vendor/bin/twig-cs-fixer
         continue-on-error: ${{ vars.CI_TWIGCSFIXER_IGNORE_FAILURE == '1' }}
 
+
   test:
     runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
 
     strategy:
       fail-fast: false
 
       matrix:
         include:
-          - name: test-php-8.2-d10-legacy
+          - name: test-php-min-d10-stable
             php-version: 8.2
-            drupal-version: 10.2
+            drupal-version: 10
 
-          - name: test-php-8.2-d10-stable
-            php-version: 8.2
-            drupal-version: 10.3
-
-          - name: test-php-8.2-d10-canary
-            php-version: 8.2
-            drupal-version: 10.4@beta
-            stability: canary
-
-          - name: test-php-8.3-d10-legacy
-            php-version: 8.3
-            drupal-version: 10.2
-
-          - name: test-php-8.3-d10-stable
-            php-version: 8.3
-            drupal-version: 10.3
-
-          - name: test-php-8.3-d10-canary
-            php-version: 8.3
-            drupal-version: 10.4@beta
-            stability: canary
-
-          - name: test-php-8.4-d10-legacy
+          - name: test-php-max-d10-stable
             php-version: 8.4
-            drupal-version: 10.3 # Lowest Drupal version that supports PHP 8.4.
+            drupal-version: 10
 
-          - name: test-php-8.4-d10-stable
-            php-version: 8.4
-            drupal-version: 10.3
-
-          - name: test-php-8.4-d10-canary
-            php-version: 8.4
-            drupal-version: 10.4@beta
-            stability: canary
-
-          - name: test-php-8.3-d11-legacy
+          - name: test-php-min-d11-stable
             php-version: 8.3
-            drupal-version: 11.0 # Lowest Drupal version that exists.
+            drupal-version: 11
 
-          - name: test-php-8.3-d11-stable
-            php-version: 8.3
-            drupal-version: 11.0
-
-          - name: test-php-8.3-d11-canary
-            php-version: 8.3
-            drupal-version: 11@beta
-            stability: canary
-
-          - name: test-php-8.4-d11-legacy
-            php-version: 8.4
-            drupal-version: 11.0 # Lowest Drupal version that exists.
-
-          - name: test-php-8.4-d11-stable
-            php-version: 8.4
-            drupal-version: 11.0
-
-          - name: test-php-8.4-d11-canary
-            php-version: 8.4
-            drupal-version: 11@beta
-            stability: canary
-
-          - name: test-php-8.5-d11-legacy
+          - name: test-php-max-d11-stable
             php-version: 8.5
-            drupal-version: 11.3 # Lowest Drupal version that supports PHP 8.5.
+            drupal-version: 11
 
-          - name: test-php-8.5-d11-stable
-            php-version: 8.5
-            drupal-version: 11.3
+          - name: test-php-min-d11-legacy
+            php-version: 8.3
+            drupal-version: 11.1.0
 
-          - name: test-php-8.5-d11-canary
+          - name: test-php-max-d11-canary
             php-version: 8.5
             drupal-version: 11@beta
             stability: canary
@@ -160,6 +116,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
 
       - name: Cache Composer dependencies
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
@@ -205,6 +163,7 @@ jobs:
       - name: Provision site
         run: .devtools/provision
 
+
       - name: Run tests
         working-directory: build
         run: php -d pcov.directory=.. vendor/bin/phpunit
@@ -224,7 +183,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: ${{github.job}}-code-coverage-report-${{ matrix.name }}
-          path: ./.logs/coverage/phpunit/.coverage-html
+          path: ./.logs/coverage
           include-hidden-files: true
           if-no-files-found: error
 
@@ -232,7 +191,7 @@ jobs:
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         if: ${{ env.CODECOV_TOKEN != '' }}
         with:
-          files: ./.logs/coverage/phpunit/cobertura.xml
+          directory: ./.logs/coverage
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
         env:
