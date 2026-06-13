@@ -20,28 +20,24 @@ abstract class GeneratedContentPluginBase extends PluginBase implements Generate
 
   /**
    * The content helper.
-   *
-   * @var \Drupal\generated_content\Helpers\GeneratedContentHelper
    */
   protected GeneratedContentHelper $helper;
 
   /**
    * The content repository.
-   *
-   * @var \Drupal\generated_content\GeneratedContentRepository
    */
   protected GeneratedContentRepository $repository;
 
-  /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected EntityTypeManagerInterface $entityTypeManager;
-
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    /**
+     * The entity type manager.
+     */
+    protected EntityTypeManagerInterface $entityTypeManager,
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityTypeManager = $entity_type_manager;
     $this->repository = GeneratedContentRepository::getInstance();
     $this->helper = $this->resolveHelper();
   }

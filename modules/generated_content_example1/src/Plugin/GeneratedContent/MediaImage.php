@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\generated_content_example1\Plugin\GeneratedContent;
 
+use Drupal\file\FileInterface;
 use Drupal\Core\Link;
 use Drupal\generated_content\Attribute\GeneratedContent;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
@@ -26,7 +27,7 @@ class MediaImage extends GeneratedContentPluginBase {
 
     $entities = [];
     for ($i = 0; $i < $total_media_count; $i++) {
-      if ($i % 2) {
+      if ($i % 2 !== 0) {
         $file_type = $this->helper::randomArrayItem([
           GeneratedContentAssetGenerator::ASSET_TYPE_JPG,
           GeneratedContentAssetGenerator::ASSET_TYPE_PNG,
@@ -39,7 +40,7 @@ class MediaImage extends GeneratedContentPluginBase {
         $name = sprintf('Demo static Image media %s %s', $i + 1, $this->helper::randomName());
       }
 
-      if (!$file) {
+      if (!$file instanceof FileInterface) {
         continue;
       }
 

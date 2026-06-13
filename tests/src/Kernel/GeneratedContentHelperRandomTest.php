@@ -17,7 +17,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomSentence().
    */
   public function testRandomSentence(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomSentence();
@@ -40,7 +39,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomString().
    */
   public function testRandomString(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomString();
@@ -58,7 +56,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomName().
    */
   public function testRandomName(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomName();
@@ -76,7 +73,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomAbbreviation().
    */
   public function testRandomAbbreviation(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomAbbreviation();
@@ -96,7 +92,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomPlainParagraph().
    */
   public function testRandomPlainParagraph(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomPlainParagraph();
@@ -112,7 +107,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomHtmlParagraph().
    */
   public function testRandomHtmlParagraph(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomHtmlParagraph();
@@ -130,7 +124,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomHtmlHeading().
    */
   public function testRandomHtmlHeading(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomHtmlHeading();
@@ -167,7 +160,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomRichText().
    */
   public function testRandomRichText(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomRichText();
@@ -204,7 +196,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomEmail().
    */
   public function testRandomEmail(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomEmail();
@@ -224,7 +215,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomUrl().
    */
   public function testRandomUrl(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomUrl();
@@ -250,7 +240,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomUuid().
    */
   public function testRandomUuid(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $content = $helper::randomUuid();
@@ -267,7 +256,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomBool().
    */
   public function testRandomBool(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $value = $helper::randomBool();
@@ -284,7 +272,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomArrayItems().
    */
   public function testRandomArrayItems(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $array = [
@@ -308,7 +295,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomArrayItem().
    */
   public function testRandomArrayItem(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $array = [
@@ -326,7 +312,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomArrayItem() with an empty haystack.
    */
   public function testRandomArrayItemEmpty(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->assertFalse($helper::randomArrayItem([]));
@@ -336,7 +321,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomArrayItems() with zero count.
    */
   public function testRandomArrayItemsZero(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->assertSame([], $helper::randomArrayItems(['a', 'b', 'c'], 0));
@@ -346,7 +330,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomTimestamp() default and explicit ranges.
    */
   public function testRandomTimestamp(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $default = $helper::randomTimestamp();
@@ -364,7 +347,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomTimestamp() rejects invalid "from".
    */
   public function testRandomTimestampInvalidFrom(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -376,7 +358,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomTimestamp() rejects invalid "to".
    */
   public function testRandomTimestampInvalidTo(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -388,7 +369,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDate() default behaviour and explicit format.
    */
   public function testRandomDate(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $date = $helper::randomDate();
@@ -406,7 +386,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDate() rejects invalid "start".
    */
   public function testRandomDateInvalidStart(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -418,7 +397,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDate() rejects invalid "finish".
    */
   public function testRandomDateInvalidFinish(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -430,7 +408,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDateRange() default format and value/end_value ordering.
    */
   public function testRandomDateRange(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $range = $helper::randomDateRange('2020-01-01', '2020-12-31');
@@ -449,7 +426,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDateRange() rejects invalid "start".
    */
   public function testRandomDateRangeInvalidStart(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -461,7 +437,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDateRange() rejects invalid "finish".
    */
   public function testRandomDateRangeInvalidFinish(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -480,7 +455,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * We assert size bounds and presence of at least one filler.
    */
   public function testRandomDisperse(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $scope = ['a', 'b', 'c', 'd'];
@@ -500,7 +474,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * always present in the result.
    */
   public function testRandomDisperseSingleFiller(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $result = $helper::randomDisperse(['a', 'b', 'c'], ['Z']);
@@ -512,7 +485,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomDisperse() with empty fillers leaves the scope unchanged.
    */
   public function testRandomDisperseEmptyFillers(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $scope = ['a', 'b', 'c'];
@@ -523,7 +495,6 @@ class GeneratedContentHelperRandomTest extends GeneratedContentKernelTestBase {
    * Test randomBool() with default skew returns booleans.
    */
   public function testRandomBoolDistribution(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $values = [];

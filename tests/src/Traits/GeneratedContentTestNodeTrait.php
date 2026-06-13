@@ -63,7 +63,7 @@ trait GeneratedContentTestNodeTrait {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function prepareNodes(int $count, ?array $bundles = NULL, bool $single_bundle = FALSE): array {
-    $bundles = $bundles ?? $this->nodeTypes;
+    $bundles ??= $this->nodeTypes;
     $nodes = [];
     foreach ($bundles as $bundle) {
       for ($i = 0; $i < $count; $i++) {

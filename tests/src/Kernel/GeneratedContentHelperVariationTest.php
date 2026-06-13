@@ -20,7 +20,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * Tests variationRandomValue() expansion of NULL/array/scalar inputs.
    */
   public function testVariationRandomValueShapes(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $input = [
@@ -44,7 +43,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * Tests variationRandomValue() with an empty variation.
    */
   public function testVariationRandomValueEmpty(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->assertSame([], $helper::variationRandomValue([]));
@@ -63,7 +61,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * @dataProvider dataProviderVariationFormatInfo
    */
   public function testVariationFormatInfo(array $variation, int $name_length, string $expected): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->assertSame($expected, $helper::variationFormatInfo($variation, $name_length));
@@ -97,7 +94,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * Tests variationFetchAll() with a fixture directory of .inc files.
    */
   public function testVariationFetchAllWithPath(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $path = $this->fixturesPath();
@@ -118,7 +114,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * Tests variationFetchAll() against an unreadable directory.
    */
   public function testVariationFetchAllInvalidPath(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $this->expectException(\Exception::class);
@@ -138,7 +133,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * @depends testVariationFetchAllWithPath
    */
   public function testVariationFetchAllNoPath(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Ensure the fixture is loaded - the @depends already guarantees
@@ -159,7 +153,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * is the observable side-effect.
    */
   public function testVariationCreateNodePublished(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $node = $helper::variationCreateNode($this->nodeTypes[0], ['status' => TRUE], 0);
@@ -174,7 +167,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * Tests variationCreateNode() produces an unpublished node for status FALSE.
    */
   public function testVariationCreateNodeUnpublished(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $node = $helper::variationCreateNode($this->nodeTypes[0], ['status' => FALSE], 0);
@@ -187,7 +179,6 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    * Tests variationCreateNode() invokes the post-process callback.
    */
   public function testVariationCreateNodePostprocess(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $captured = [];

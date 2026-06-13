@@ -10,6 +10,7 @@ CLAUDE.md          export-ignore
 .gitattributes     export-ignore
 .github            export-ignore
 .gitignore         export-ignore
+.skip_npm_build    export-ignore
 .twig-cs-fixer.php export-ignore
 Makefile           export-ignore
 composer.dev.json  export-ignore
@@ -20,5 +21,6 @@ phpunit.d10.xml    export-ignore
 phpunit.xml        export-ignore
 rector.php         export-ignore
 renovate.json      export-ignore
+scripts            export-ignore
 tests              export-ignore
 

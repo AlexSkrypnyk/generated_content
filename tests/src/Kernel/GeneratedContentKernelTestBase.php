@@ -66,7 +66,7 @@ abstract class GeneratedContentKernelTestBase extends KernelTestBase {
             $entities_replaced[$k] = $entity->id();
           }
         }
-        catch (\Exception $e) {
+        catch (\Exception) {
           // Leave unchanged.
         }
       }

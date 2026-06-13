@@ -42,7 +42,6 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
    * Tests the randomFile() method.
    */
   public function testRandomFile(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_file = $helper::randomFile();
@@ -71,7 +70,6 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
    * Tests the randomFiles() method.
    */
   public function testRandomFiles(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_files = $helper::randomFiles();
@@ -107,7 +105,6 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealFile() method.
    */
   public function testRandomRealFile(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a file not added to the repository is not returned.
@@ -140,7 +137,6 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealFiles() method.
    */
   public function testRandomRealFiles(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -188,7 +184,6 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
    * Tests the staticFile() method.
    */
   public function testStaticFile(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -225,7 +220,6 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
    * Tests the staticFiles() method.
    */
   public function testStaticFiles(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -253,31 +247,21 @@ class GeneratedContentHelperFileTest extends GeneratedContentKernelTestBase {
     $helper->reset();
 
     $actual_files = $helper::staticFiles($this->fileExtensions[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), [$ids[0]]);
     $actual_files = $helper::staticFiles($this->fileExtensions[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge([$ids[1]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), [$ids[1]]);
     $actual_files = $helper::staticFiles($this->fileExtensions[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge([$ids[2]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), [$ids[2]]);
     $actual_files = $helper::staticFiles($this->fileExtensions[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), [$ids[0]]);
 
     $helper->reset();
 
     $actual_files = $helper::staticFiles($this->fileExtensions[0], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge([
-      $ids[0],
-      $ids[1],
-      $ids[2],
-      $ids[0],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), [$ids[0], $ids[1], $ids[2], $ids[0]]);
 
     $actual_files = $helper::staticFiles($this->fileExtensions[1], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge([
-      $ids[3],
-      $ids[4],
-      $ids[5],
-      $ids[3],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), [$ids[3], $ids[4], $ids[5], $ids[3]]);
 
     $actual_files = $helper::staticFiles(NULL, 7);
     $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_files)), array_merge($ids, [$ids[0]]));

@@ -23,7 +23,7 @@ class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
 
     $this->assertCount(2, $batch['operations']);
     foreach ($batch['operations'] as $op) {
-      $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::createSingle', $op[0]);
+      $this->assertSame(GeneratedContentBatch::class . '::createSingle', $op[0]);
     }
   }
 
@@ -35,7 +35,7 @@ class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
 
     $this->assertCount(2, $batch['operations']);
     foreach ($batch['operations'] as $op) {
-      $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::removeSingle', $op[0]);
+      $this->assertSame(GeneratedContentBatch::class . '::removeSingle', $op[0]);
     }
   }
 
@@ -49,10 +49,10 @@ class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
     $this->assertCount(4, $batch['operations']);
 
     // First half are removes, second half are creates.
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::removeSingle', $batch['operations'][0][0]);
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::removeSingle', $batch['operations'][1][0]);
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::createSingle', $batch['operations'][2][0]);
-    $this->assertSame('\Drupal\generated_content\GeneratedContentBatch::createSingle', $batch['operations'][3][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::removeSingle', $batch['operations'][0][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::removeSingle', $batch['operations'][1][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::createSingle', $batch['operations'][2][0]);
+    $this->assertSame(GeneratedContentBatch::class . '::createSingle', $batch['operations'][3][0]);
   }
 
   /**
@@ -71,7 +71,7 @@ class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
     try {
       GeneratedContentBatch::createSingle($info, 4, $context);
     }
-    catch (\Throwable $e) {
+    catch (\Throwable) {
       // Repository will throw because the plugin ID is missing - the
       // pre-throw context setup is what we care about.
     }
@@ -134,7 +134,7 @@ class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
     GeneratedContentBatch::finished(TRUE, ['count' => 5], []);
 
     $this->assertFalse($cache->get('generated_content_test_seed'));
-    $messages = array_map('strval', $messenger->messagesByType('status'));
+    $messages = array_map(strval(...), $messenger->messagesByType('status'));
     $this->assertNotEmpty($messages);
     $combined = implode("\n", $messages);
     $this->assertStringContainsString('5', $combined);
@@ -157,7 +157,7 @@ class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
     $this->assertNotFalse($hit);
     $this->assertSame('seeded', $hit->data);
 
-    $messages = array_map('strval', $messenger->messagesByType('status'));
+    $messages = array_map(strval(...), $messenger->messagesByType('status'));
     $combined = implode("\n", $messages);
     $this->assertStringContainsString('error', strtolower($combined));
   }

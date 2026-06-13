@@ -33,7 +33,6 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function testRandomFieldAllowedValue(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_value = $helper::randomFieldAllowedValue('node', $this->randomMachineName(), $this->randomMachineName());
@@ -53,7 +52,7 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
     ];
     $this->fieldCreateListAllowedValues('node', $this->nodeTypes[0], $field_name, $allowed_values);
     $actual_value = $helper::randomFieldAllowedValue('node', $this->nodeTypes[0], $field_name);
-    $this->assertTrue(in_array($actual_value, array_keys($allowed_values)));
+    $this->assertTrue(in_array($actual_value, array_keys($allowed_values), TRUE));
   }
 
   /**
@@ -62,7 +61,6 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function testRandomFieldAllowedValues(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_values = $helper::randomFieldAllowedValues('node', $this->randomMachineName(), $this->randomMachineName());
@@ -111,7 +109,6 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function testStaticFieldAllowedValue(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_value = $helper::staticFieldAllowedValue('node', $this->randomMachineName(), $this->randomMachineName());
@@ -146,7 +143,6 @@ class GeneratedContentHelperFieldTest extends GeneratedContentKernelTestBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function testStaticFieldAllowedValues(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_values = $helper::staticFieldAllowedValues('node', $this->randomMachineName(), $this->randomMachineName());

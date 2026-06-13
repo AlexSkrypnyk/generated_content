@@ -29,7 +29,6 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * Tests the randomNode() method.
    */
   public function testRandomNode(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_node = $helper::randomNode();
@@ -59,7 +58,6 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * Tests the randomNodes() method.
    */
   public function testRandomNodes(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_nodes = $helper::randomNodes();
@@ -94,7 +92,6 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealNode() method.
    */
   public function testRandomRealNode(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -126,7 +123,6 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * Tests the randomRealNodes() method.
    */
   public function testRandomRealNodes(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -179,7 +175,6 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * Tests the staticNode() method.
    */
   public function testStaticNode(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -222,7 +217,6 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
    * Tests the staticNodes() method.
    */
   public function testStaticNodes(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -249,31 +243,21 @@ class GeneratedContentHelperNodeTest extends GeneratedContentKernelTestBase {
     $helper->reset();
 
     $actual_nodes = $helper::staticNodes($this->nodeTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), [$ids[0]]);
     $actual_nodes = $helper::staticNodes($this->nodeTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge([$ids[1]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), [$ids[1]]);
     $actual_nodes = $helper::staticNodes($this->nodeTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge([$ids[2]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), [$ids[2]]);
     $actual_nodes = $helper::staticNodes($this->nodeTypes[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), [$ids[0]]);
 
     $helper->reset();
 
     $actual_nodes = $helper::staticNodes($this->nodeTypes[0], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge([
-      $ids[0],
-      $ids[1],
-      $ids[2],
-      $ids[0],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), [$ids[0], $ids[1], $ids[2], $ids[0]]);
 
     $actual_nodes = $helper::staticNodes($this->nodeTypes[1], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge([
-      $ids[3],
-      $ids[4],
-      $ids[5],
-      $ids[3],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), [$ids[3], $ids[4], $ids[5], $ids[3]]);
 
     $actual_nodes = $helper::staticNodes(NULL, 10);
     $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_nodes)), array_merge($ids, [$ids[0]]));

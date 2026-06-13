@@ -56,46 +56,9 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   protected array $entities = [];
 
   /**
-   * Messenger service.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected MessengerInterface $messenger;
-
-  /**
-   * Entity type manager service.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected EntityTypeManagerInterface $entityTypeManager;
-
-  /**
    * Logger channel.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected LoggerChannelInterface $logger;
-
-  /**
-   * Database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected Connection $database;
-
-  /**
-   * Container.
-   *
-   * @var \Symfony\Component\DependencyInjection\ContainerInterface
-   */
-  protected ContainerInterface $container;
-
-  /**
-   * Plugin manager.
-   *
-   * @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginManager
-   */
-  protected GeneratedContentPluginManager $pluginManager;
 
   /**
    * GeneratedContentRepository constructor.
@@ -104,19 +67,29 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function __construct(
-    MessengerInterface $messenger,
-    EntityTypeManagerInterface $entityTypeManager,
+    /**
+     * Messenger service.
+     */
+    protected MessengerInterface $messenger,
+    /**
+     * Entity type manager service.
+     */
+    protected EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelFactoryInterface $loggerChannelFactory,
-    Connection $database,
-    ContainerInterface $container,
-    GeneratedContentPluginManager $plugin_manager,
+    /**
+     * Database connection.
+     */
+    protected Connection $database,
+    /**
+     * Container.
+     */
+    protected ContainerInterface $container,
+    /**
+     * Plugin manager.
+     */
+    protected GeneratedContentPluginManager $pluginManager,
   ) {
-    $this->messenger = $messenger;
-    $this->entityTypeManager = $entityTypeManager;
     $this->logger = $loggerChannelFactory->get('generated_content');
-    $this->database = $database;
-    $this->container = $container;
-    $this->pluginManager = $plugin_manager;
 
     $this->entities = $this->loadEntities();
   }
@@ -150,8 +123,10 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       self::$instances[static::class] = $instance;
     }
 
-    /** @var static */
-    return self::$instances[static::class];
+    /** @var static $instance */
+    $instance = self::$instances[static::class];
+
+    return $instance;
   }
 
   /**
@@ -354,7 +329,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         $cache = $this->container->get('cache.' . $cache_id);
         $cache->deleteAll();
       }
-      catch (\Exception $exception) {
+      catch (\Exception) {
         // Noop.
       }
     }
@@ -384,7 +359,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       ];
     }
 
-    uasort($available, [SortArray::class, 'sortByWeightProperty']);
+    uasort($available, SortArray::sortByWeightProperty(...));
 
     return $available;
   }
@@ -505,11 +480,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     if ($entity_type) {
       if (isset($this->entities[$entity_type])) {
         if ($bundle) {
-          if (isset($this->entities[$entity_type][$bundle])) {
-            return $this->entities[$entity_type][$bundle];
-          }
-
-          return [];
+          return $this->entities[$entity_type][$bundle] ?? [];
         }
 
         return $this->entities[$entity_type];

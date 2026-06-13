@@ -71,38 +71,8 @@ class GeneratedContentAssetGenerator {
 
   /**
    * The utility class for creating random data.
-   *
-   * @var \Drupal\Component\Utility\Random
    */
-  protected $random;
-
-  /**
-   * The file system.
-   *
-   * @var \Drupal\Core\File\FileSystemInterface
-   */
-  protected $fileSystem;
-
-  /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManager
-   */
-  protected $entityTypeManager;
-
-  /**
-   * The file repository.
-   *
-   * @var \Drupal\file\FileRepositoryInterface
-   */
-  protected $fileRepository;
-
-  /**
-   * The module extension list.
-   *
-   * @var \Drupal\Core\Extension\ModuleExtensionList
-   */
-  protected $moduleExtensionList;
+  protected Random $random;
 
   /**
    * Array of available assets.
@@ -112,16 +82,29 @@ class GeneratedContentAssetGenerator {
    *
    * @var array<string, string[]>
    */
-  protected $assets;
+  protected array $assets;
 
   /**
    * Constructor.
    */
-  public function __construct(FileSystemInterface $file_system, EntityTypeManager $entity_type_manager, FileRepository $file_repository, ModuleExtensionList $module_extension_list) {
-    $this->fileSystem = $file_system;
-    $this->entityTypeManager = $entity_type_manager;
-    $this->fileRepository = $file_repository;
-    $this->moduleExtensionList = $module_extension_list;
+  public function __construct(
+    /**
+     * The file system.
+     */
+    protected FileSystemInterface $fileSystem,
+    /**
+     * The entity type manager.
+     */
+    protected EntityTypeManager $entityTypeManager,
+    /**
+     * The file repository.
+     */
+    protected FileRepository $fileRepository,
+    /**
+     * The module extension list.
+     */
+    protected ModuleExtensionList $moduleExtensionList,
+  ) {
     $this->random = new Random();
     $this->assets = $this->loadAssets();
   }
@@ -158,7 +141,7 @@ class GeneratedContentAssetGenerator {
     // Validate options.
     $default_options = [
       // Filename without extension.
-      'filename' => $this->random->word(rand(4, 12)),
+      'filename' => $this->random->word(random_int(4, 12)),
       // Extension without leading dot. Defaults to the type.
       'extension' => $type,
       // Destination directory.
@@ -169,14 +152,14 @@ class GeneratedContentAssetGenerator {
 
     $options += $default_options;
 
-    $extension = '.' . ltrim($options['extension'], '.');
+    $extension = '.' . ltrim((string) $options['extension'], '.');
     $filename = $options['filename'] . $extension;
-    $directory = ltrim($options['directory'], DIRECTORY_SEPARATOR);
+    $directory = ltrim((string) $options['directory'], DIRECTORY_SEPARATOR);
 
     // Find existing files.
     if ($options['use_existing']) {
       $file = $this->findFileByName($filename);
-      if ($file) {
+      if ($file instanceof FileInterface) {
         return $file;
       }
     }
@@ -186,7 +169,7 @@ class GeneratedContentAssetGenerator {
     }
 
     // Route to the corresponding generator base on type.
-    $generator = $this->generatorMap()[$generation_type][$type] ?? NULL;
+    $generator = static::generatorMap()[$generation_type][$type] ?? NULL;
 
     // Fallback to default generator and issue a notice. Custom generation types
     // are expected to extend generatorMap() with own definitions.
@@ -195,7 +178,7 @@ class GeneratedContentAssetGenerator {
     // of $type with a different extension (for example, .log instead .txt) -
     // the custom file extension can be defined in $options['extension'].
     if (is_null($generator)) {
-      $generator = $this->getDefaultGenerator();
+      $generator = static::getDefaultGenerator();
       trigger_error(sprintf('Generator is not defined for "%s" generation of "%s" type in %s. Using default generator %s.',
         $generation_type,
         $type,
@@ -208,7 +191,7 @@ class GeneratedContentAssetGenerator {
     if (is_callable($generator)) {
       $generated_filepath = call_user_func($generator, $type, $options);
     }
-    elseif (count($generator) == 2 && get_class($this) == $generator[0] && method_exists($this, $generator[1])) {
+    elseif (count($generator) === 2 && static::class == $generator[0] && method_exists($this, $generator[1])) {
       $generated_filepath = $this->{$generator[1]}($type, $options);
     }
     else {
@@ -224,7 +207,7 @@ class GeneratedContentAssetGenerator {
     $file_content = file_get_contents($generated_filepath);
 
     if (!$file_content) {
-      throw new \Exception("Failed get content of file $generated_filepath");
+      throw new \Exception('Failed get content of file ' . $generated_filepath);
     }
 
     return $this->fileRepository->writeData($file_content, $uri);
@@ -238,12 +221,12 @@ class GeneratedContentAssetGenerator {
    * @param array<mixed> $options
    *   Options.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|\Drupal\file\Entity\File|\Drupal\file\FileInterface
+   * @return \Drupal\file\FileInterface
    *   File.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function generateRandom(string $type, array $options = []) {
+  public function generateRandom(string $type, array $options = []): FileInterface {
     return $this->generate($type, $options, self::GENERATE_TYPE_RANDOM);
   }
 
@@ -354,13 +337,13 @@ class GeneratedContentAssetGenerator {
       'height' => 200,
     ];
 
-    $function = 'image' . ($type == 'jpg' ? 'jpeg' : $type);
+    $function = 'image' . ($type === 'jpg' ? 'jpeg' : $type);
     if (!is_callable($function)) {
       throw new \RuntimeException(sprintf('Unable to create a random image asset: function "%s" does not exist.', $function));
     }
 
-    $width = !empty($options['width']) ? $options['width'] : 350;
-    $height = !empty($options['height']) ? $options['height'] : 200;
+    $width = empty($options['width']) ? 350 : $options['width'];
+    $height = empty($options['height']) ? 200 : $options['height'];
 
     $filepath = $this->createTempFile();
 
@@ -368,7 +351,7 @@ class GeneratedContentAssetGenerator {
     $image = imagecreate($width, $height);
     for ($n = 0; $n < 4; $n++) {
       // @phpstan-ignore-next-line
-      $color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255));
+      $color = imagecolorallocate($image, random_int(0, 255), random_int(0, 255), random_int(0, 255));
       $x = $width / 2 * ($n % 2);
       $y = $height / 2 * (int) ($n >= 2);
       // @phpstan-ignore-next-line
@@ -377,9 +360,9 @@ class GeneratedContentAssetGenerator {
 
     // Make a perfect circle in the image middle.
     // @phpstan-ignore-next-line
-    $color = imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255));
+    $color = imagecolorallocate($image, random_int(0, 255), random_int(0, 255), random_int(0, 255));
     $smaller_dimension = min($width, $height);
-    $smaller_dimension = ($smaller_dimension % 2) ? $smaller_dimension : $smaller_dimension;
+    $smaller_dimension = ($smaller_dimension % 2 !== 0) ? $smaller_dimension : $smaller_dimension;
     // @phpstan-ignore-next-line
     imageellipse($image, $width / 2, $height / 2, $smaller_dimension, $smaller_dimension, $color);
 
@@ -517,7 +500,7 @@ class GeneratedContentAssetGenerator {
         foreach ($extensions as $extension) {
           $files = glob($dir . '/*.' . $extension);
           if ($files) {
-            $assets[$extension] = $assets[$extension] ?? [];
+            $assets[$extension] ??= [];
             $assets[$extension] = array_merge($assets[$extension], $files);
           }
         }
@@ -540,7 +523,7 @@ class GeneratedContentAssetGenerator {
     $module_path = $this->moduleExtensionList->getPath('generated_content');
 
     return [
-      $module_path . DIRECTORY_SEPARATOR . rtrim(static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR),
+      $module_path . DIRECTORY_SEPARATOR . rtrim((string) static::ASSETS_DIRECTORY, DIRECTORY_SEPARATOR),
     ];
   }
 

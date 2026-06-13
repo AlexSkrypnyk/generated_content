@@ -42,7 +42,7 @@ trait GeneratedContentTestFileTrait {
    */
   public function assertImageWidth(string $file, int $width): void {
     $info = $this->imageGetInfo($file);
-    $actual = !empty($info) ? $info['width'] : NULL;
+    $actual = empty($info) ? NULL : $info['width'];
     $this->assertSame($width, $actual);
   }
 
@@ -51,7 +51,7 @@ trait GeneratedContentTestFileTrait {
    */
   public function assertImageHeight(string $file, int $height): void {
     $info = $this->imageGetInfo($file);
-    $actual = !empty($info) ? $info['height'] : NULL;
+    $actual = empty($info) ? NULL : $info['height'];
     $this->assertSame($height, $actual);
   }
 
@@ -74,7 +74,7 @@ trait GeneratedContentTestFileTrait {
    * @return array{'width': int, 'height': int, 'type': int}|FALSE
    *   Image info or False.
    */
-  protected function imageGetInfo(string $file) {
+  protected function imageGetInfo(string $file): false|array {
     $this->assertFileExists($file);
 
     $info = getimagesize($file);
@@ -111,7 +111,7 @@ trait GeneratedContentTestFileTrait {
     if ($extension) {
       foreach ($test_assets as $k => $test_asset) {
         // @phpstan-ignore-next-line
-        $ext = pathinfo($test_asset->uri, PATHINFO_EXTENSION);
+        $ext = pathinfo((string) $test_asset->uri, PATHINFO_EXTENSION);
         if ($ext != $extension) {
           unset($test_assets[$k]);
         }

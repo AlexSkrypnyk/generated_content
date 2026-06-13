@@ -52,31 +52,23 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
 
   /**
    * The repository singleton.
-   *
-   * @var \Drupal\generated_content\GeneratedContentRepository
    */
-  protected static $repository;
+  protected static GeneratedContentRepository $repository;
 
   /**
    * Asset generator.
-   *
-   * @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator
    */
-  protected static $assetGenerator;
+  protected static GeneratedContentAssetGenerator $assetGenerator;
 
   /**
    * Asset generator.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
    */
-  protected static $messenger;
+  protected static MessengerInterface $messenger;
 
   /**
    * Entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected static $entityTypeManager;
+  protected static EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Use verbose mode.
@@ -129,8 +121,10 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       self::$instances[static::class] = $instance;
     }
 
-    /** @var static */
-    return self::$instances[static::class];
+    /** @var static $instance */
+    $instance = self::$instances[static::class];
+
+    return $instance;
   }
 
   /**
@@ -154,11 +148,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     if (static::$verbose) {
       if (function_exists('drush_print')) {
         // Strip all tags, but still decode some HTML entities.
-        drush_print(html_entity_decode(strip_tags(call_user_func_array('sprintf', func_get_args()))));
+        drush_print(html_entity_decode(strip_tags((string) call_user_func_array(sprintf(...), func_get_args()))));
       }
       else {
         // Support HTML, but still use plain strings for simplicity.
-        static::$messenger->addMessage(new FormattableMarkup(call_user_func_array('sprintf', func_get_args()), []));
+        static::$messenger->addMessage(new FormattableMarkup(call_user_func_array(sprintf(...), func_get_args()), []));
       }
     }
   }
@@ -457,7 +451,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @return \Drupal\taxonomy\TermInterface[]
    *   Array of term entities.
    */
-  public static function randomTerms(?string $vid = NULL, $count = 5): array {
+  public static function randomTerms(?string $vid = NULL, ?int $count = 5): array {
     /** @var \Drupal\taxonomy\TermInterface[] $terms */
     $terms = static::randomEntities('taxonomy_term', $vid, $count);
 
@@ -504,7 +498,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function randomRealTerms(?string $vid = NULL, $count = 5): array {
+  public static function randomRealTerms(?string $vid = NULL, ?int $count = 5): array {
     /** @var \Drupal\taxonomy\TermInterface[] $terms */
     $terms = static::randomRealEntities('taxonomy_term', $vid, $count);
 
@@ -842,7 +836,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static function filterFilesByExtension(array $files, ?string $extension, ?int $count = NULL): array {
     if (!is_null($extension)) {
       foreach ($files as $k => $file) {
-        $ext = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
+        $ext = pathinfo((string) $file->getFilename(), PATHINFO_EXTENSION);
         if ($ext != $extension) {
           unset($files[$k]);
         }
@@ -875,7 +869,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   public static function randomFieldAllowedValue(string $entity_type, string $bundle, string $field_name): ?string {
     $allowed_values = static::randomFieldAllowedValues($entity_type, $bundle, $field_name, 1);
 
-    return !empty($allowed_values) ? reset($allowed_values) : NULL;
+    return empty($allowed_values) ? NULL : reset($allowed_values);
   }
 
   /**
@@ -922,7 +916,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   public static function staticFieldAllowedValue(string $entity_type, string $bundle, string $field_name): ?string {
     $allowed_values = static::staticFieldAllowedValues($entity_type, $bundle, $field_name, 1);
 
-    return !empty($allowed_values) ? reset($allowed_values) : NULL;
+    return empty($allowed_values) ? NULL : reset($allowed_values);
   }
 
   /**
@@ -981,7 +975,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     $return = [];
 
     // Track the asset offset of statically generated files.
-    if ($generation_type == GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC) {
+    if ($generation_type === GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC) {
       $assets = static::$assetGenerator->getAssets($type);
       $asset_indices = array_keys($assets);
 
@@ -997,7 +991,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     $file = static::$assetGenerator->generate($type, $options, $generation_type);
 
     // Track the asset offset of statically generated files.
-    if ($generation_type == GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC) {
+    if ($generation_type === GeneratedContentAssetGenerator::GENERATE_TYPE_STATIC) {
       static::setStaticOffset(count($return), 'file_asset', $type);
     }
 
@@ -1184,7 +1178,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
         'title' => $title,
         'weight' => $weight,
       ];
-      if ($parent_menu_link) {
+      if ($parent_menu_link instanceof MenuLinkContent) {
         $leaf_defaults['parent'] = 'menu_link_content:' . $parent_menu_link->uuid();
       }
 
@@ -1332,14 +1326,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       $generated_entities = $entities_all;
     }
 
-    $generated_entities_ids = array_filter(array_map(function ($value) {
-      return $value instanceof EntityInterface ? $value->id() : NULL;
-    }, $generated_entities));
+    $generated_entities_ids = array_filter(array_map(fn($value) => $value instanceof EntityInterface ? $value->id() : NULL, $generated_entities));
 
-    $entities_ids = array_filter(array_map(function ($value) {
-      // @phpstan-ignore-next-line
-      return $value instanceof EntityInterface ? $value->id() : NULL;
-    }, $entities));
+    $entities_ids = array_filter(array_map(
+        // @phpstan-ignore-next-line
+        fn(EntityInterface $value) => $value instanceof EntityInterface ? $value->id() : NULL, $entities));
 
     $non_generated_ids = array_diff($entities_ids, $generated_entities_ids);
 
@@ -1409,7 +1400,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
         }
       }
 
-      if ($items_merged > 0 && count($items) != $items_merged) {
+      if ($items_merged > 0 && count($items) !== $items_merged) {
         throw new \Exception(sprintf('Mixed data provided when trying to merge %s static items.', $type));
       }
       elseif ($items_merged > 0) {
@@ -1445,7 +1436,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    */
   protected static function getStaticOffset(...$arguments): int {
     $key = implode('__', func_get_args());
-    self::$staticOffsets[$key] = self::$staticOffsets[$key] ?? 0;
+    self::$staticOffsets[$key] ??= 0;
 
     return self::$staticOffsets[$key];
   }
@@ -1463,7 +1454,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     $args = func_get_args();
     $offset = array_shift($args);
     $key = implode('__', $args);
-    self::$staticOffsets[$key] = self::$staticOffsets[$key] ?? 0;
+    self::$staticOffsets[$key] ??= 0;
     self::$staticOffsets[$key] += $offset;
   }
 
@@ -1487,7 +1478,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
 
     while ($count && $len > 0) {
       if ($offset >= $len) {
-        $offset = $offset % $len;
+        $offset %= $len;
       }
       $out[] = $array[$keys[$offset++]];
       $count--;

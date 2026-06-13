@@ -19,20 +19,17 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
   use StringTranslationTrait;
 
   /**
-   * Drupal\Core\Messenger\MessengerInterface definition.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected MessengerInterface $messenger;
-
-  /**
    * Class constructor.
    *
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The core messenger service.
    */
-  public function __construct(MessengerInterface $messenger) {
-    $this->messenger = $messenger;
+  public function __construct(
+    /**
+     * Drupal\Core\Messenger\MessengerInterface definition.
+     */
+    protected MessengerInterface $messenger,
+  ) {
   }
 
   /**
@@ -58,10 +55,10 @@ class GeneratedContentBatchService implements ContainerInjectionInterface {
    *   Total processed.
    * @param int $current
    *   Current processed.
-   * @param mixed $context
+   * @param array<mixed> $context
    *   Context.
    */
-  public static function processItem(int $batch_id, string $entity_type, string $bundle, int $total, int $current, &$context): void {
+  public static function processItem(int $batch_id, string $entity_type, string $bundle, int $total, int $current, array &$context): void {
     $repository = GeneratedContentRepository::getInstance();
     $repository->createEntities([$entity_type => [$bundle => TRUE]]);
 

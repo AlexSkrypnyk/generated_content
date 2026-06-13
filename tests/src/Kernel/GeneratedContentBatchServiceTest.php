@@ -91,7 +91,7 @@ class GeneratedContentBatchServiceTest extends GeneratedContentKernelTestBase {
     // createEntities() iterates an empty info list. The repository still
     // emits its post-create status message - that proves it was invoked.
     $messages = $messenger->messagesByType('status');
-    $messages = array_map('strval', $messages);
+    $messages = array_map(strval(...), $messages);
     $this->assertContains('Created all generated content.', $messages);
 
     // Repository tracks no entities because no plugins ran.

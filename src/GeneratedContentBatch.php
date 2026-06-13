@@ -29,19 +29,19 @@ class GeneratedContentBatch {
     $batch = [
       'title' => t('Processing generated content'),
       'operations' => [],
-      'finished' => '\Drupal\generated_content\GeneratedContentBatch::finished',
+      'finished' => GeneratedContentBatch::class . '::finished',
     ];
 
     if ($op === 'regenerate') {
       foreach ($info_items as $info_item) {
         $batch['operations'][] = [
-          '\Drupal\generated_content\GeneratedContentBatch::removeSingle',
+          GeneratedContentBatch::class . '::removeSingle',
           [$info_item, $total],
         ];
       }
       foreach ($info_items as $info_item) {
         $batch['operations'][] = [
-          '\Drupal\generated_content\GeneratedContentBatch::createSingle',
+          GeneratedContentBatch::class . '::createSingle',
           [$info_item, $total],
         ];
       }
@@ -49,7 +49,7 @@ class GeneratedContentBatch {
     else {
       foreach ($info_items as $info_item) {
         $batch['operations'][] = [
-          $op == 'create' ? '\Drupal\generated_content\GeneratedContentBatch::createSingle' : '\Drupal\generated_content\GeneratedContentBatch::removeSingle',
+          $op === 'create' ? GeneratedContentBatch::class . '::createSingle' : GeneratedContentBatch::class . '::removeSingle',
           [$info_item, $total],
         ];
       }

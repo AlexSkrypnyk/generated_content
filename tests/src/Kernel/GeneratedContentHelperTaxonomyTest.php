@@ -41,7 +41,6 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    * Tests the randomTerm() method.
    */
   public function testRandomTerm(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_term = $helper::randomTerm();
@@ -71,7 +70,6 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    * Tests the randomTerms() method.
    */
   public function testRandomTerms(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     $actual_terms = $helper::randomTerms();
@@ -106,7 +104,6 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    * Tests the randomRealTerm() method.
    */
   public function testRandomRealTerm(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -138,7 +135,6 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    * Tests the randomRealTerms() method.
    */
   public function testRandomRealTerms(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -191,7 +187,6 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    * Tests the staticTerm() method.
    */
   public function testStaticTerm(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that a user not added to the repository is not returned.
@@ -234,7 +229,6 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    * Tests the staticTerms() method.
    */
   public function testStaticTerms(): void {
-    /** @var \Drupal\generated_content\Helpers\GeneratedContentHelper $helper */
     $helper = GeneratedContentHelper::getInstance();
 
     // Assert that when users are not added to the repository they are not
@@ -261,31 +255,21 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
     $helper->reset();
 
     $actual_terms = $helper::staticTerms($this->vids[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), [$ids[0]]);
     $actual_terms = $helper::staticTerms($this->vids[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge([$ids[1]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), [$ids[1]]);
     $actual_terms = $helper::staticTerms($this->vids[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge([$ids[2]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), [$ids[2]]);
     $actual_terms = $helper::staticTerms($this->vids[0], 1);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge([$ids[0]]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), [$ids[0]]);
 
     $helper->reset();
 
     $actual_terms = $helper::staticTerms($this->vids[0], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge([
-      $ids[0],
-      $ids[1],
-      $ids[2],
-      $ids[0],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), [$ids[0], $ids[1], $ids[2], $ids[0]]);
 
     $actual_terms = $helper::staticTerms($this->vids[1], 4);
-    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge([
-      $ids[3],
-      $ids[4],
-      $ids[5],
-      $ids[3],
-    ]));
+    $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), [$ids[3], $ids[4], $ids[5], $ids[3]]);
 
     $actual_terms = $helper::staticTerms(NULL, 10);
     $this->assertSame(array_values($this->replaceEntitiesWithIds($actual_terms)), array_merge($ids, [$ids[0]]));
