@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Unit;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\generated_content\Plugin\ConfigFilter\GeneratedContentIgnoreFilter;
 
 /**
@@ -13,6 +15,7 @@ use Drupal\generated_content\Plugin\ConfigFilter\GeneratedContentIgnoreFilter;
  *
  * @covers \Drupal\generated_content\Plugin\ConfigFilter\GeneratedContentIgnoreFilter
  */
+#[Group('generated_content')]
 class GeneratedContentIgnoreFilterTest extends GeneratedContentUnitTestBase {
 
   /**
@@ -27,6 +30,7 @@ class GeneratedContentIgnoreFilterTest extends GeneratedContentUnitTestBase {
    *
    * @dataProvider dataProviderFilterWrite
    */
+  #[DataProvider('dataProviderFilterWrite')]
   public function testFilterWrite(string $name, array $data, array $expected): void {
     $filter = new GeneratedContentIgnoreFilter([], 'generated_content_config_ignore', []);
 

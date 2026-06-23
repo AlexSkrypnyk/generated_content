@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Functional;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
@@ -11,6 +12,7 @@ use Drush\TestTraits\DrushTestTrait;
  *
  * @group generated_content
  */
+#[Group('generated_content')]
 class GeneratedContentDrushCommandTest extends GeneratedContentFunctionalTestBase {
 
   use DrushTestTrait;

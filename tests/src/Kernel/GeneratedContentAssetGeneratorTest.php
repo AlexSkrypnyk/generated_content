@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestFileTrait;
 
@@ -12,6 +14,7 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestFileTrait;
  *
  * @group generated_content
  */
+#[Group('generated_content')]
 class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase {
 
   use GeneratedContentTestFileTrait;
@@ -55,6 +58,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
    *
    * @dataProvider dataProviderGenerate
    */
+  #[DataProvider('dataProviderGenerate')]
   public function testGenerate(string $type, array $options = [], string $generation_type = GeneratedContentAssetGenerator::GENERATE_TYPE_RANDOM, ?string $expected_uri = NULL, ?string $expected_exception_message = NULL, bool $expected_exception_is_notice = FALSE): void {
     if ($expected_exception_message) {
       if ($expected_exception_is_notice) {
@@ -220,6 +224,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
    *
    * @dataProvider dataProviderGenerateTypes
    */
+  #[DataProvider('dataProviderGenerateTypes')]
   public function testGenerateTypes(string $generation_type, string $type, bool $expected_identical_content = TRUE): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
     $generator = $this->container->get('generated_content.asset_generator');
@@ -293,6 +298,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
    *
    * @dataProvider dataProviderGeneratorRandomImage
    */
+  #[DataProvider('dataProviderGeneratorRandomImage')]
   public function testGeneratorRandomImage(string $type, array $options, int $expected_width, int $expected_height, string $expected_mime_type): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
     $generator = $this->container->get('generated_content.asset_generator');
@@ -370,6 +376,7 @@ class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase 
    *
    * @dataProvider dataProviderGeneratorStaticFile
    */
+  #[DataProvider('dataProviderGeneratorStaticFile')]
   public function testGeneratorStaticFile(string $type, string $expected_mime_type): void {
     /** @var \Drupal\generated_content\Helpers\GeneratedContentAssetGenerator $generator */
     $generator = $this->container->get('generated_content.asset_generator');

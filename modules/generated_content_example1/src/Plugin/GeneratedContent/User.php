@@ -37,7 +37,7 @@ class User extends GeneratedContentPluginBase {
       for ($i = 1; $i <= $total_users_per_role; $i++) {
         $name = sprintf('generated_%s_%s@example.com', $role->id(), $i);
 
-        $existing_user = user_load_by_name($name);
+        $existing_user = array_values($this->entityTypeManager->getStorage('user')->loadByProperties(['name' => $name]))[0] ?? FALSE;
         if ($existing_user) {
           $this->entityTypeManager->getStorage('user')->load($existing_user->id())->delete();
         }

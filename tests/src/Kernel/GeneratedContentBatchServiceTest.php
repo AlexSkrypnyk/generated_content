@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\generated_content\GeneratedContentBatchService;
 use Drupal\generated_content\GeneratedContentRepository;
@@ -15,6 +17,7 @@ use Drupal\generated_content\GeneratedContentRepository;
  *
  * @covers \Drupal\generated_content\GeneratedContentBatchService
  */
+#[Group('generated_content')]
 class GeneratedContentBatchServiceTest extends GeneratedContentKernelTestBase {
 
   /**
@@ -45,6 +48,7 @@ class GeneratedContentBatchServiceTest extends GeneratedContentKernelTestBase {
    *
    * @dataProvider dataProviderProcessItemMessage
    */
+  #[DataProvider('dataProviderProcessItemMessage')]
   public function testProcessItemMessage(int $batch_id, string $entity_type, string $bundle, int $total, int $current, string $expected): void {
     $context = [];
 
@@ -108,6 +112,7 @@ class GeneratedContentBatchServiceTest extends GeneratedContentKernelTestBase {
    *
    * @dataProvider dataProviderProcessItemFinished
    */
+  #[DataProvider('dataProviderProcessItemFinished')]
   public function testProcessItemFinished(bool $success, bool $expect_cleared): void {
     $cache = $this->container->get('cache.data');
     $cache->set('generated_content_test_key', 'seeded');
