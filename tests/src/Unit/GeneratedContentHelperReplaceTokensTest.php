@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Unit;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 
 /**
@@ -13,6 +14,7 @@ use Drupal\generated_content\Helpers\GeneratedContentHelper;
  *
  * @covers \Drupal\generated_content\Helpers\GeneratedContentHelper::replaceTokens
  */
+#[Group('generated_content')]
 class GeneratedContentHelperReplaceTokensTest extends GeneratedContentUnitTestBase {
 
   /**

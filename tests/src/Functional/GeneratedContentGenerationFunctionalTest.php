@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Functional;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\Core\Session\AccountInterface;
 
 /**
@@ -13,6 +14,7 @@ use Drupal\Core\Session\AccountInterface;
  *
  * @group generated_content
  */
+#[Group('generated_content')]
 class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctionalTestBase {
 
   /**

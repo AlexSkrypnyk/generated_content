@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Unit;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\generated_content\GeneratedContentBatchService;
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
@@ -23,6 +25,7 @@ use Drupal\generated_content\Commands\GeneratedContentCommands;
  *
  * @covers \Drupal\generated_content\Commands\GeneratedContentCommands
  */
+#[Group('generated_content')]
 class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
 
   /**
@@ -48,6 +51,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
    *
    * @dataProvider dataProviderBuildBatchOperationCount
    */
+  #[DataProvider('dataProviderBuildBatchOperationCount')]
   public function testBuildBatchOperationCount(int $total, int $expected_operations): void {
     $array = $this->callBuildBatch('node', 'page', $total);
 
@@ -126,6 +130,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
    *
    * @dataProvider dataProviderBuildBatchTitleBatchCount
    */
+  #[DataProvider('dataProviderBuildBatchTitleBatchCount')]
   public function testBuildBatchTitleBatchCount(int $total, int $expected_batches): void {
     $array = $this->callBuildBatch('node', 'page', $total);
 

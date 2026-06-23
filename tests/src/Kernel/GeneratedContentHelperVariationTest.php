@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\node\NodeInterface;
 
@@ -14,6 +17,7 @@ use Drupal\node\NodeInterface;
  *
  * @covers \Drupal\generated_content\Helpers\GeneratedContentVariationTrait
  */
+#[Group('generated_content')]
 class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase {
 
   /**
@@ -60,6 +64,7 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    *
    * @dataProvider dataProviderVariationFormatInfo
    */
+  #[DataProvider('dataProviderVariationFormatInfo')]
   public function testVariationFormatInfo(array $variation, int $name_length, string $expected): void {
     $helper = GeneratedContentHelper::getInstance();
 
@@ -132,6 +137,7 @@ class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase
    *
    * @depends testVariationFetchAllWithPath
    */
+  #[Depends('testVariationFetchAllWithPath')]
   public function testVariationFetchAllNoPath(): void {
     $helper = GeneratedContentHelper::getInstance();
 

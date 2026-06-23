@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\generated_content\GeneratedContentBatch;
 
 /**
@@ -13,6 +14,7 @@ use Drupal\generated_content\GeneratedContentBatch;
  *
  * @covers \Drupal\generated_content\GeneratedContentBatch
  */
+#[Group('generated_content')]
 class GeneratedContentBatchTest extends GeneratedContentKernelTestBase {
 
   /**

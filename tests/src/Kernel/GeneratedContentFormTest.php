@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\generated_content\Form\GeneratedContentForm;
@@ -16,6 +18,7 @@ use Drupal\generated_content\GeneratedContentRepository;
  *
  * @covers \Drupal\generated_content\Form\GeneratedContentForm
  */
+#[Group('generated_content')]
 class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
 
   /**
@@ -113,6 +116,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    *
    * @dataProvider dataProviderSubmitFormDispatch
    */
+  #[DataProvider('dataProviderSubmitFormDispatch')]
   public function testSubmitFormDispatch(string $button, string $expected_method): void {
     $info_item = [
       'entity_type' => 'user',
@@ -185,6 +189,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    *
    * @dataProvider dataProviderEntityInfoToLink
    */
+  #[DataProvider('dataProviderEntityInfoToLink')]
   public function testEntityInfoToLink(string $entity_type, ?string $bundle, string $must_contain): void {
     $form = $this->buildFormInstance();
     $result = (string) self::callProtectedMethod($form, 'entityInfoToLink', [$entity_type, $bundle]);

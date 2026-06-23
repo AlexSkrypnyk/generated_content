@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Unit;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * Class GeneratedContentExampleUnitTest.
  *
@@ -11,6 +14,7 @@ namespace Drupal\Tests\generated_content\Unit;
  *
  * @group generated_content
  */
+#[Group('generated_content')]
 class GeneratedContentHelperUnitTest extends GeneratedContentUnitTestBase {
 
   /**
@@ -27,6 +31,7 @@ class GeneratedContentHelperUnitTest extends GeneratedContentUnitTestBase {
    *
    * @dataProvider dataProviderArraySliceCircular
    */
+  #[DataProvider('dataProviderArraySliceCircular')]
   public function testArraySliceCircular(array $array, int $count, int $idx, array $expected): void {
     $actual = $this->callProtectedMethod(
       'Drupal\generated_content\Helpers\GeneratedContentHelper',
