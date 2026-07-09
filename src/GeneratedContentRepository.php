@@ -563,7 +563,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
             ->load($result['entity_id']);
           if ($entity) {
             $entity->delete();
-            unset($this->entities[$entity_type][$bundle][$entity_id]);
+            unset($this->entities[$result['entity_type']][$result['bundle']][$result['entity_id']]);
           }
         }
         catch (\Exception $exception) {

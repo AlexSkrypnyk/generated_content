@@ -147,4 +147,35 @@ class GeneratedContentRepositoryTest extends GeneratedContentKernelTestBase {
     $this->assertSame([], $actual_entities);
   }
 
+  /**
+   * Test that removeSingle() prunes the removed entities from the cache.
+   */
+  public function testRemoveSinglePrunesInMemoryCache(): void {
+    $repository = GeneratedContentRepository::getInstance();
+
+    $bundle_removed = $this->nodeTypes[0];
+    $bundle_kept = $this->nodeTypes[1];
+
+    $nodes = $this->prepareNodes(2, [$bundle_removed, $bundle_kept]);
+    $repository->addEntities(array_merge(array_values($nodes[$bundle_removed]), array_values($nodes[$bundle_kept])));
+
+    // Both bundles are present in the in-memory cache after tracking.
+    $this->assertSame($this->replaceEntitiesWithIds($nodes[$bundle_removed]), $this->replaceEntitiesWithIds($repository->getEntities('node', $bundle_removed)));
+    $this->assertSame($this->replaceEntitiesWithIds($nodes[$bundle_kept]), $this->replaceEntitiesWithIds($repository->getEntities('node', $bundle_kept)));
+
+    $repository->removeSingle([
+      'entity_type' => 'node',
+      'bundle' => $bundle_removed,
+      '#plugin_id' => 'p',
+      '#tracking' => TRUE,
+      '#weight' => 0,
+      '#module' => 'm',
+    ]);
+
+    // The removed bundle is pruned from the in-memory cache without a DB
+    // reload, while the untouched bundle remains intact.
+    $this->assertSame([], $repository->getEntities('node', $bundle_removed));
+    $this->assertSame($this->replaceEntitiesWithIds($nodes[$bundle_kept]), $this->replaceEntitiesWithIds($repository->getEntities('node', $bundle_kept)));
+  }
+
 }
