@@ -210,7 +210,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $this->clearCaches();
     }
 
-    $this->messenger->addMessage('Created all generated content.');
+    GeneratedContentProgress::report('Created all generated content.');
 
     return $total;
   }
@@ -237,7 +237,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     /** @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginInterface $plugin */
     $plugin = $this->pluginManager->createInstance($info['#plugin_id']);
     $entities = $plugin->generate();
-    $this->messenger->addMessage(sprintf('Created generated content entities "%s" with bundle "%s"', $info['entity_type'], $info['bundle']));
+    GeneratedContentProgress::report(sprintf('Created generated content entities "%s" with bundle "%s".', $info['entity_type'], $info['bundle']));
     $this->addEntities($entities, $info['#tracking']);
     $total = count($entities);
     unset($entities);

@@ -10,6 +10,7 @@ declare(strict_types=1);
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Utility\Error;
+use Drupal\generated_content\GeneratedContentProgress;
 use Drupal\generated_content\GeneratedContentRepository;
 use Psr\Log\LogLevel;
 
@@ -60,16 +61,14 @@ function generated_content_modules_installed($modules, $is_syncing): void {
     // to avoid duplication of generated content on every run of the
     // persistent operations.
     if (array_intersect($modules, $generated_content_modules) && $repository->isEmpty()) {
-      \Drupal::messenger()->addMessage(t('Started creation of generated content from modules: @modules.', [
-        '@modules' => implode(', ', $generated_content_modules),
-      ]));
+      GeneratedContentProgress::report(sprintf('Started creation of generated content from modules: %s.', implode(', ', $generated_content_modules)));
       $items = [];
       $items_env = getenv('GENERATED_CONTENT_ITEMS');
       if (is_string($items_env) && $items_env !== '') {
         $items = _generated_content_parse_cli_items($items_env);
       }
       $repository->createEntities($items);
-      \Drupal::messenger()->addMessage(t('Finished creation of generated content'));
+      GeneratedContentProgress::report('Finished creation of generated content.');
     }
   }
 }

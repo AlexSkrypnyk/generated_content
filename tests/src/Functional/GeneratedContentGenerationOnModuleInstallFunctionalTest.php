@@ -6,6 +6,7 @@ namespace Drupal\Tests\generated_content\Functional;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AccountInterface;
 
 /**
@@ -158,6 +159,44 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
         [NULL, NULL, NULL, 0, 0, 3, 0],
       ],
     ];
+  }
+
+  /**
+   * Test that install-time generation reports progress to the logger channel.
+   */
+  public function testInstallTimeGenerationIsLogged(): void {
+    putenv('GENERATED_CONTENT_CREATE=1');
+
+    $this->container->get('module_installer')->install([
+      'generated_content',
+      'generated_content_example1',
+      'generated_content_example2',
+    ]);
+
+    putenv('GENERATED_CONTENT_CREATE');
+
+    $messages = $this->getGeneratedContentLog();
+
+    $this->assertNotEmpty(array_filter($messages, static fn(string $message): bool => str_starts_with($message, 'Started creation of generated content from modules:')));
+    $this->assertNotEmpty(array_filter($messages, static fn(string $message): bool => str_starts_with($message, 'Created generated content entities')));
+    $this->assertContains('Finished creation of generated content.', $messages);
+  }
+
+  /**
+   * Get info-level messages logged to the generated_content channel.
+   *
+   * @return string[]
+   *   The logged message text.
+   */
+  protected function getGeneratedContentLog(): array {
+    $rows = $this->container->get('database')->select('watchdog', 'w')
+      ->fields('w', ['message'])
+      ->condition('type', 'generated_content')
+      ->condition('severity', RfcLogLevel::INFO)
+      ->execute()
+      ->fetchCol();
+
+    return array_map('strval', $rows);
   }
 
 }
