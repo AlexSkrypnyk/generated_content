@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
 use Drupal\file\FileInterface;
-use Drupal\generated_content\GeneratedContentProgress;
+use Drupal\generated_content\GeneratedContentLogger;
 use Drupal\generated_content\GeneratedContentRepository;
 use Drupal\media\MediaInterface;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
@@ -67,7 +67,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * Progress reporter.
    */
-  protected static GeneratedContentProgress $progress;
+  protected static GeneratedContentLogger $reporter;
 
   /**
    * Use verbose mode.
@@ -86,11 +86,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * GeneratedContentHelper constructor.
    */
-  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager, GeneratedContentProgress $progress) {
+  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager, GeneratedContentLogger $reporter) {
     static::$repository = $repository;
     static::$assetGenerator = $asset_generator;
     static::$entityTypeManager = $entity_type_manager;
-    static::$progress = $progress;
+    static::$reporter = $reporter;
   }
 
   /**
@@ -102,7 +102,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       GeneratedContentRepository::getInstance(),
       $container->get('generated_content.asset_generator'),
       $container->get('entity_type.manager'),
-      $container->get('generated_content.progress')
+      $container->get('generated_content.logger')
     );
   }
 
@@ -145,7 +145,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    */
   public static function log(): void {
     if (static::$verbose) {
-      static::$progress->report(call_user_func_array(sprintf(...), func_get_args()));
+      static::$reporter->report(call_user_func_array(sprintf(...), func_get_args()));
     }
   }
 

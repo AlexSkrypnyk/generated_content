@@ -8,16 +8,16 @@ use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Messenger\MessengerInterface;
-use Drupal\generated_content\GeneratedContentProgress;
+use Drupal\generated_content\GeneratedContentLogger;
 use PHPUnit\Framework\Attributes\Group;
 
 /**
- * Tests the GeneratedContentProgress service.
+ * Tests the GeneratedContentLogger service.
  *
  * @group generated_content
  */
 #[Group('generated_content')]
-class GeneratedContentProgressTest extends GeneratedContentUnitTestBase {
+class GeneratedContentLoggerTest extends GeneratedContentUnitTestBase {
 
   /**
    * Test that a message reaches both the messenger and the logger channel.
@@ -34,7 +34,7 @@ class GeneratedContentProgressTest extends GeneratedContentUnitTestBase {
     $logger_factory = $this->createMock(LoggerChannelFactoryInterface::class);
     $logger_factory->expects($this->once())->method('get')->with('generated_content')->willReturn($logger);
 
-    (new GeneratedContentProgress($messenger, $logger_factory))->report('Test message.');
+    (new GeneratedContentLogger($messenger, $logger_factory))->report('Test message.');
   }
 
   /**
@@ -52,7 +52,7 @@ class GeneratedContentProgressTest extends GeneratedContentUnitTestBase {
     $logger_factory = $this->createMock(LoggerChannelFactoryInterface::class);
     $logger_factory->method('get')->willReturn($logger);
 
-    (new GeneratedContentProgress($messenger, $logger_factory))->report('Created <a href="/node/1">Title</a> node.');
+    (new GeneratedContentLogger($messenger, $logger_factory))->report('Created <a href="/node/1">Title</a> node.');
   }
 
 }

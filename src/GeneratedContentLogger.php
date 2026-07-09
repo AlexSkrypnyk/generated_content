@@ -13,7 +13,7 @@ use Drush\Drush;
 /**
  * Reports generated content progress to every available output channel.
  */
-class GeneratedContentProgress {
+class GeneratedContentLogger {
 
   /**
    * Logger channel.
@@ -21,7 +21,7 @@ class GeneratedContentProgress {
   protected LoggerChannelInterface $logger;
 
   /**
-   * Constructs a GeneratedContentProgress object.
+   * Constructs a GeneratedContentLogger object.
    */
   public function __construct(
     protected MessengerInterface $messenger,
