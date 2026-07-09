@@ -5,12 +5,30 @@ declare(strict_types=1);
 namespace Drupal\generated_content;
 
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Drush;
 
 /**
  * Reports generated content progress to every available output channel.
  */
-final class GeneratedContentProgress {
+class GeneratedContentProgress {
+
+  /**
+   * Logger channel.
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
+   * Constructs a GeneratedContentProgress object.
+   */
+  public function __construct(
+    protected MessengerInterface $messenger,
+    LoggerChannelFactoryInterface $logger_channel_factory,
+  ) {
+    $this->logger = $logger_channel_factory->get('generated_content');
+  }
 
   /**
    * Reports a progress message.
@@ -26,10 +44,10 @@ final class GeneratedContentProgress {
    *   The pre-formatted message. May contain HTML markup, which is rendered
    *   for the messenger and stripped for the console and the log.
    */
-  public static function report(string|\Stringable $message): void {
+  public function report(string|\Stringable $message): void {
     $message = (string) $message;
 
-    \Drupal::messenger()->addMessage(new FormattableMarkup($message, []));
+    $this->messenger->addMessage(new FormattableMarkup($message, []));
 
     if (class_exists(Drush::class) && Drush::hasContainer()) {
       // Console output is only reachable under a bootstrapped Drush runtime,
@@ -39,7 +57,7 @@ final class GeneratedContentProgress {
       // @codeCoverageIgnoreEnd
     }
 
-    \Drupal::logger('generated_content')->info(strip_tags($message));
+    $this->logger->info(strip_tags($message));
   }
 
 }

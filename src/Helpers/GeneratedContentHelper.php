@@ -65,6 +65,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * Progress reporter.
+   */
+  protected static GeneratedContentProgress $progress;
+
+  /**
    * Use verbose mode.
    *
    * @var bool
@@ -81,10 +86,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * GeneratedContentHelper constructor.
    */
-  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager, GeneratedContentProgress $progress) {
     static::$repository = $repository;
     static::$assetGenerator = $asset_generator;
     static::$entityTypeManager = $entity_type_manager;
+    static::$progress = $progress;
   }
 
   /**
@@ -95,7 +101,8 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     return new static(
       GeneratedContentRepository::getInstance(),
       $container->get('generated_content.asset_generator'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('generated_content.progress')
     );
   }
 
@@ -138,7 +145,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    */
   public static function log(): void {
     if (static::$verbose) {
-      GeneratedContentProgress::report(call_user_func_array(sprintf(...), func_get_args()));
+      static::$progress->report(call_user_func_array(sprintf(...), func_get_args()));
     }
   }
 

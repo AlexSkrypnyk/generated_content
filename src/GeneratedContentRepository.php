@@ -89,6 +89,10 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
      * Plugin manager.
      */
     protected GeneratedContentPluginManager $pluginManager,
+    /**
+     * Progress reporter.
+     */
+    protected GeneratedContentProgress $progress,
   ) {
     $this->logger = $loggerChannelFactory->get('generated_content');
 
@@ -107,6 +111,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $container->get('database'),
       $container,
       $container->get('plugin.manager.generated_content'),
+      $container->get('generated_content.progress'),
     );
   }
 
@@ -211,7 +216,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $this->clearCaches();
     }
 
-    GeneratedContentProgress::report('Created all generated content.');
+    $this->progress->report('Created all generated content.');
 
     return $total;
   }
@@ -238,7 +243,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     /** @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginInterface $plugin */
     $plugin = $this->pluginManager->createInstance($info['#plugin_id']);
     $entities = $plugin->generate();
-    GeneratedContentProgress::report(sprintf('Created generated content entities "%s" with bundle "%s".', $info['entity_type'], $info['bundle']));
+    $this->progress->report(sprintf('Created generated content entities "%s" with bundle "%s".', $info['entity_type'], $info['bundle']));
     $this->addEntities($entities, $info['#tracking']);
     $total = count($entities);
     unset($entities);
