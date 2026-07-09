@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\generated_content\Helpers;
 
-use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
 use Drupal\file\FileInterface;
+use Drupal\generated_content\GeneratedContentLogger;
 use Drupal\generated_content\GeneratedContentRepository;
 use Drupal\media\MediaInterface;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
@@ -61,14 +60,14 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static GeneratedContentAssetGenerator $assetGenerator;
 
   /**
-   * Asset generator.
-   */
-  protected static MessengerInterface $messenger;
-
-  /**
    * Entity type manager.
    */
   protected static EntityTypeManagerInterface $entityTypeManager;
+
+  /**
+   * Progress logger.
+   */
+  protected static GeneratedContentLogger $logger;
 
   /**
    * Use verbose mode.
@@ -87,11 +86,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * GeneratedContentHelper constructor.
    */
-  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, MessengerInterface $messenger, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager, GeneratedContentLogger $logger) {
     static::$repository = $repository;
     static::$assetGenerator = $asset_generator;
-    static::$messenger = $messenger;
     static::$entityTypeManager = $entity_type_manager;
+    static::$logger = $logger;
   }
 
   /**
@@ -102,8 +101,8 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
     return new static(
       GeneratedContentRepository::getInstance(),
       $container->get('generated_content.asset_generator'),
-      $container->get('messenger'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('generated_content.logger')
     );
   }
 
@@ -146,14 +145,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    */
   public static function log(): void {
     if (static::$verbose) {
-      if (function_exists('drush_print')) {
-        // Strip all tags, but still decode some HTML entities.
-        drush_print(html_entity_decode(strip_tags((string) call_user_func_array(sprintf(...), func_get_args()))));
-      }
-      else {
-        // Support HTML, but still use plain strings for simplicity.
-        static::$messenger->addMessage(new FormattableMarkup(call_user_func_array(sprintf(...), func_get_args()), []));
-      }
+      static::$logger->log(call_user_func_array(sprintf(...), func_get_args()));
     }
   }
 

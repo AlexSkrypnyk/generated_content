@@ -17,6 +17,7 @@
 declare(strict_types=1);
 
 use DrupalFinder\DrupalFinderComposerRuntime;
+use DrupalRector\Rector\PHPUnit\PhpUnitAddRunTestsInSeparateProcessesAttributeRector;
 use DrupalRector\Set\Drupal10SetList;
 use DrupalRector\Set\Drupal11SetList;
 use DrupalRector\Set\Drupal9SetList;
@@ -53,6 +54,7 @@ return RectorConfig::configure()
     InlineArrayReturnAssignRector::class,
     NewlineAfterStatementRector::class,
     NewlineBeforeNewAssignSetRector::class,
+    PhpUnitAddRunTestsInSeparateProcessesAttributeRector::class,
     PrivatizeFinalClassMethodRector::class,
     PrivatizeFinalClassPropertyRector::class,
     PrivatizeLocalGetterToPropertyRector::class,

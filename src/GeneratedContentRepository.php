@@ -6,6 +6,7 @@ namespace Drupal\generated_content;
 
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
@@ -58,7 +59,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   /**
    * Logger channel.
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerChannelInterface $loggerChannel;
 
   /**
    * GeneratedContentRepository constructor.
@@ -88,8 +89,12 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
      * Plugin manager.
      */
     protected GeneratedContentPluginManager $pluginManager,
+    /**
+     * Progress logger.
+     */
+    protected GeneratedContentLogger $logger,
   ) {
-    $this->logger = $loggerChannelFactory->get('generated_content');
+    $this->loggerChannel = $loggerChannelFactory->get('generated_content');
 
     $this->entities = $this->loadEntities();
   }
@@ -106,6 +111,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $container->get('database'),
       $container,
       $container->get('plugin.manager.generated_content'),
+      $container->get('generated_content.logger'),
     );
   }
 
@@ -210,7 +216,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $this->clearCaches();
     }
 
-    $this->messenger->addMessage('Created all generated content.');
+    $this->logger->log('Created all generated content.');
 
     return $total;
   }
@@ -237,7 +243,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     /** @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginInterface $plugin */
     $plugin = $this->pluginManager->createInstance($info['#plugin_id']);
     $entities = $plugin->generate();
-    $this->messenger->addMessage(sprintf('Created generated content entities "%s" with bundle "%s"', $info['entity_type'], $info['bundle']));
+    $this->logger->log(sprintf('Created generated content entities "%s" with bundle "%s".', $info['entity_type'], $info['bundle']));
     $this->addEntities($entities, $info['#tracking']);
     $total = count($entities);
     unset($entities);
@@ -382,7 +388,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       ->select('generated_content', 'gc')
       ->fields('gc')
       ->execute()
-      ->fetchAll(2);
+      ->fetchAll(FetchAs::Associative);
 
     // Collect all entity ids.
     foreach ($data as $item) {
@@ -511,7 +517,9 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         ->execute();
     }
     catch (\Exception $exception) {
-      $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      // @codeCoverageIgnoreStart
+      $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      // @codeCoverageIgnoreEnd
     }
   }
 
@@ -548,7 +556,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
 
       $query = $query->execute();
 
-      $results = $query->fetchAll(2);
+      $results = $query->fetchAll(FetchAs::Associative);
       foreach ($results as $result) {
         try {
           $entity = $this->entityTypeManager->getStorage($result['entity_type'])
@@ -559,12 +567,16 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
           }
         }
         catch (\Exception $exception) {
-          $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+          // @codeCoverageIgnoreStart
+          $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+          // @codeCoverageIgnoreEnd
         }
       }
     }
     catch (\Exception $exception) {
-      $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      // @codeCoverageIgnoreStart
+      $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      // @codeCoverageIgnoreEnd
     }
   }
 

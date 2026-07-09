@@ -30,7 +30,7 @@ trait GeneratedContentTestUserTrait {
    * @param int $count
    *   The number of users.
    *
-   * @return \Drupal\user\Entity\User[]
+   * @return \Drupal\user\UserInterface[]
    *   The users.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
@@ -40,9 +40,7 @@ trait GeneratedContentTestUserTrait {
 
     for ($i = 0; $i < $count; $i++) {
       $user = $this->createUser(['access content']);
-      if ($user) {
-        $users[$user->id()] = $user;
-      }
+      $users[$user->id()] = $user;
     }
 
     return $users;

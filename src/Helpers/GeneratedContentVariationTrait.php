@@ -127,7 +127,7 @@ trait GeneratedContentVariationTrait {
     $postprocess_callback = $callback_prefix . 'post_process';
     $functions = get_defined_functions();
     $functions = $functions['user'];
-    $callbacks = array_filter($functions, fn($value): bool => str_starts_with((string) $value, $callback_prefix) && $value != $postprocess_callback);
+    $callbacks = array_filter($functions, fn(string $value): bool => str_starts_with($value, $callback_prefix) && $value !== $postprocess_callback);
 
     // Collect variations from callbacks.
     foreach ($callbacks as $function) {
