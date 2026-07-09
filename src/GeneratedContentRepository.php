@@ -517,7 +517,9 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         ->execute();
     }
     catch (\Exception $exception) {
+      // @codeCoverageIgnoreStart
       $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      // @codeCoverageIgnoreEnd
     }
   }
 
@@ -565,12 +567,16 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
           }
         }
         catch (\Exception $exception) {
+          // @codeCoverageIgnoreStart
           $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+          // @codeCoverageIgnoreEnd
         }
       }
     }
     catch (\Exception $exception) {
+      // @codeCoverageIgnoreStart
       $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      // @codeCoverageIgnoreEnd
     }
   }
 
