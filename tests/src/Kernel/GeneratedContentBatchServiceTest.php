@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -19,7 +18,6 @@ use Drupal\generated_content\GeneratedContentRepository;
  * @covers \Drupal\generated_content\GeneratedContentBatchService
  */
 #[Group('generated_content')]
-#[RunTestsInSeparateProcesses]
 class GeneratedContentBatchServiceTest extends GeneratedContentKernelTestBase {
 
   /**

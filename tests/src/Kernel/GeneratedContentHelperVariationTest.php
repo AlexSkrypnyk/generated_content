@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
@@ -19,7 +18,6 @@ use Drupal\node\NodeInterface;
  * @covers \Drupal\generated_content\Helpers\GeneratedContentVariationTrait
  */
 #[Group('generated_content')]
-#[RunTestsInSeparateProcesses]
 class GeneratedContentHelperVariationTest extends GeneratedContentKernelTestBase {
 
   /**

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\taxonomy\Entity\Vocabulary;
@@ -19,7 +18,6 @@ use Drupal\taxonomy\TermInterface;
  * @covers \Drupal\generated_content\Helpers\GeneratedContentHelper::getTermsAtDepth
  */
 #[Group('generated_content')]
-#[RunTestsInSeparateProcesses]
 class GeneratedContentHelperTermTreeTest extends GeneratedContentKernelTestBase {
 
   /**

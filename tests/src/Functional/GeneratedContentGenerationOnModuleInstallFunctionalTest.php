@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Functional;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -18,7 +17,6 @@ use Drupal\Core\Logger\RfcLogLevel;
  * @group generated_content
  */
 #[Group('generated_content')]
-#[RunTestsInSeparateProcesses]
 class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedContentFunctionalTestBase {
 
   /**

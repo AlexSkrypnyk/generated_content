@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use Drupal\generated_content\Helpers\GeneratedContentHelper;
 use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginBase;
@@ -24,7 +23,6 @@ use Drupal\generated_content_example2\GeneratedContentExample2Helper;
  * @covers \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginBase
  */
 #[Group('generated_content')]
-#[RunTestsInSeparateProcesses]
 class GeneratedContentPluginBaseTest extends GeneratedContentKernelTestBase {
 
   /**

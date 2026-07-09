@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginInterface;
 use Drupal\generated_content_example1\Plugin\GeneratedContent\TaxonomyTermTags;
@@ -22,7 +21,6 @@ use Drupal\generated_content_example1\Plugin\GeneratedContent\TaxonomyTermTags;
  * @covers \Drupal\generated_content_example1\Plugin\GeneratedContent\TaxonomyTermTags
  */
 #[Group('generated_content')]
-#[RunTestsInSeparateProcesses]
 class GeneratedContentExample1PluginsTest extends GeneratedContentKernelTestBase {
 
   /**
