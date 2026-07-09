@@ -11,7 +11,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Drush;
 
 /**
- * Reports generated content progress to every available output channel.
+ * Logs generated content progress to every available output channel.
  */
 class GeneratedContentLogger {
 
@@ -31,7 +31,7 @@ class GeneratedContentLogger {
   }
 
   /**
-   * Reports a progress message.
+   * Logs a progress message.
    *
    * Queues the message on the messenger, which drives the web UI and is
    * relayed by the Drush batch runner. When running under Drush it is also
@@ -44,7 +44,7 @@ class GeneratedContentLogger {
    *   The pre-formatted message. May contain HTML markup, which is rendered
    *   for the messenger and stripped for the console and the log.
    */
-  public function report(string|\Stringable $message): void {
+  public function log(string|\Stringable $message): void {
     $message = (string) $message;
 
     $this->messenger->addMessage(new FormattableMarkup($message, []));

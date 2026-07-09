@@ -65,9 +65,9 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static EntityTypeManagerInterface $entityTypeManager;
 
   /**
-   * Progress reporter.
+   * Progress logger.
    */
-  protected static GeneratedContentLogger $reporter;
+  protected static GeneratedContentLogger $logger;
 
   /**
    * Use verbose mode.
@@ -86,11 +86,11 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   /**
    * GeneratedContentHelper constructor.
    */
-  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager, GeneratedContentLogger $reporter) {
+  public function __construct(GeneratedContentRepository $repository, GeneratedContentAssetGenerator $asset_generator, EntityTypeManagerInterface $entity_type_manager, GeneratedContentLogger $logger) {
     static::$repository = $repository;
     static::$assetGenerator = $asset_generator;
     static::$entityTypeManager = $entity_type_manager;
-    static::$reporter = $reporter;
+    static::$logger = $logger;
   }
 
   /**
@@ -145,7 +145,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    */
   public static function log(): void {
     if (static::$verbose) {
-      static::$reporter->report(call_user_func_array(sprintf(...), func_get_args()));
+      static::$logger->log(call_user_func_array(sprintf(...), func_get_args()));
     }
   }
 

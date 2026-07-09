@@ -60,14 +60,14 @@ function generated_content_modules_installed($modules, $is_syncing): void {
     // to avoid duplication of generated content on every run of the
     // persistent operations.
     if (array_intersect($modules, $generated_content_modules) && $repository->isEmpty()) {
-      \Drupal::service('generated_content.logger')->report(sprintf('Started creation of generated content from modules: %s.', implode(', ', $generated_content_modules)));
+      \Drupal::service('generated_content.logger')->log(sprintf('Started creation of generated content from modules: %s.', implode(', ', $generated_content_modules)));
       $items = [];
       $items_env = getenv('GENERATED_CONTENT_ITEMS');
       if (is_string($items_env) && $items_env !== '') {
         $items = _generated_content_parse_cli_items($items_env);
       }
       $repository->createEntities($items);
-      \Drupal::service('generated_content.logger')->report('Finished creation of generated content.');
+      \Drupal::service('generated_content.logger')->log('Finished creation of generated content.');
     }
   }
 }

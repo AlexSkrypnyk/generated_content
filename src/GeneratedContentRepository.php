@@ -59,7 +59,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   /**
    * Logger channel.
    */
-  protected LoggerChannelInterface $logger;
+  protected LoggerChannelInterface $loggerChannel;
 
   /**
    * GeneratedContentRepository constructor.
@@ -90,11 +90,11 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
      */
     protected GeneratedContentPluginManager $pluginManager,
     /**
-     * Progress reporter.
+     * Progress logger.
      */
-    protected GeneratedContentLogger $reporter,
+    protected GeneratedContentLogger $logger,
   ) {
-    $this->logger = $loggerChannelFactory->get('generated_content');
+    $this->loggerChannel = $loggerChannelFactory->get('generated_content');
 
     $this->entities = $this->loadEntities();
   }
@@ -216,7 +216,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       $this->clearCaches();
     }
 
-    $this->reporter->report('Created all generated content.');
+    $this->logger->log('Created all generated content.');
 
     return $total;
   }
@@ -243,7 +243,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     /** @var \Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginInterface $plugin */
     $plugin = $this->pluginManager->createInstance($info['#plugin_id']);
     $entities = $plugin->generate();
-    $this->reporter->report(sprintf('Created generated content entities "%s" with bundle "%s".', $info['entity_type'], $info['bundle']));
+    $this->logger->log(sprintf('Created generated content entities "%s" with bundle "%s".', $info['entity_type'], $info['bundle']));
     $this->addEntities($entities, $info['#tracking']);
     $total = count($entities);
     unset($entities);
@@ -517,7 +517,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
         ->execute();
     }
     catch (\Exception $exception) {
-      $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
     }
   }
 
@@ -565,12 +565,12 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
           }
         }
         catch (\Exception $exception) {
-          $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+          $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
         }
       }
     }
     catch (\Exception $exception) {
-      $this->logger->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
+      $this->loggerChannel->log(LogLevel::ERROR, ERROR::DEFAULT_ERROR_MESSAGE, Error::decodeException($exception));
     }
   }
 
