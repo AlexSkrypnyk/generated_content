@@ -43,6 +43,7 @@ jobs:
       - name: Assemble the codebase
         run: .devtools/assemble
         env:
+          DRUPAL_VERSION: 11.4.0
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Lint code with PHPCS
@@ -77,25 +78,17 @@ jobs:
 
       matrix:
         include:
-          - name: test-php-min-d10-stable
-            php-version: 8.2
-            drupal-version: 10
-
-          - name: test-php-max-d10-stable
-            php-version: 8.4
-            drupal-version: 10
-
           - name: test-php-min-d11-stable
             php-version: 8.3
-            drupal-version: 11
+            drupal-version: 11.4.0
 
           - name: test-php-max-d11-stable
             php-version: 8.5
-            drupal-version: 11
+            drupal-version: 11.4.0
 
           - name: test-php-min-d11-legacy
             php-version: 8.3
-            drupal-version: 11.1.0
+            drupal-version: 11.2.0
 
           - name: test-php-max-d11-canary
             php-version: 8.5

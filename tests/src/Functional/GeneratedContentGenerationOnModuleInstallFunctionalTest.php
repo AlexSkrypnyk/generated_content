@@ -7,7 +7,6 @@ namespace Drupal\Tests\generated_content\Functional;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\Logger\RfcLogLevel;
-use Drupal\Core\Session\AccountInterface;
 
 /**
  * Class GeneratedContentGenerationOnModuleInstallFunctionalTest.
@@ -50,9 +49,6 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
     }
 
     $admin = $this->createUser([], NULL, TRUE);
-    if (!$admin instanceof AccountInterface) {
-      throw new \RuntimeException('Admin user creation failed.');
-    }
 
     $this->drupalLogin($admin);
 
@@ -196,7 +192,7 @@ class GeneratedContentGenerationOnModuleInstallFunctionalTest extends GeneratedC
       ->execute()
       ->fetchCol();
 
-    return array_map('strval', $rows);
+    return array_map(strval(...), $rows);
   }
 
 }

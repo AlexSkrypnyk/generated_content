@@ -37,7 +37,7 @@ class GeneratedContentProgressTest extends GeneratedContentKernelTestBase {
   public function testReportSendsToMessengerAndLog(): void {
     GeneratedContentProgress::report('Test progress message.');
 
-    $status_messages = array_map('strval', \Drupal::messenger()->messagesByType(MessengerInterface::TYPE_STATUS));
+    $status_messages = array_map(strval(...), \Drupal::messenger()->messagesByType(MessengerInterface::TYPE_STATUS));
     $this->assertContains('Test progress message.', $status_messages);
 
     $logged = $this->getChannelLog();
@@ -51,7 +51,7 @@ class GeneratedContentProgressTest extends GeneratedContentKernelTestBase {
   public function testReportStripsMarkupForLog(): void {
     GeneratedContentProgress::report('Created <a href="/node/1">Title</a> node.');
 
-    $status_messages = array_map('strval', \Drupal::messenger()->messagesByType(MessengerInterface::TYPE_STATUS));
+    $status_messages = array_map(strval(...), \Drupal::messenger()->messagesByType(MessengerInterface::TYPE_STATUS));
     $this->assertContains('Created <a href="/node/1">Title</a> node.', $status_messages);
 
     $logged = $this->getChannelLog();

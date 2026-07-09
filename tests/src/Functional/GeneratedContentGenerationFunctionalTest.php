@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\Tests\generated_content\Functional;
 
 use PHPUnit\Framework\Attributes\Group;
-use Drupal\Core\Session\AccountInterface;
 
 /**
  * Class GeneratedContentGenerationFunctionalTest.
@@ -35,9 +34,6 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
    */
   public function testGenerateDelete(): void {
     $admin = $this->createUser([], NULL, TRUE);
-    if (!$admin instanceof AccountInterface) {
-      throw new \RuntimeException('Admin user creation failed.');
-    }
 
     $this->drupalLogin($admin);
 
@@ -180,9 +176,6 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
    */
   public function testRegenerate(): void {
     $admin = $this->createUser([], NULL, TRUE);
-    if (!$admin instanceof AccountInterface) {
-      throw new \RuntimeException('Admin user creation failed.');
-    }
 
     $this->drupalLogin($admin);
 
@@ -217,9 +210,6 @@ class GeneratedContentGenerationFunctionalTest extends GeneratedContentFunctiona
    */
   public function testNoSelectionProcessesAll(): void {
     $admin = $this->createUser([], NULL, TRUE);
-    if (!$admin instanceof AccountInterface) {
-      throw new \RuntimeException('Admin user creation failed.');
-    }
 
     $this->drupalLogin($admin);
 

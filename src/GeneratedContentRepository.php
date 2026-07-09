@@ -6,6 +6,7 @@ namespace Drupal\generated_content;
 
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Statement\FetchAs;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
@@ -382,7 +383,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
       ->select('generated_content', 'gc')
       ->fields('gc')
       ->execute()
-      ->fetchAll(2);
+      ->fetchAll(FetchAs::Associative);
 
     // Collect all entity ids.
     foreach ($data as $item) {
@@ -548,7 +549,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
 
       $query = $query->execute();
 
-      $results = $query->fetchAll(2);
+      $results = $query->fetchAll(FetchAs::Associative);
       foreach ($results as $result) {
         try {
           $entity = $this->entityTypeManager->getStorage($result['entity_type'])
