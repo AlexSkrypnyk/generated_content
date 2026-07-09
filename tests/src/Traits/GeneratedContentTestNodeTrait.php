@@ -32,6 +32,7 @@ trait GeneratedContentTestNodeTrait {
    */
   public function nodeSetUp(): void {
     $this->installEntitySchema('node');
+    $this->installSchema('node', ['node_access']);
 
     for ($i = 0; $i < 3; $i++) {
       $node_type = NodeType::create([
