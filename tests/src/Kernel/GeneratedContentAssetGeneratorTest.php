@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
@@ -15,6 +16,7 @@ use Drupal\Tests\generated_content\Traits\GeneratedContentTestFileTrait;
  * @group generated_content
  */
 #[Group('generated_content')]
+#[RunTestsInSeparateProcesses]
 class GeneratedContentAssetGeneratorTest extends GeneratedContentKernelTestBase {
 
   use GeneratedContentTestFileTrait;

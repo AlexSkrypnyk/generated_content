@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\generated_content\GeneratedContentProgress;
@@ -15,6 +16,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group generated_content
  */
 #[Group('generated_content')]
+#[RunTestsInSeparateProcesses]
 class GeneratedContentProgressTest extends GeneratedContentKernelTestBase {
 
   /**
