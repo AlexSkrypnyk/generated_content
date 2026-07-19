@@ -10,3 +10,7 @@ services:
   generated_content.logger:
     class: Drupal\generated_content\GeneratedContentLogger
     arguments: [ '@messenger', '@logger.factory' ]
+
+  logger.channel.generated_content:
+    parent: logger.channel_base
+    arguments: [ 'generated_content' ]

@@ -12,7 +12,6 @@ use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginManager;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Utility\Error;
@@ -57,11 +56,6 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
   protected array $entities = [];
 
   /**
-   * Logger channel.
-   */
-  protected LoggerChannelInterface $loggerChannel;
-
-  /**
    * GeneratedContentRepository constructor.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -76,7 +70,10 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
      * Entity type manager service.
      */
     protected EntityTypeManagerInterface $entityTypeManager,
-    LoggerChannelFactoryInterface $loggerChannelFactory,
+    /**
+     * Logger channel.
+     */
+    protected LoggerChannelInterface $loggerChannel,
     /**
      * Database connection.
      */
@@ -94,8 +91,6 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
      */
     protected GeneratedContentLogger $logger,
   ) {
-    $this->loggerChannel = $loggerChannelFactory->get('generated_content');
-
     $this->entities = $this->loadEntities();
   }
 
@@ -107,7 +102,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     return new static(
       $container->get('messenger'),
       $container->get('entity_type.manager'),
-      $container->get('logger.factory'),
+      $container->get('logger.channel.generated_content'),
       $container->get('database'),
       $container,
       $container->get('plugin.manager.generated_content'),
