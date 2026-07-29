@@ -53,7 +53,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    *
    * @var array<mixed>
    */
-  protected array $entities = [];
+  protected array $entities;
 
   /**
    * GeneratedContentRepository constructor.
