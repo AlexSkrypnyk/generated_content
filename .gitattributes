@@ -14,6 +14,8 @@ CLAUDE.md          export-ignore
 .twig-cs-fixer.php export-ignore
 Makefile           export-ignore
 composer.dev.json  export-ignore
+package-lock.json  export-ignore
+package.json       export-ignore
 patches            export-ignore
 phpcs.xml          export-ignore
 phpstan.neon       export-ignore
