@@ -39,7 +39,13 @@ cat >>"$settings" <<'PHP'
 # Cloudflare quick tunnel settings.
 $settings['reverse_proxy'] = TRUE;
 $settings['reverse_proxy_addresses'] = ['127.0.0.1', '::1'];
+# Drupal enforces the trusted-host check only once this list is non-empty, so
+# the local hostnames must be listed alongside the tunnel to keep serving
+# http://localhost:PORT.
 $settings['trusted_host_patterns'][] = '^[a-z0-9-]+\.trycloudflare\.com$';
+$settings['trusted_host_patterns'][] = '^localhost$';
+$settings['trusted_host_patterns'][] = '^127\.0\.0\.1$';
+$settings['trusted_host_patterns'][] = '^\[::1\]$';
 PHP
 
 echo "[cloudflared] Wrote reverse-proxy/trusted-host settings to ${settings}."
