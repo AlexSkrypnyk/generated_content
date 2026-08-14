@@ -1,7 +1,9 @@
+/.chromedriver
 /.env
 /.logs
 /build
 /composer.lock
+/node_modules
 /vendor
 
 # Ignore all Claude files by default. Custom files should be added explicitly.

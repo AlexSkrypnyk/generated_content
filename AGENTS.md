@@ -40,9 +40,9 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 - `ahoy test-unit` - Run unit tests only
 - `ahoy test-kernel` - Run kernel tests only
 - `ahoy test-functional` - Run functional tests only
-- `ahoy test-functional-javascript` - Run FunctionalJavascript tests (requires Selenium)
-- `ahoy selenium-start` - Start Selenium container
-- `ahoy selenium-stop` - Stop Selenium container
+- `ahoy test-functional-javascript` - Run FunctionalJavascript tests (uses the local Chrome by default; set `WEBDRIVER_BACKEND=selenium` for Docker)
+- `ahoy browser-start` - Start the browser for FunctionalJavascript tests (local Chrome by default; set `WEBDRIVER_BACKEND=selenium` for Docker)
+- `ahoy browser-stop` - Stop the browser
 
 ### Drupal Commands
 
@@ -58,20 +58,17 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 **Key Directories:**
 - `src/` - Extension source code (services, forms, etc.)
 - `tests/src/` - PHPUnit tests (Unit/, Kernel/, Functional/)
-- `config/schema/` - Configuration schema definitions
+- `modules/` - Example submodules demonstrating content generator plugins
+- `assets/` - Dummy files used by the static asset generator
 - `build/` - Assembled Drupal codebase (symlinked extension)
 - `.devtools/` - Build and deployment scripts used by CI
-- `scripts/` - Custom post-assemble (`assemble-*.sh`) and post-provision (`provision-*.sh`) hooks. Run automatically at the end of each phase in lexicographic order; non-zero exit aborts the parent. Excluded from distribution archives via `.gitattributes`
-
-**Template Files (before init):**
-- `generated_content.*` - Template extension files
-- `GeneratedContentService.php` - Main service class template
+- `scripts/` - Custom lifecycle hooks: post-assemble (`assemble-*.sh`), post-provision (`provision-*.sh`), post-start (`start-*.sh`), and pre-stop (`stop-*.sh`). Run automatically during each phase in lexicographic order; non-zero exit aborts the parent. Excluded from distribution archives via `.gitattributes`
 
 ## Architecture
 
+- **Plugin-based architecture**: Content generators are plugins discovered via the `#[GeneratedContent]` attribute in `src/Plugin/GeneratedContent/`
 - **Service-based architecture**: Main functionality in services registered via `*.services.yml`
-- **Configuration-driven**: Uses Drupal configuration system with schema validation
-- **Test coverage**: Unit, kernel, and functional test examples provided
+- **Test coverage**: Unit, kernel, and functional tests
 - **Form integration**: Admin forms in `src/Form/` for configuration
 
 ## Environment Variables
@@ -79,16 +76,18 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 - `DRUPAL_VERSION` - Target Drupal version (e.g., `10`, `11`, `11@alpha`)
 - `WEBSERVER_HOST` - Development server host (default: localhost)
 - `WEBSERVER_PORT` - Development server port. Auto-discovered from range 8000-8099 and written to `.env` if not already set
+- `WEBDRIVER_BACKEND` - FunctionalJavascript WebDriver backend: `chromedriver` (default, drives the locally installed Chrome with no Docker) or `selenium` (Docker container)
+- `WEBDRIVER_PORT` - Port for the WebDriver endpoint (both backends). Auto-discovered from 4444 and written to `.env` if not already set, so several projects can run FunctionalJavascript tests simultaneously
 - `GITHUB_TOKEN` - GitHub API token to avoid rate limits
+- `DEBUG` - Set to `1` to stream the full output of the underlying commands (Composer, npm, Drush). By default this output is suppressed and shown only when a command fails
 
 ## Development Workflow
 
-1. Run `php init.php` to customize template for Generated Content
-2. Build environment: `make build` or `ahoy build`
-3. Develop Generated Content code in `src/`
-4. Check standards: `make lint` or `ahoy lint`
-5. Run tests: `make test` or `ahoy test`
-6. Access site at http://localhost:8000
+1. Build environment: `ahoy build`
+2. Develop Generated Content code in `src/`
+3. Check standards: `ahoy lint`
+4. Run tests: `ahoy test`
+5. Access site at http://localhost:8000
 
 ## Code Quality Tools
 
@@ -100,8 +99,7 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 ## CI/CD Support
 
 - **GitHub Actions**: `.github/workflows/test.yml` and deployment
-- **CircleCI**: `.circleci/config.yml` configuration
-- **Matrix testing**: PHP 8.2-8.5, Drupal 10-11
+- **Matrix testing**: PHP 8.3-8.5, Drupal 11
 - **Automated deployment**: Mirror to Drupal.org on release
 
 ## Important Notes
