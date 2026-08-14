@@ -5,7 +5,7 @@ the site, check coding standards, and run the tests for this extension.
 
 ## Local development
 
-1. Install PHP with SQLite support and Composer
+1. Install PHP 8.3 or later with SQLite support, and Composer
 2. Clone this repository
 3. Run `ahoy build`
 
@@ -166,12 +166,4 @@ option (`--filter`, `--group`, etc.) to the `ahoy test` command:
 ```bash
 ahoy test-unit tests/src/Unit/MyUnitTest.php
 ahoy test-unit -- --group=wip
-```
-
-You may also run tests using the `phpunit` command directly:
-
-```bash
-cd build
-php -d pcov.directory=.. vendor/bin/phpunit tests/src/Unit/MyUnitTest.php
-php -d pcov.directory=.. vendor/bin/phpunit --group=wip
 ```
