@@ -27,6 +27,8 @@ use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
+use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
+use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector;
@@ -34,7 +36,6 @@ use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableR
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
-use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector;
 use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
@@ -52,11 +53,7 @@ if (!is_dir($cache_dir)) {
 
 return RectorConfig::configure()
   ->withSkip([
-    // Specific rules to skip based on project coding standards. Rector only
-    // registers `AddOverrideAttributeToOverriddenMethodsRector` on the version
-    // resolved for Drupal 10 builds and warns that the entry is unused on
-    // newer ones, so it stays listed to cover both.
-    AddOverrideAttributeToOverriddenMethodsRector::class,
+    // Specific rules to skip based on project coding standards.
     CatchExceptionNameMatchingTypeRector::class,
     ChangeSwitchToMatchRector::class,
     CompleteDynamicPropertiesRector::class,
@@ -69,7 +66,9 @@ return RectorConfig::configure()
     PrivatizeFinalClassMethodRector::class,
     PrivatizeFinalClassPropertyRector::class,
     PrivatizeLocalGetterToPropertyRector::class,
+    RemoveAlwaysElseRector::class,
     RemoveAlwaysTrueIfConditionRector::class,
+    ReturnEarlyIfVariableRector::class,
     RenameForeachValueVariableToMatchExprVariableRector::class,
     RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
     RenameParamToMatchTypeRector::class,
