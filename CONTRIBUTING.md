@@ -161,10 +161,11 @@ ahoy browser-stop
 ### Running specific tests
 
 You can run specific tests by passing a path to the test file or PHPUnit CLI
-option (`--filter`, `--group`, etc.) to the `ahoy test` command:
+option (`--filter`, `--group`, etc.) to the `ahoy test` command. The commands
+run from within the `build` directory, so file paths are relative to it:
 
 ```bash
-ahoy test-unit tests/src/Unit/MyUnitTest.php
+ahoy test-unit ../tests/src/Unit/MyUnitTest.php
 ahoy test-unit -- --group=wip
 ```
 

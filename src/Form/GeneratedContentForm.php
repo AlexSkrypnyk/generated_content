@@ -199,7 +199,8 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
     if ($collection_route) {
       return Link::createFromRoute($label, $collection_route, $route_params, ['query' => $query])->toString();
     }
-    elseif ($path) {
+
+    if ($path) {
       return Link::fromTextAndUrl($label, Url::fromUserInput($path, ['query' => $query]))->toString();
     }
 

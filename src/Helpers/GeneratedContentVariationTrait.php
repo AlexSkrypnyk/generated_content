@@ -142,7 +142,7 @@ trait GeneratedContentVariationTrait {
     // Call post-processing callback, if exists. It is a good idea to place it
     // into common helper file that will be required first (e.g. 01.helper.inc).
     if (is_callable($postprocess_callback)) {
-      $variations = call_user_func($postprocess_callback, $variations);
+      return call_user_func($postprocess_callback, $variations);
     }
 
     return $variations;

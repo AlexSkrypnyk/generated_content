@@ -1395,7 +1395,8 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
       if ($items_merged > 0 && count($items) !== $items_merged) {
         throw new \Exception(sprintf('Mixed data provided when trying to merge %s static items.', $type));
       }
-      elseif ($items_merged > 0) {
+
+      if ($items_merged > 0) {
         $items = $items_all;
       }
     }
