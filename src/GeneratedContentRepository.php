@@ -152,7 +152,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    *   Array of information about entities.
    */
   public function getInfo(bool $reset = FALSE): array {
-    if (empty($this->info) || $reset) {
+    if ($this->info === [] || $reset) {
       $this->info = $this->collectInfo();
     }
 
@@ -201,7 +201,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
     $total = 0;
     foreach ($info as $item) {
       // Filter-out any items that have not been provided in the filter.
-      if (!empty($filter) && empty($filter[$item['entity_type']][$item['bundle']])) {
+      if ($filter !== [] && empty($filter[$item['entity_type']][$item['bundle']])) {
         continue;
       }
       $total += $this->createSingle($item);
@@ -474,7 +474,7 @@ class GeneratedContentRepository implements ContainerInjectionInterface {
    *   The list of entities.
    */
   public function getEntities(?string $entity_type = NULL, ?string $bundle = NULL, bool $reset = FALSE): array {
-    if (empty($this->entities) || $reset) {
+    if ($this->entities === [] || $reset) {
       $this->entities = $this->loadEntities();
     }
 

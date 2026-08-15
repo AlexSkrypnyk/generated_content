@@ -331,7 +331,7 @@ trait GeneratedContentRandomTrait {
    *   Single random array item.
    */
   public static function randomArrayItem(array $haystack) {
-    if (empty($haystack)) {
+    if ($haystack === []) {
       return FALSE;
     }
 

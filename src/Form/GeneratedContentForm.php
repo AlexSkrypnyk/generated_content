@@ -86,7 +86,7 @@ class GeneratedContentForm extends FormBase implements ContainerInjectionInterfa
       '#empty' => $this->t('No generated content implementations found. To get started, create a plugin class in <code>src/Plugin/GeneratedContent/</code> in your module using the <code>#[GeneratedContent]</code> attribute.'),
     ];
 
-    if (!empty($options)) {
+    if ($options !== []) {
       $form['actions_description'] = [
         '#type' => 'markup',
         '#markup' => '<p>' . $this->t('Select items to process or leave empty to process all items.') . '</p>',
