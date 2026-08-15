@@ -85,7 +85,7 @@ Run each tool through its `ahoy` wrapper, never the binary directly:
 2. Develop Generated Content code in `src/`
 3. Check standards: `ahoy lint`
 4. Run tests: `ahoy test`
-5. Access site at http://localhost:8000
+5. Access the site at the URL reported by `ahoy info` (http://localhost:8000 unless the port was auto-discovered)
 
 ## Code Quality Tools
 
