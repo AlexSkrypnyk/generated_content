@@ -861,7 +861,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   public static function randomFieldAllowedValue(string $entity_type, string $bundle, string $field_name): ?string {
     $allowed_values = static::randomFieldAllowedValues($entity_type, $bundle, $field_name, 1);
 
-    return empty($allowed_values) ? NULL : reset($allowed_values);
+    return $allowed_values === [] ? NULL : reset($allowed_values);
   }
 
   /**
@@ -908,7 +908,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   public static function staticFieldAllowedValue(string $entity_type, string $bundle, string $field_name): ?string {
     $allowed_values = static::staticFieldAllowedValues($entity_type, $bundle, $field_name, 1);
 
-    return empty($allowed_values) ? NULL : reset($allowed_values);
+    return $allowed_values === [] ? NULL : reset($allowed_values);
   }
 
   /**
@@ -1244,7 +1244,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static function randomEntities(string $entity_type, ?string $bundle = NULL, ?int $count = NULL): array {
     $entities = static::$repository->getEntities($entity_type, $bundle);
 
-    if (!empty($entities) && !$bundle) {
+    if ($entities !== [] && !$bundle) {
       $entities_all = [];
       foreach ($entities as $bundled_entities) {
         $entities_all = array_merge($entities_all, $bundled_entities);
@@ -1310,7 +1310,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
   protected static function filterOutGeneratedContentEntities(array $entities, string $entity_type, ?string $bundle = NULL): array {
     $generated_entities = static::$repository->getEntities($entity_type, $bundle);
 
-    if (!empty($generated_entities) && !$bundle) {
+    if ($generated_entities !== [] && !$bundle) {
       $entities_all = [];
       foreach ($generated_entities as $bundled_entities) {
         $entities_all = array_merge($entities_all, $bundled_entities);
@@ -1379,7 +1379,7 @@ class GeneratedContentHelper implements ContainerInjectionInterface {
    */
   protected static function filterStaticItems(array $items, string $type, ?string $subtype = NULL, ?int $count = NULL): array {
     // Merge all items if subtype was not provided.
-    if (!empty($items) && !$subtype) {
+    if ($items !== [] && !$subtype) {
       $items_all = [];
       $items_merged = 0;
       foreach ($items as $typed_items) {

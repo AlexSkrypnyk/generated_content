@@ -164,7 +164,7 @@ class GeneratedContentAssetGenerator {
       }
     }
 
-    if (empty($directory)) {
+    if ($directory === '' || $directory === '0') {
       throw new \Exception('Provided destination directory is empty.');
     }
 

@@ -78,7 +78,7 @@ trait GeneratedContentTestFileTrait {
     $this->assertFileExists($file);
 
     $info = getimagesize($file);
-    if (empty($info)) {
+    if ($info === FALSE) {
       return FALSE;
     }
     return [

@@ -18,9 +18,7 @@ declare(strict_types=1);
 
 use DrupalFinder\DrupalFinderComposerRuntime;
 use DrupalRector\Rector\PHPUnit\PhpUnitAddRunTestsInSeparateProcessesAttributeRector;
-use DrupalRector\Set\Drupal10SetList;
-use DrupalRector\Set\Drupal11SetList;
-use DrupalRector\Set\Drupal9SetList;
+use DrupalRector\Set\DrupalSetProvider;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
@@ -39,8 +37,17 @@ use Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector;
 use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector;
 use Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector;
-use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
+
+// Rector and its embedded PHPStan cache reflection data that records
+// absolute paths into the PHPStan PHAR. The default cache directories are
+// shared by every project on the machine, so entries left by a build that no
+// longer exists break the next run. A cache inside the build is scoped to a
+// single codebase. PHPStan requires the directory to exist before it boots.
+$cache_dir = __DIR__ . '/.rector';
+if (!is_dir($cache_dir)) {
+  mkdir($cache_dir, 0755, TRUE);
+}
 
 return RectorConfig::configure()
   ->withSkip([
@@ -48,7 +55,6 @@ return RectorConfig::configure()
     CatchExceptionNameMatchingTypeRector::class,
     ChangeSwitchToMatchRector::class,
     CompleteDynamicPropertiesRector::class,
-    DisallowedEmptyRuleFixerRector::class,
     InlineArrayReturnAssignRector::class,
     NewlineAfterStatementRector::class,
     NewlineBeforeNewAssignSetRector::class,
@@ -67,9 +73,9 @@ return RectorConfig::configure()
     // Directories to skip.
     '*/node_modules/*',
   ])
-  // PHP version upgrade sets - modernizes syntax to PHP 8.2.
-  // Includes all rules from PHP 5.3 through 8.2.
-  ->withPhpSets(php82: TRUE)
+  // PHP version upgrade sets - modernizes syntax to PHP 8.3.
+  // Includes all rules from PHP 5.3 through 8.3.
+  ->withPhpSets(php83: TRUE)
   // Code quality improvement sets.
   ->withPreparedSets(
     deadCode: TRUE,
@@ -79,12 +85,13 @@ return RectorConfig::configure()
     privatization: TRUE,
     naming: TRUE,
   )
-  // Drupal-specific deprecation fixes.
-  ->withSets([
-    Drupal9SetList::DRUPAL_9,
-    Drupal10SetList::DRUPAL_10,
-    Drupal11SetList::DRUPAL_11,
-  ])
+  // Drupal-specific deprecation fixes. The provider binds each set to a
+  // `drupal/core` version and only the sets the installed core satisfies are
+  // loaded, so the rules follow the version the extension is being built
+  // against. Both calls are required: the provider supplies the sets,
+  // `withComposerBased()` enables the group.
+  ->withSetProviders(DrupalSetProvider::class)
+  ->withComposerBased(drupal: TRUE)
   // Additional rules.
   ->withRules([
     DeclareStrictTypesRector::class,
@@ -119,5 +126,7 @@ return RectorConfig::configure()
     'inc',
     'engine',
   ])
+  // Cache configuration.
+  ->withCache(cacheDirectory: $cache_dir, containerCacheDirectory: $cache_dir)
   // Import configuration.
   ->withImportNames(importNames: TRUE, importDocBlockNames: FALSE, importShortClasses: FALSE);
