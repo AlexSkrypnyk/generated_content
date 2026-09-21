@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Drupal\generated_content\Helpers;
 
 use Drupal\Component\Utility\Random;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\file\FileInterface;
-use Drupal\file\FileRepository;
+use Drupal\file\FileRepositoryInterface;
 
 /**
  * Class GeneratedContentAssetGenerator.
@@ -95,11 +95,11 @@ class GeneratedContentAssetGenerator {
     /**
      * The entity type manager.
      */
-    protected EntityTypeManager $entityTypeManager,
+    protected EntityTypeManagerInterface $entityTypeManager,
     /**
      * The file repository.
      */
-    protected FileRepository $fileRepository,
+    protected FileRepositoryInterface $fileRepository,
     /**
      * The module extension list.
      */
