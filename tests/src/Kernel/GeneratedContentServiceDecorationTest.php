@@ -31,12 +31,12 @@ class GeneratedContentServiceDecorationTest extends GeneratedContentKernelTestBa
    *
    * @param string $service_id
    *   The service to build.
-   * @param string $expected_class
+   * @param class-string $expected_class
    *   The class the service is expected to resolve to.
    *
-   * @dataProvider dataProviderModuleServices
+   * @dataProvider dataProviderServiceBuildsWithDecoratedEntityTypeManager
    */
-  #[DataProvider('dataProviderModuleServices')]
+  #[DataProvider('dataProviderServiceBuildsWithDecoratedEntityTypeManager')]
   public function testServiceBuildsWithDecoratedEntityTypeManager(string $service_id, string $expected_class): void {
     $this->decorateEntityTypeManager();
 
@@ -53,7 +53,7 @@ class GeneratedContentServiceDecorationTest extends GeneratedContentKernelTestBa
    * @return array<string, array{string, class-string}>
    *   Service id and expected class, keyed by service id.
    */
-  public static function dataProviderModuleServices(): array {
+  public static function dataProviderServiceBuildsWithDecoratedEntityTypeManager(): array {
     return [
       'generated_content.asset_generator' => ['generated_content.asset_generator', GeneratedContentAssetGenerator::class],
       'generated_content.logger' => ['generated_content.logger', GeneratedContentLogger::class],
