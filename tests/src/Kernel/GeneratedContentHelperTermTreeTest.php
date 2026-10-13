@@ -30,6 +30,7 @@ class GeneratedContentHelperTermTreeTest extends GeneratedContentKernelTestBase 
     'user',
     'node',
     'file',
+    'filter',
     'text',
     'taxonomy',
     'generated_content',

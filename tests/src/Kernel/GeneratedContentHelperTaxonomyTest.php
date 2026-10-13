@@ -28,6 +28,7 @@ class GeneratedContentHelperTaxonomyTest extends GeneratedContentKernelTestBase 
    */
   protected static $modules = [
     'field',
+    'filter',
     'text',
     'taxonomy',
   ];
