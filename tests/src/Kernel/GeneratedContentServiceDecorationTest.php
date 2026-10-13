@@ -12,6 +12,7 @@ use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests that module services build against a decorated entity type manager.
@@ -24,6 +25,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group generated_content
  */
 #[Group('generated_content')]
+#[RunTestsInSeparateProcesses]
 class GeneratedContentServiceDecorationTest extends GeneratedContentKernelTestBase {
 
   /**

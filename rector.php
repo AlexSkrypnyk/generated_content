@@ -17,7 +17,6 @@
 declare(strict_types=1);
 
 use DrupalFinder\DrupalFinderComposerRuntime;
-use DrupalRector\Rector\PHPUnit\PhpUnitAddRunTestsInSeparateProcessesAttributeRector;
 use DrupalRector\Set\DrupalSetProvider;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
@@ -58,7 +57,6 @@ return RectorConfig::configure()
     InlineArrayReturnAssignRector::class,
     NewlineAfterStatementRector::class,
     NewlineBeforeNewAssignSetRector::class,
-    PhpUnitAddRunTestsInSeparateProcessesAttributeRector::class,
     PrivatizeFinalClassMethodRector::class,
     PrivatizeFinalClassPropertyRector::class,
     PrivatizeLocalGetterToPropertyRector::class,
