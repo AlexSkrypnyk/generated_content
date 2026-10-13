@@ -9,6 +9,7 @@
         "drupal/coder": "^8 || ^9",
         "drush/drush": "^12 || ^13 || ^14",
         "jangregor/phpstan-prophecy": "^1.0.2 || ^2",
+        "mglaman/composer-drupal-lenient": "^2.0",
         "mglaman/phpstan-drupal": "^1.3.9 || ^2",
         "mikey179/vfsstream": "^1.6",
         "palantirnet/drupal-rector": "^1@beta",
@@ -26,15 +27,25 @@
         "allow-plugins": {
             "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
+            "mglaman/composer-drupal-lenient": true,
             "phpstan/extension-installer": true
         }
     },
     "extra": {
+        "drupal-lenient": {
+            "allowed-list": [
+                "drupal/config_filter"
+            ]
+        },
         "eddy": {
             "drupal-version": "11",
             "version": "5.0.0-alpha4"
         },
         "phpcodesniffer-search-depth": 10,
-        "patches": {}
+        "patches": {
+            "drupal/config_filter": {
+                "Support Drupal 12 with the upstream core requirement, plugin attribute and API fixes": "patches/config_filter-drupal-12-support.patch"
+            }
+        }
     }
 }

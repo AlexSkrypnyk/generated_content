@@ -1,0 +1,95 @@
+diff --git a/config_filter.info.yml b/config_filter.info.yml
+index efc8bf1..7cd5003 100644
+--- a/config_filter.info.yml
++++ b/config_filter.info.yml
+@@ -1,5 +1,5 @@
+ name: Configuration Filter
+ type: module
+ description: Configuration Filter allows other modules to interact with a ConfigStorage through filter plugins.
+-core_version_requirement: ^8.8 || ^9 || ^10 || ^11
++core_version_requirement: ^10.1 || ^11 || ^12
+ package: Configuration
+diff --git a/config_filter.install b/config_filter.install
+index 6d2e427..8e6d54f 100644
+--- a/config_filter.install
++++ b/config_filter.install
+@@ -1,10 +1,12 @@
+ <?php
+ 
++use Drupal\Component\Utility\DeprecationHelper;
++use Drupal\Core\Extension\Requirement\RequirementSeverity;
++
+ /**
+  * @file
+  * Install, update and uninstall hooks for the config_filter module.
+  */
+-
+ /**
+  * Implements hook_requirements().
+  */
+@@ -29,7 +31,7 @@ function config_filter_requirements($phase) {
+     $requirements['config_filter_disable'] = [
+       'title' => t('Configuration Filter'),
+       'value' => t('Configuration Filter is enabled, but no modules require this module. You can safely disable Config Filter.'),
+-      'severity' => REQUIREMENT_WARNING,
++      'severity' => DeprecationHelper::backwardsCompatibleCall(\Drupal::VERSION, '11.2.0', fn() => RequirementSeverity::Warning, fn() => REQUIREMENT_WARNING),
+     ];
+   }
+ 
+diff --git a/src/Attribute/ConfigFilter.php b/src/Attribute/ConfigFilter.php
+new file mode 100644
+index 0000000..91f7ac6
+--- /dev/null
++++ b/src/Attribute/ConfigFilter.php
+@@ -0,0 +1,25 @@
++<?php
++
++declare(strict_types=1);
++
++namespace Drupal\config_filter\Attribute;
++
++use Drupal\Component\Plugin\Attribute\Plugin;
++
++/**
++ * Defines the ConfigFilter plugin attribute.
++ */
++#[\Attribute(\Attribute::TARGET_CLASS)]
++class ConfigFilter extends Plugin {
++
++  public function __construct(
++    string $id,
++    public readonly mixed $label = NULL,
++    public readonly mixed $weight = 0,
++    public readonly mixed $status = TRUE,
++    public readonly mixed $storages = [],
++  ) {
++    parent::__construct($id);
++  }
++
++}
+diff --git a/src/ConfigFilterEventSubscriber.php b/src/ConfigFilterEventSubscriber.php
+index 408df67..afbc7d8 100644
+--- a/src/ConfigFilterEventSubscriber.php
++++ b/src/ConfigFilterEventSubscriber.php
+@@ -83,7 +83,7 @@ public function onExportTransform(StorageTransformEvent $event) {
+   /**
+    * {@inheritdoc}
+    */
+-  public static function getSubscribedEvents() {
++  public static function getSubscribedEvents(): array {
+     // @todo Use class constants when they get added in #2991683
+     $events['config.transform.import'][] = ['onImportTransform'];
+     $events['config.transform.export'][] = ['onExportTransform'];
+diff --git a/src/Plugin/ConfigFilterPluginManager.php b/src/Plugin/ConfigFilterPluginManager.php
+index e673ef4..50285dc 100644
+--- a/src/Plugin/ConfigFilterPluginManager.php
++++ b/src/Plugin/ConfigFilterPluginManager.php
+@@ -24,7 +24,7 @@ class ConfigFilterPluginManager extends DefaultPluginManager implements ConfigFi
+    *   The module handler to invoke the alter hook with.
+    */
+   public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
+-    parent::__construct('Plugin/ConfigFilter', $namespaces, $module_handler, 'Drupal\config_filter\Plugin\ConfigFilterInterface', 'Drupal\config_filter\Annotation\ConfigFilter');
++    parent::__construct('Plugin/ConfigFilter', $namespaces, $module_handler, 'Drupal\config_filter\Plugin\ConfigFilterInterface', 'Drupal\config_filter\Attribute\ConfigFilter', 'Drupal\config_filter\Annotation\ConfigFilter');
+ 
+     $this->alterInfo('config_filter_info');
+     $this->setCacheBackend($cache_backend, 'config_filter_plugins');
