@@ -1,4 +1,3 @@
-/.chromedriver
 /.env
 /.logs
 /build
@@ -9,4 +8,3 @@
 !.claude
 .claude/*
 !.claude/settings.json
-.claude/skills/update-consumer-drupal-extension-scaffold/
