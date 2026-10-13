@@ -113,7 +113,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    *
    * @param string $button
    *   Triggering button name.
-   * @param string $expected_method
+   * @param non-empty-string $expected_method
    *   Repository method that must be invoked.
    *
    * @dataProvider dataProviderSubmitFormDispatch
@@ -149,7 +149,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
   /**
    * Data provider for testSubmitFormDispatch().
    *
-   * @return array<string, array<string>>
+   * @return array<string, array{string, non-empty-string}>
    *   Provider data.
    */
   public static function dataProviderSubmitFormDispatch(): array {
