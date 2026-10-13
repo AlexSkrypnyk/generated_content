@@ -77,7 +77,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    * Tests buildForm() with plugins exposes the action buttons.
    */
   public function testBuildFormWithPlugins(): void {
-    $repository = $this->createMock(GeneratedContentRepository::class);
+    $repository = $this->createStub(GeneratedContentRepository::class);
     $repository->method('getInfo')->willReturn([
       'user__user' => [
         'entity_type' => 'user',

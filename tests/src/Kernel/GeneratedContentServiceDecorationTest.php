@@ -82,7 +82,7 @@ class GeneratedContentServiceDecorationTest extends GeneratedContentKernelTestBa
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $inner */
     $inner = $this->container->get('entity_type.manager');
 
-    $decorated = $this->createMock(EntityTypeManagerInterface::class);
+    $decorated = $this->createStub(EntityTypeManagerInterface::class);
     foreach (get_class_methods(EntityTypeManagerInterface::class) as $method) {
       $decorated->method($method)->willReturnCallback(static fn(mixed ...$arguments): mixed => $inner->{$method}(...$arguments));
     }
