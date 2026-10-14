@@ -6,6 +6,7 @@ namespace Drupal\Tests\generated_content\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\generated_content\Traits\GeneratedContentTestMockTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class GeneratedContentFunctionalTestBase.
@@ -25,6 +26,21 @@ abstract class GeneratedContentFunctionalTestBase extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function initConfig(ContainerInterface $container): void {
+    parent::initConfig($container);
+
+    if (!$container->get('module_handler')->moduleExists('automated_cron')) {
+      return;
+    }
+
+    // Automated cron runs after a response is sent, so it can still write to
+    // the test site directory while teardown deletes it.
+    $container->get('config.factory')->getEditable('automated_cron.settings')->set('interval', 0)->save();
+  }
 
   /**
    * Assert table items are present with values.
