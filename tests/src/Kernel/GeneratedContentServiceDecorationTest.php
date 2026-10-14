@@ -12,6 +12,7 @@ use Drupal\generated_content\Helpers\GeneratedContentAssetGenerator;
 use Drupal\generated_content\Plugin\GeneratedContent\GeneratedContentPluginManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests that module services build against a decorated entity type manager.
@@ -24,6 +25,7 @@ use PHPUnit\Framework\Attributes\Group;
  * @group generated_content
  */
 #[Group('generated_content')]
+#[RunTestsInSeparateProcesses]
 class GeneratedContentServiceDecorationTest extends GeneratedContentKernelTestBase {
 
   /**
@@ -80,7 +82,7 @@ class GeneratedContentServiceDecorationTest extends GeneratedContentKernelTestBa
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $inner */
     $inner = $this->container->get('entity_type.manager');
 
-    $decorated = $this->createMock(EntityTypeManagerInterface::class);
+    $decorated = $this->createStub(EntityTypeManagerInterface::class);
     foreach (get_class_methods(EntityTypeManagerInterface::class) as $method) {
       $decorated->method($method)->willReturnCallback(static fn(mixed ...$arguments): mixed => $inner->{$method}(...$arguments));
     }

@@ -32,7 +32,7 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
    * Tests that the constructor wires the logger factory.
    */
   public function testConstructorWiresLoggerFactory(): void {
-    $logger_factory = $this->createMock(LoggerChannelFactoryInterface::class);
+    $logger_factory = $this->createStub(LoggerChannelFactoryInterface::class);
     $commands = new GeneratedContentCommands($logger_factory);
 
     $this->assertSame(
@@ -162,10 +162,10 @@ class GeneratedContentCommandsTest extends GeneratedContentUnitTestBase {
    *   The BatchBuilder->toArray() output.
    */
   protected function callBuildBatch(string $entity_type, string $bundle, int $total): array {
-    $logger_factory = $this->createMock(LoggerChannelFactoryInterface::class);
+    $logger_factory = $this->createStub(LoggerChannelFactoryInterface::class);
     $commands = new GeneratedContentCommands($logger_factory);
 
-    $translation = $this->createMock(TranslationInterface::class);
+    $translation = $this->createStub(TranslationInterface::class);
     $translation->method('translateString')->willReturnCallback(static fn($translatable): string => (string) $translatable->getUntranslatedString());
     $commands->setStringTranslation($translation);
 

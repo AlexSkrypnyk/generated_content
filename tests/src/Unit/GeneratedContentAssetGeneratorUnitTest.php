@@ -28,12 +28,12 @@ class GeneratedContentAssetGeneratorUnitTest extends GeneratedContentUnitTestBas
    */
   public function testConstructorAcceptsInterfaceImplementations(): void {
     $module_extension_list = $this->createMock(ModuleExtensionList::class);
-    $module_extension_list->method('getPath')->with('generated_content')->willReturn(dirname(__DIR__, 3));
+    $module_extension_list->expects($this->once())->method('getPath')->with('generated_content')->willReturn(dirname(__DIR__, 3));
 
     $generator = new GeneratedContentAssetGenerator(
-      $this->createMock(FileSystemInterface::class),
-      $this->createMock(EntityTypeManagerInterface::class),
-      $this->createMock(FileRepositoryInterface::class),
+      $this->createStub(FileSystemInterface::class),
+      $this->createStub(EntityTypeManagerInterface::class),
+      $this->createStub(FileRepositoryInterface::class),
       $module_extension_list,
     );
 

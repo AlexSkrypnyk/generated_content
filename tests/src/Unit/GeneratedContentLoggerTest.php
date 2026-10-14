@@ -49,7 +49,7 @@ class GeneratedContentLoggerTest extends GeneratedContentUnitTestBase {
     $logger = $this->createMock(LoggerChannelInterface::class);
     $logger->expects($this->once())->method('info')->with('Created Title node.');
 
-    $logger_factory = $this->createMock(LoggerChannelFactoryInterface::class);
+    $logger_factory = $this->createStub(LoggerChannelFactoryInterface::class);
     $logger_factory->method('get')->willReturn($logger);
 
     (new GeneratedContentLogger($messenger, $logger_factory))->log('Created <a href="/node/1">Title</a> node.');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\generated_content\Kernel;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -19,6 +20,7 @@ use Drupal\generated_content\GeneratedContentRepository;
  * @covers \Drupal\generated_content\Form\GeneratedContentForm
  */
 #[Group('generated_content')]
+#[RunTestsInSeparateProcesses]
 class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
 
   /**
@@ -75,7 +77,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    * Tests buildForm() with plugins exposes the action buttons.
    */
   public function testBuildFormWithPlugins(): void {
-    $repository = $this->createMock(GeneratedContentRepository::class);
+    $repository = $this->createStub(GeneratedContentRepository::class);
     $repository->method('getInfo')->willReturn([
       'user__user' => [
         'entity_type' => 'user',
@@ -111,7 +113,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
    *
    * @param string $button
    *   Triggering button name.
-   * @param string $expected_method
+   * @param non-empty-string $expected_method
    *   Repository method that must be invoked.
    *
    * @dataProvider dataProviderSubmitFormDispatch
@@ -147,7 +149,7 @@ class GeneratedContentFormTest extends GeneratedContentKernelTestBase {
   /**
    * Data provider for testSubmitFormDispatch().
    *
-   * @return array<string, array<string>>
+   * @return array<string, array{string, non-empty-string}>
    *   Provider data.
    */
   public static function dataProviderSubmitFormDispatch(): array {
