@@ -7,12 +7,12 @@
 
 <div align="center">
 
-[![GitHub Issues](https://img.shields.io/github/issues/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexSkrypnyk/generated_content.svg)](https://github.com/AlexSkrypnyk/generated_content/pulls)
-[![Test](https://github.com/AlexSkrypnyk/generated_content/actions/workflows/test.yml/badge.svg)](https://github.com/AlexSkrypnyk/generated_content/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/AlexSkrypnyk/generated_content/graph/badge.svg)](https://codecov.io/gh/AlexSkrypnyk/generated_content)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexSkrypnyk/generated_content)
-![LICENSE](https://img.shields.io/github/license/AlexSkrypnyk/generated_content)
+[![GitHub Issues](https://img.shields.io/github/issues/drevops/generated_content.svg)](https://github.com/drevops/generated_content/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/drevops/generated_content.svg)](https://github.com/drevops/generated_content/pulls)
+[![Test](https://github.com/drevops/generated_content/actions/workflows/test.yml/badge.svg)](https://github.com/drevops/generated_content/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/drevops/generated_content/graph/badge.svg)](https://codecov.io/gh/drevops/generated_content)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/drevops/generated_content)
+![LICENSE](https://img.shields.io/github/license/drevops/generated_content)
 ![Renovate](https://img.shields.io/badge/renovate-enabled-green?logo=renovatebot)
 
 ![PHP 8.3](https://img.shields.io/badge/PHP-8.3-777BB4.svg)
